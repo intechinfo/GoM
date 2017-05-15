@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CB45A364-905A-4016-9A46-8C129720B6C6}</ProjectGuid>
+    <ProjectGuid>{CF80008C-3AC3-4804-A90C-BF8CF9EACA2E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>GoM.Core.CommandLine</RootNamespace>
     <AssemblyName>GoM.Core.CommandLine</AssemblyName>
