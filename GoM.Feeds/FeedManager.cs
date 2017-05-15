@@ -6,12 +6,12 @@ namespace GoM.Feeds
 {
     public class FeedManager : IFeedManager
     {
-        public IReadOnlyCollection<IFeedFactory> _factories;
+        public IFeedFactory _factory;
         private IReadOnlyCollection<IFeedReader> _readers;
 
         public FeedManager()
         {
-            
+            //_factory = "zob";    
         }
 
         public void Register(IFeedFactory factory)
