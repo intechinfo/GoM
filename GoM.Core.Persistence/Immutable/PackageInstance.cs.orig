@@ -6,13 +6,17 @@ namespace GoM.Core.Persistence
 {
     public class PackageInstance : IPackageInstance
     {
-        public string Name { get; }
+<<<<<<< HEAD
         public PackageInstance(XElement e)
         {
             this.Name = e.Attribute(nameof(Name)).Value;
             this.Version = e.Attribute(nameof(Version)).Value;
         }
 
+        public string Name { get; set; }
+=======
+        public string Name { get; }
+>>>>>>> origin/BiteOfTheDead
 
         public string Version { get; }
 

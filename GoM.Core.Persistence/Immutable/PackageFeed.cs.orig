@@ -7,7 +7,7 @@ namespace GoM.Core.Persistence
 {
     public class PackageFeed : IPackageFeed
     {
-        public Uri Url { get; }
+<<<<<<< HEAD
 
         public PackageFeed(XElement e)
         {
@@ -19,6 +19,16 @@ namespace GoM.Core.Persistence
             }
         }
 
+        public Uri Url { get; set; }
+=======
+        private XElement el;
+        public Uri Url { get; }
+>>>>>>> origin/BiteOfTheDead
+
+        public PackageFeed ( XElement el )
+        {
+            this.el = el;
+        }
 
 
         public List<PackageInstance> Packages { get; } 

@@ -138,13 +138,7 @@ namespace GoM.Core.Persistence
         {
             var data = File.ReadAllText( Path.Combine( rootPath, FolderName, FileName ) );
             XDocument doc = XDocument.Parse( data );
-            IGoMContext context = new GoMContext();
-
-
-
-
-
-            return context;
+            return new GoMContext( doc.Root );
         }
 
         public void Save ( IGoMContext context)
