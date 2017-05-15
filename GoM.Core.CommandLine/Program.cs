@@ -7,45 +7,29 @@ using System.Threading.Tasks;
 
 namespace GoM.Core.CommandLine
 {
-    class Program : CommandLineApplication
+    class Program
     {
-<<<<<<< HEAD
-        public static void Main(params string[] args)
-        {
-            CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
-
-            cmdLineApplication.Command("Hello", (cmd) =>
-            {
-                cmd.Description = "Simple Hello World";
-                cmd.HelpOption("-h");
-
-                cmd.OnExecute(() =>
-                {
-                    Console.WriteLine("Hello World!");
-                    return 0;
-                });
-
-            }, false);
-
-            cmdLineApplication.HelpOption("-x");
-
-            cmdLineApplication.Execute("Hello");
-            
-=======
         static void Main(string[] args)
         {
             if(args == null || args.Length == 0)
             {
                 Console.WriteLine("No arguments");
             }
-            CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
 
-            cmdLineApplication.Command("Hello", (cmd) =>
+            var app = new CommandLineApplication(throwOnUnexpectedArg: false);
+            app.Name = "gom";
+            app.HelpOption("-?,|-h|--help");
+
+            app.OnExecute(() => {
+                Console.WriteLine("Bienvenue sur GoM");
+                return 0;
+            });
+
+            app.Command("Hello", (cmd) =>
             {
                 cmd.Description = "Simple Hello World";
-                cmd.HelpOption("-h");
 
-                cmd.OnExecute(() =>
+                cmd.OnExecute(() => 
                 {
                     Console.WriteLine("Hello World!");
                     return 0;
@@ -53,10 +37,9 @@ namespace GoM.Core.CommandLine
 
             }, false);
 
-            cmdLineApplication.Command("GoodBye", (cmd) =>
+            app.Command("GoodBye", (cmd) =>
             {
                 cmd.Description = "Simple GoodBye";
-                cmd.HelpOption("-h");
 
                 cmd.OnExecute(() =>
                 {
@@ -65,14 +48,13 @@ namespace GoM.Core.CommandLine
                 });
 
             }, false);
-            foreach (var cnt in args)
-            {
-                cmdLineApplication.Execute(cnt);
-            }
+
+            app.Execute(args);
             
+
+            var count = app.Commands.Count;
             Console.ReadLine();
            
         }
->>>>>>> 1244fbdb17d3eeff1f320f596b2d4549cc635553
         }
 }   
