@@ -1,6 +1,6 @@
 ﻿using GoM.Core;
-using GoM.Core.Mutable;
 using System;
+using GoM.Persistence;
 using System.IO;
 using System.Xml.Linq;
 
@@ -8,6 +8,8 @@ namespace GoM.Persistence
 {
     public static class Helper
     {
+        // XELEMENT (XNAME, OBJECT[])
+
         public static XElement ToXML ( this IPackageInstance _this )
         {
             XElement element = new XElement(typeof(PackageInstance).Name);
@@ -132,14 +134,30 @@ namespace GoM.Persistence
         }
 
 
-        public IGoMContext Load ()
+        public IGoMContext Load (string rootPath)
         {
-            throw new NotImplementedException();
+            var data = File.ReadAllText( Path.Combine( rootPath, FolderName, FileName ) );
+            XDocument doc = XDocument.Parse( data );
+            IGoMContext context = new GoMContext();
+
+
+
+
+
+            return context;
         }
 
-        public void Save ( IGoMContext ctx)
+        public void Save ( IGoMContext context)
         {
-            if ( ctx == null ) throw new ArgumentNullException();
+            if ( context == null ) throw new ArgumentNullException();
+
+            using ( var stream = File.Create( Path.Combine( context.RootPath, FolderName, FileName ) ) )
+            {
+                XDocument doc = new XDocument();
+                doc.Add( context.ToXML() );
+                doc.Root.SetAttributeValue( "GOM_Document_Version", "1" );
+                doc.Save(stream);
+            }
 
         }
 
