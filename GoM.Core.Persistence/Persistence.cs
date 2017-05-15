@@ -18,28 +18,16 @@ namespace GoM.Persistence
         }
 
 
-        public IGomContext Load ()
+        public IGoMContext Load ()
         {
             throw new NotImplementedException();
         }
 
-        public void Save ( IGomContext ctx)
+        public void Save ( IGoMContext ctx)
         {
             if ( ctx == null ) throw new ArgumentNullException();
 
-            Directory.CreateDirectory( Path.Combine( ctx.RootPath, FolderName ) );
-
-            using ( var stream = File.Create( Path.Combine( ctx.RootPath, FolderName, FileName ) ) )
-            {
-                IFormatter formatter = new BinaryFormatter();
-
-                formatter.Serialize( stream, ctx );
-            }
-
         }
-
-
-
 
     }
 }

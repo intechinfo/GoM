@@ -10,10 +10,10 @@ namespace GoM.Persistence
     interface IPersistence
     {
 
-        IGomContext Load ();
+        IGoMContext Load ();
 
 
-        void Save (IGomContext ctx);
+        void Save (IGoMContext ctx);
 
 
     }
