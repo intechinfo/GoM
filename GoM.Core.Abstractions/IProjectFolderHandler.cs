@@ -1,9 +1,11 @@
-﻿namespace GoM.Core.Abstractions
+﻿using Microsoft.Extensions.FileProviders;
+
+namespace GoM.Core.Abstractions
 {
     public interface IProjectFolderHandler
     {
-        bool Sniff(string path);
-
-        IProject Read(string path);
+        bool Sniff();
+        IFileProvider FileProvider { get; }
+        IProject Read();
     }
 }
