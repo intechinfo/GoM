@@ -9,9 +9,9 @@ namespace GoM.Core.CommandLine
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(params string[] args)
         {
-            if(args == null || args.Length == 0)
+            /*if(args == null || args.Length == 0)
             {
                 Array.Resize(ref args, args.Length + 1);
                 args[args.Length - 1] = Console.ReadLine();
@@ -67,7 +67,45 @@ namespace GoM.Core.CommandLine
                 cmdLineApplication.Execute(cnt);
             }
             
-            Console.ReadLine();
+            Console.ReadLine();*/
+            var app = new CommandLineApplication(throwOnUnexpectedArg: false);
+            app.Name = "gom";
+            app.HelpOption("-?,|-h|--help");
+
+            app.OnExecute(() => {
+                Console.WriteLine("Hello World!");
+                return 0;
+            });
+
+            app.Command("hide", (command) =>
+             {
+                 command.Description = "Ceci est une description.";
+                 command.HelpOption("-?,|-h|--help");
+
+                 command.OnExecute(() =>
+                 {
+                     Console.WriteLine("Bene Bene Bene");
+                     return 0;
+                 });
+             });
+
+            app.Command("add", (command) =>
+            {
+                command.Description = "Ceci est une description.";
+                command.HelpOption("-?,|-h|--help");
+
+                var locationArgument = command.Argument("[location]",
+                                    "Where the ninja should hide.");
+
+                command.OnExecute(() =>
+                {
+                    var location = locationArgument.Values.Count() > 0 ? locationArgument.Value : "under a turtle";
+                    Console.WriteLine("Ninja is hidden " + location);
+                    return 0;
+                });
+            });
+
+            app.Execute(args);
            
         }
         }

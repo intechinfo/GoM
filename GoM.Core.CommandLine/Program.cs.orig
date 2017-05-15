@@ -1,0 +1,91 @@
+﻿using Microsoft.Extensions.CommandLineUtils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GoM.Core.CommandLine
+{
+    class Program
+    {
+        public static void Main(params string[] args)
+        {
+<<<<<<< HEAD
+            // Program.exe <-g|--greeting|-$ <greeting>> [name <fullname>]
+            // [-?|-h|--help] [-u|--uppercase]
+            CommandLineApplication cmd = new CommandLineApplication(throwOnUnexpectedArg: false);
+            CommandArgument names = null;
+            cmd.Command("name",
+              (target) =>
+                names = target.Argument(
+                  "fullname",
+                  "Enter the full name of the person to be greeted.",
+                  multipleValues: true));
+            CommandOption greeting = cmd.Option(
+              "-$|-g |--greeting <greeting>",
+              "The greeting to display. The greeting supports"
+              + " a format string where {fullname} will be "
+              + "substituted with the full name.",
+              CommandOptionType.SingleValue);
+            CommandOption uppercase = cmd.Option(
+              "-u | --uppercase", "Display the greeting in uppercase.",
+              CommandOptionType.NoValue);
+            cmd.HelpOption("-? | -h | --help");
+            cmd.OnExecute(() =>
+            {
+                if (greeting.HasValue())
+                {
+                    Greet(greeting.Value(), names.Values, uppercase.HasValue());
+                }
+                return 0;
+            });
+            cmd.Execute(args);
+        }
+        private static void Greet(
+          string greeting, IEnumerable<string> values, bool useUppercase)
+        {
+            Console.WriteLine(greeting);
+=======
+            if(args == null || args.Length == 0)
+            {
+                Console.WriteLine("No arguments");
+            }
+            CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
+
+            cmdLineApplication.Command("Hello", (cmd) =>
+            {
+                cmd.Description = "Simple Hello World";
+                cmd.HelpOption("-h");
+
+                cmd.OnExecute(() =>
+                {
+                    Console.WriteLine("Hello World!");
+                    return 0;
+                });
+
+            }, false);
+
+            cmdLineApplication.Command("GoodBye", (cmd) =>
+            {
+                cmd.Description = "Simple GoodBye";
+                cmd.HelpOption("-h");
+
+                cmd.OnExecute(() =>
+                {
+                    Console.WriteLine("Goodbye!");
+                    return 0;
+                });
+
+            }, false);
+            foreach (var cnt in args)
+            {
+                cmdLineApplication.Execute(cnt);
+            }
+            
+            Console.ReadLine();
+           
+        }
+>>>>>>> origin/perso-cuchot
+        }
+}   
