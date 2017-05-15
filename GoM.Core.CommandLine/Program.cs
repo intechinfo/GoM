@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace GoM.Core.CommandLine
 {
-    public class Class1
+    class Program
     {
+        static void Main(string[] args)
+        {
+
+        }
     }
 }
