@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NUnit.Runners.Net4" Version="2.6.4" />
   </ItemGroup>
   
 </Project>

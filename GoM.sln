@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Abstractions", "GoM.Core.Abstractions\GoM.Core.Abstractions.csproj", "{115F5512-8C4D-41BA-81C7-12B2626BDE57}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable", "GoM.Core.Mutable\GoM.Core.Mutable.csproj", "{3D88E13C-2486-424C-835A-77735CA198F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Git", "GoM.Core.Git\GoM.Core.Git.csproj", "{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D513AF05-4936-47A7-BF72-6B383907B378}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,22 @@ Global
 		{3D88E13C-2486-424C-835A-77735CA198F0}.Release|x64.Build.0 = Release|Any CPU
 		{3D88E13C-2486-424C-835A-77735CA198F0}.Release|x86.ActiveCfg = Release|Any CPU
 		{3D88E13C-2486-424C-835A-77735CA198F0}.Release|x86.Build.0 = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|ARM.Build.0 = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|x64.Build.0 = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Debug|x86.Build.0 = Debug|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|ARM.Build.0 = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|x64.ActiveCfg = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|x64.Build.0 = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|x86.ActiveCfg = Release|Any CPU
+		{3957A5EC-3E32-413F-BA6E-DC9431FC4A4F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
