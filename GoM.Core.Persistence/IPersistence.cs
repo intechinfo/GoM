@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GoM.Core; using System;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     interface IPersistence
     {

@@ -1,6 +1,6 @@
 ﻿using GoM.Core; using System;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     public class BasicGitRepository : IBasicGitRepository
     {

@@ -1,10 +1,10 @@
 ﻿using GoM.Core;
 using System;
-using GoM.Persistence;
+using GoM.Core.Persistence;
 using System.IO;
 using System.Xml.Linq;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     public static class Helper
     {
@@ -12,7 +12,7 @@ namespace GoM.Persistence
 
         public static XElement ToXML ( this IPackageInstance _this )
         {
-            XElement element = new XElement(typeof(PackageInstance).Name);
+            XElement element = new XElement(typeof(IPackageInstance).Name);
             element.SetAttributeValue( nameof( _this.Version ), _this.Version );
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
             return element;
@@ -20,9 +20,9 @@ namespace GoM.Persistence
 
         public static XElement ToXML(this IPackageFeed _this)
         {
-            XElement element = new XElement(typeof(PackageFeed).Name);
+            XElement element = new XElement(typeof(IPackageFeed).Name);
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
-            foreach ( PackageInstance package in _this.Packages )
+            foreach ( IPackageInstance package in _this.Packages )
             {
                 element.Add( package.ToXML() );
             }
@@ -73,7 +73,7 @@ namespace GoM.Persistence
 
         public static XElement ToXML(this IBasicGitBranch _this)
         {
-            XElement element = new XElement(typeof(BasicGitBranch).Name);
+            XElement element = new XElement(typeof(IBasicGitBranch).Name);
             element.SetAttributeValue(nameof(_this.Name), _this.Name);
             element.Add( _this.Details.ToXML() );
             return element;
@@ -81,7 +81,7 @@ namespace GoM.Persistence
 
         public static XElement ToXML(this IBranchVersionInfo _this)
         {
-            XElement element = new XElement(typeof(BasicGitBranch).Name);
+            XElement element = new XElement(typeof(IBasicGitBranch).Name);
             element.SetAttributeValue(nameof(_this.LastTagDepth), _this.LastTagDepth);
             element.Add( _this.LastTag.ToXML() );
             return element;
@@ -89,7 +89,7 @@ namespace GoM.Persistence
 
         public static XElement ToXML(this IBasicGitRepository _this)
         {
-            XElement element = new XElement(typeof(BasicGitRepository).Name);
+            XElement element = new XElement(typeof(IBasicGitRepository).Name);
             element.SetAttributeValue(nameof(_this.Path), _this.Path);
             element.SetAttributeValue(nameof(_this.Url), _this.Url);
 
