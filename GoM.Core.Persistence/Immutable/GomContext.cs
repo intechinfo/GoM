@@ -7,14 +7,21 @@ namespace GoM.Persistence
 {
     public class GoMContext : IGoMContext
     {
-        public string RootPath { get; set; }
+        public string RootPath { get; }
 
-        public List<BasicGitRepository> Repositories { get; } = new List<BasicGitRepository>();
+        public List<BasicGitRepository> Repositories { get; } 
 
-        public List<PackageFeed> Feeds { get; } = new List<PackageFeed>();
+        public List<PackageFeed> Feeds { get; } 
 
         IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => Repositories;
 
         IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => Feeds;
+
+        public GoMContext(string rootPath)
+        {
+            RootPath     = rootPath;
+            Repositories = new List<BasicGitRepository>();
+            Feeds        = new List<PackageFeed>();
+        }
     }
 }

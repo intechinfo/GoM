@@ -6,10 +6,17 @@ namespace GoM.Persistence
 {
     public class Target : ITarget
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public List<TargetDependency> Dependencies { get; } = new List<TargetDependency>();
+        public List<TargetDependency> Dependencies { get; } 
 
         IReadOnlyCollection<ITargetDependency> ITarget.Dependencies => Dependencies;
+
+        public Target(string name)
+        {
+            Name = name;
+            Dependencies = new List<TargetDependency>();
+        }
+
     }
 }

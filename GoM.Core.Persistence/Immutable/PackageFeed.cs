@@ -6,10 +6,16 @@ namespace GoM.Persistence
 {
     public class PackageFeed : IPackageFeed
     {
-        public Uri Url { get; set; }
+        public Uri Url { get; }
 
-        public List<PackageInstance> Packages { get; } = new List<PackageInstance>();
+        public List<PackageInstance> Packages { get; } 
 
         IReadOnlyCollection<IPackageInstance> IPackageFeed.Packages => Packages;
+
+        public PackageFeed(Uri url)
+        {
+            Url = url;
+            Packages = new List<PackageInstance>();
+        }
     }
 }
