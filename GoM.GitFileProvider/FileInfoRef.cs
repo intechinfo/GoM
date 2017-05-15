@@ -10,17 +10,33 @@ namespace GoM.GitFileProvider
 {
     internal class FileInfoRef : IFileInfo
     {
-        public bool Exists => throw new NotImplementedException();
+        private bool _exists;
+        private long _length;
+        private string _physicalPath;
+        private string _name;
+        private DateTimeOffset _lastModified;
+        private bool _isDirectory;
 
-        public long Length => throw new NotImplementedException();
+        public FileInfoRef(bool exists, long length, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory)
+        {
+            _exists = exists;
+            _length = length;
+            _physicalPath = physicalPath;
+            _name = name;
+            _lastModified = lastModified;
+            _isDirectory = isDirectory;
+        }
+        public bool Exists => _exists;
 
-        public string PhysicalPath => throw new NotImplementedException();
+        public long Length => _length;
 
-        public string Name => throw new NotImplementedException();
+        public string PhysicalPath => _physicalPath;
 
-        public DateTimeOffset LastModified => throw new NotImplementedException();
+        public string Name => _name;
 
-        public bool IsDirectory => throw new NotImplementedException();
+        public DateTimeOffset LastModified => _lastModified;
+
+        public bool IsDirectory => _isDirectory;
 
         public Stream CreateReadStream()
         {
