@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using GoM.Core;
-namespace GoM.Feeds
+
+namespace GoM.Feeds.Abstractions
 {
     public interface IFeedReader
     { 
