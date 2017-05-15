@@ -8,29 +8,50 @@ namespace GoM.Persistence
 {
     public static class Helper
     {
-        public static XElement ToXML ( this IPackageInstance _this )
+        public static XElement ToXML(this IPackageInstance _this)
         {
             XElement element = new XElement(typeof(PackageInstance).Name);
-            element.SetAttributeValue( nameof( _this.Version ), _this.Version );
-            element.SetAttributeValue( nameof( _this.Name ), _this.Name );
+            element.SetAttributeValue(nameof(_this.Version), _this.Version);
+            element.SetAttributeValue(nameof(_this.Name), _this.Name);
             return element;
         }
 
         public static XElement ToXML(this IPackageFeed _this)
         {
             XElement element = new XElement(typeof(PackageFeed).Name);
-            element.SetAttributeValue( nameof( _this.Url ), _this.Url );
-            foreach ( PackageInstance package in _this.Packages )
+            element.SetAttributeValue(nameof(_this.Url), _this.Url);
+            foreach (PackageInstance package in _this.Packages)
             {
-                element.Add( package.ToXML() );
+                element.Add(package.ToXML());
             }
             return element;
         }
 
 
+        public static XElement ToXML(this IBasicGitBranch _this)
+        {
+            XElement element = new XElement(typeof(BasicGitBranch).Name);
+            element.SetAttributeValue(nameof(_this.Name), _this.Name);
+            element.SetAttributeValue(nameof(_this.Details), _this.Details);
+            return element;
+        }
 
+        public static XElement ToXML(this IBranchVersionInfo _this)
+        {
+            XElement element = new XElement(typeof(BasicGitBranch).Name);
+            element.SetAttributeValue(nameof(_this.LastTag), _this.LastTag);
+            element.SetAttributeValue(nameof(_this.LastTagDepth), _this.LastTagDepth);
+            return element;
+        }
 
-
+        public static XElement ToXML(this IBasicGitRepository _this)
+        {
+            XElement element = new XElement(typeof(BasicGitRepository).Name);
+            element.SetAttributeValue(nameof(_this.Path), _this.Path);
+            element.SetAttributeValue(nameof(_this.Url), _this.Url);
+            element.SetAttributeValue(nameof(_this.Details), _this.Details);
+            return element;
+        }
 
 
 
@@ -40,28 +61,28 @@ namespace GoM.Persistence
         string FolderName { get; }
         string FileName { get; }
 
-        public Persistence(string folderName=".gom", string fileName="context")
+        public Persistence(string folderName = ".gom", string fileName = "context")
         {
             FolderName = folderName;
             FileName = fileName;
         }
 
 
-        public IGoMContext Load ()
+        public IGoMContext Load()
         {
             throw new NotImplementedException();
         }
 
-        public void Save ( IGoMContext ctx)
+        public void Save(IGoMContext ctx)
         {
-            if ( ctx == null ) throw new ArgumentNullException();
+            if (ctx == null) throw new ArgumentNullException();
 
         }
 
 
         #region Extensions
 
-        
+
 
         #endregion
 
