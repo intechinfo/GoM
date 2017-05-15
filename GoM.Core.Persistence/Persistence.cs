@@ -101,17 +101,25 @@ namespace GoM.Persistence
             element.Add(_this.Version.ToXML());
             foreach (var t in _this.Projects) element.Add(t.ToXML());
 
+            element.SetAttributeValue( nameof( _this.Name ), _this.Name );
+            element.Add( _this.Details.ToXML() );
             return element;
         }
 
         public static XElement ToXML(this IGitRepository _this)
         {
             XElement element = new XElement(typeof(IGitRepository).Name);
+
+            element.SetAttributeValue( nameof( _this.Path ), _this.Path );
+            element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach (var t in _this.Branches) element.Add(t.ToXML());
+
+            element.Add( _this.Details.ToXML() );
             return element;
         }
 
     }
+
     class Persistence : IPersistence
     {
         string FolderName { get; }
@@ -136,11 +144,6 @@ namespace GoM.Persistence
         }
 
 
-        #region Extensions
-
-        
-
-        #endregion
 
     }
 }
