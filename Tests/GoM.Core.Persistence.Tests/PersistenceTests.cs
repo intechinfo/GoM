@@ -1,9 +1,10 @@
 using GoM.Core.Mutable;
-using GoM.Persistence;
+using GoM.Core.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Xunit;
+using System.IO;
 
 namespace GoM.Core.Persistence.Tests
 {
@@ -95,6 +96,19 @@ namespace GoM.Core.Persistence.Tests
 
         }
 
+        [Fact]
+        public void read_version()
+        {
+            Assert.True(true);
+        }
+
+        [Fact]
+        public void try_read_first_node()
+        {
+            var data = File.ReadAllText( Path.Combine( ".", ".gom", "name" ) );
+            XDocument doc = XDocument.Parse( data );
+            IGoMContext context = new GoMContext();
+        }
 
 
     }
