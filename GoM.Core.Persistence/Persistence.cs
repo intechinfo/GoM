@@ -93,6 +93,22 @@ namespace GoM.Persistence
             element.SetAttributeValue(nameof(_this.Details), _this.Details);
             return element;
         }
+        public static XElement ToXML(this IGitBranch _this)
+        {
+            XElement element = new XElement(typeof(IGitBranch).Name);
+            element.Add(_this.Version.ToXML());
+            foreach (var t in _this.Projects) element.Add(t.ToXML());
+
+            return element;
+        }
+        public static XElement ToXML(this IGitRepository _this)
+        {
+            XElement element = new XElement(typeof(IGitRepository).Name);
+            element.Add(_this.Branches.ToXML());
+            foreach (var t in _this.Branches) element.Add(t.ToXML());
+
+            return element;
+        }
 
 
     }
