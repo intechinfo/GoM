@@ -7,6 +7,7 @@ namespace GoM.Core.Persistence
     public class TargetDependency : ITargetDependency
     {
         private XElement t;
+        public string Name { get; }
 
         public TargetDependency ( XElement t )
         {
@@ -15,8 +16,15 @@ namespace GoM.Core.Persistence
             Version = t.Attribute( nameof( Version ) ).Value;
         }
 
-        public string Name { get; set; }
+       
+        public string Version { get; }
 
-        public string Version { get; set; }
+
+        public TargetDependency(string name, string version)
+        {
+            Name    = name;
+            Version = version;
+        }
+
     }
 }

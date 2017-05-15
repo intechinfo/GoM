@@ -9,6 +9,7 @@ namespace GoM.Core.Persistence
     public class GoMContext : IGoMContext
     {
         private XElement root;
+        public string RootPath { get; }
 
         public GoMContext ( XElement root )
         {
@@ -27,14 +28,20 @@ namespace GoM.Core.Persistence
 
         }
 
-        public string RootPath { get; set; }
 
-        public List<BasicGitRepository> Repositories { get; } = new List<BasicGitRepository>();
+        public List<BasicGitRepository> Repositories { get; } 
 
-        public List<PackageFeed> Feeds { get; } = new List<PackageFeed>();
+        public List<PackageFeed> Feeds { get; } 
 
         IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => Repositories;
 
         IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => Feeds;
+
+        public GoMContext(string rootPath)
+        {
+            RootPath     = rootPath;
+            Repositories = new List<BasicGitRepository>();
+            Feeds        = new List<PackageFeed>();
+        }
     }
 }

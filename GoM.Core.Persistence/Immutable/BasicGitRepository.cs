@@ -7,6 +7,7 @@ namespace GoM.Core.Persistence
     public class BasicGitRepository : IBasicGitRepository
     {
         private XElement el;
+        public string Path { get; }
 
         public BasicGitRepository ( XElement el )
         {
@@ -17,12 +18,19 @@ namespace GoM.Core.Persistence
             Details = new GitRepository(el.Element(nameof(Details)));
         }
 
-        public string Path { get; set; }
 
-        public Uri Url { get; set; }
+        public Uri Url { get; }
 
-        public GitRepository Details { get; set; }
+        public GitRepository Details { get; }
 
         IGitRepository IBasicGitRepository.Details => Details;
+
+
+        public BasicGitRepository(string path, Uri url, GitRepository details)
+        {
+            Path    = path;
+            Url     = url;
+            Details = details;
+        }
     }
 }

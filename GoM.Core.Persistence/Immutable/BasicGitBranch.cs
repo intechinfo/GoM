@@ -8,6 +8,7 @@ namespace GoM.Core.Persistence
 {
     public class BasicGitBranch : IBasicGitBranch
     {
+        public string Name { get; }
         private XElement t;
 
         public BasicGitBranch ( XElement t )
@@ -17,10 +18,17 @@ namespace GoM.Core.Persistence
             Details = new GitBranch( t.Element( nameof( Details ) ) );
         }
 
-        public string Name { get; set; }
 
-        public GitBranch Details { get; set; }
+        public GitBranch Details { get; }
 
         IGitBranch IBasicGitBranch.Details => Details;
+
+
+
+        public BasicGitBranch(string name, GitBranch details)
+        {
+            Name    = name;
+            Details = details;
+        }
     }
 }

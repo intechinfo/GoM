@@ -8,6 +8,7 @@ namespace GoM.Core.Persistence
     public class Project : IProject
     {
         private XElement t;
+        public string Path { get; }
 
         public Project ( XElement node )
         {
@@ -21,10 +22,15 @@ namespace GoM.Core.Persistence
             }
         }
 
-        public string Path { get; set; }
 
-        public List<Target> Targets { get; } = new List<Target>();
+        public List<Target> Targets { get; } 
 
         IReadOnlyCollection<ITarget> IProject.Targets => Targets;
+
+        public Project(string path)
+        {
+            Path    = path;
+            Targets = new List<Target>();
+        }
     }
 }

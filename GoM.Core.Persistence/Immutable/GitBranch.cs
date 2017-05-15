@@ -9,6 +9,7 @@ namespace GoM.Core.Persistence
     public class GitBranch : IGitBranch
     {
         private XElement xElement;
+        public List<Project> Projects { get; }
 
         public GitBranch ( XElement xElement )
         {
@@ -25,18 +26,26 @@ namespace GoM.Core.Persistence
 
         }
 
-        public List<Project> Projects { get; } = new List<Project>();
 
-        public BranchVersionInfo Version { get; set; }
+        public BranchVersionInfo Version { get; }
 
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public GitBranch Details { get; set; }
+        public GitBranch Details { get; }
 
         IReadOnlyCollection<IProject> IGitBranch.Projects => Projects;
 
         IBranchVersionInfo IGitBranch.Version => Version;
 
         IGitBranch IBasicGitBranch.Details => Details;
+
+
+        public GitBranch(BranchVersionInfo version, string name, GitBranch details )
+        {
+            Projects = new List<Project>();
+            Version = version;
+            Name    = name;
+            Details = details;
+        }
     }
 }

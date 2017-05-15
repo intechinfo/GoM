@@ -8,6 +8,7 @@ namespace GoM.Core.Persistence
     public class Target : ITarget
     {
         private XElement t;
+        public string Name { get; }
 
         public Target ( XElement node )
         {
@@ -21,9 +22,8 @@ namespace GoM.Core.Persistence
 
         }
 
-        public string Name { get; set; }
 
-        public List<TargetDependency> Dependencies { get; } = new List<TargetDependency>();
+        public List<TargetDependency> Dependencies { get; } 
 
         IReadOnlyCollection<ITargetDependency> ITarget.Dependencies => Dependencies;
 
@@ -31,5 +31,11 @@ namespace GoM.Core.Persistence
         {
             throw new NotImplementedException();
         }
+        public Target(string name)
+        {
+            Name = name;
+            Dependencies = new List<TargetDependency>();
+        }
+
     }
 }

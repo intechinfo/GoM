@@ -8,6 +8,7 @@ namespace GoM.Core.Persistence
     public class GitRepository : IGitRepository
     {
         private XElement xElement;
+        public List<BasicGitBranch> Branches { get; } 
 
         public GitRepository ( XElement xElement )
         {
@@ -26,16 +27,25 @@ namespace GoM.Core.Persistence
 
         }
 
-        public List<BasicGitBranch> Branches { get; } = new List<BasicGitBranch>();
 
-        public string Path { get; set; }
+        public string Path { get; }
 
-        public Uri Url { get; set; }
+        public Uri Url { get; }
 
-        public GitRepository Details { get; set; }
+        public GitRepository Details { get; }
 
         IGitRepository IBasicGitRepository.Details => Details;
 
         IReadOnlyCollection<IBasicGitBranch> IGitRepository.Branches => Branches;
+
+        public GitRepository(string path, Uri url, GitRepository details)
+        {   
+            Branches = new List<BasicGitBranch>();
+            Path    = path;
+            Url     = url;
+            Details = details;
+        }
+
+
     }
 }
