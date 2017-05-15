@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FF6C0DD4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Persistence", "GoM.Core.Persistence\GoM.Core.Persistence.csproj", "{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Persistence.Tests", "GoM.Core.Persistence.Tests\GoM.Core.Persistence.Tests.csproj", "{13031C2D-E51C-4496-A278-72953E47F9C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,8 +73,27 @@ Global
 		{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}.Release|x64.Build.0 = Release|Any CPU
 		{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}.Release|x86.ActiveCfg = Release|Any CPU
 		{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}.Release|x86.Build.0 = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|ARM.Build.0 = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|x64.Build.0 = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Debug|x86.Build.0 = Debug|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|ARM.ActiveCfg = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|ARM.Build.0 = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|x64.ActiveCfg = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|x64.Build.0 = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|x86.ActiveCfg = Release|Any CPU
+		{13031C2D-E51C-4496-A278-72953E47F9C1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{13031C2D-E51C-4496-A278-72953E47F9C1} = {FF6C0DD4-D1BD-4246-A91C-9148014AF673}
 	EndGlobalSection
 EndGlobal
