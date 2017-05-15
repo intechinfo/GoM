@@ -7,11 +7,9 @@ namespace GoM.Feeds.Abstractions
 {
     public interface IFeedReader
     { 
-        IPackageInstance GetLatestVersion(IPackageInstance package);
-        IPackageInstance GetSpecificVersion(IPackageInstance package);
+        IEnumerable<IPackageInstance> GetAllVersions(string name);
 
-        List<IPackageInstance> GetDependencies(IPackageInstance package);
-
-        IPackageInstance Search(string packageName);
+        IEnumerable<ITarget> GetDependencies(string name, string version);
+       
     }
 }
