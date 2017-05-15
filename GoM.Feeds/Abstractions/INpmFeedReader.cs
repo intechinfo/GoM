@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GoM.Core;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GoM.Feeds.Abstractions
 {
-    interface INpmRepository : IFeedReader
+    abstract class NpmFeedReader : IFeedReader
     {
+        public abstract IEnumerable<IPackageInstance> GetAllVersions(string name);
+        public abstract IEnumerable<ITarget> GetDependencies(string name, string version);
     }
 }
