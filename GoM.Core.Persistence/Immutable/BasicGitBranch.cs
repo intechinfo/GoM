@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     public class BasicGitBranch : IBasicGitBranch
     {

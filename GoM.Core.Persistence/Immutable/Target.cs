@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     public class Target : ITarget
     {

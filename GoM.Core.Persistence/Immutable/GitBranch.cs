@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace GoM.Persistence
+namespace GoM.Core.Persistence
 {
     public class GitBranch : IGitBranch
     {
