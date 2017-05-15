@@ -2,7 +2,7 @@
 
 namespace GoM.Core
 {
-    public interface IGomContext
+    public interface IGoMContext
     {
         string RootPath { get; }
 
@@ -11,3 +11,4 @@ namespace GoM.Core
         IReadOnlyCollection<IPackageFeed> Feeds { get; }
     }
 }
+)

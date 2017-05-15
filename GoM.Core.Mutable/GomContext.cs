@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoM.Core.Mutable
 {
-    public class GomContext : IGomContext
+    public class GomContext : IGoMContext
     {
         public string RootPath { get; set; }
 
@@ -12,8 +12,8 @@ namespace GoM.Core.Mutable
 
         public List<PackageFeed> Feeds { get; } = new List<PackageFeed>();
 
-        IReadOnlyCollection<IBasicGitRepository> IGomContext.Repositories => Repositories;
+        IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => Repositories;
 
-        IReadOnlyCollection<IPackageFeed> IGomContext.Feeds => Feeds;
+        IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => Feeds;
     }
 }
