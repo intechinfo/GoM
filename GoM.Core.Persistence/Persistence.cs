@@ -59,6 +59,7 @@ namespace GoM.Persistence
             
             return element;
         }
+
         public static XElement ToXML ( this ITarget _this )
         {
             XElement element = new XElement(typeof(IGoMContext).Name);
@@ -68,20 +69,19 @@ namespace GoM.Persistence
             return element;
         }
 
-
         public static XElement ToXML(this IBasicGitBranch _this)
         {
             XElement element = new XElement(typeof(BasicGitBranch).Name);
             element.SetAttributeValue(nameof(_this.Name), _this.Name);
-            element.SetAttributeValue(nameof(_this.Details), _this.Details);
+            element.Add( _this.Details.ToXML() );
             return element;
         }
 
         public static XElement ToXML(this IBranchVersionInfo _this)
         {
             XElement element = new XElement(typeof(BasicGitBranch).Name);
-            element.SetAttributeValue(nameof(_this.LastTag), _this.LastTag);
             element.SetAttributeValue(nameof(_this.LastTagDepth), _this.LastTagDepth);
+            element.Add( _this.LastTag.ToXML() );
             return element;
         }
 
@@ -90,9 +90,11 @@ namespace GoM.Persistence
             XElement element = new XElement(typeof(BasicGitRepository).Name);
             element.SetAttributeValue(nameof(_this.Path), _this.Path);
             element.SetAttributeValue(nameof(_this.Url), _this.Url);
-            element.SetAttributeValue(nameof(_this.Details), _this.Details);
+
+            element.Add( _this.Details.ToXML() );
             return element;
         }
+
         public static XElement ToXML(this IGitBranch _this)
         {
             XElement element = new XElement(typeof(IGitBranch).Name);
@@ -101,15 +103,13 @@ namespace GoM.Persistence
 
             return element;
         }
+
         public static XElement ToXML(this IGitRepository _this)
         {
             XElement element = new XElement(typeof(IGitRepository).Name);
-            element.Add(_this.Branches.ToXML());
             foreach (var t in _this.Branches) element.Add(t.ToXML());
-
             return element;
         }
-
 
     }
     class Persistence : IPersistence
