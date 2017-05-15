@@ -6,25 +6,197 @@ namespace GoM.Core.Mutable.Tests
 {
     public class MutableCreationTests
     {
-        [Fact]
-        public void Project_constructor_return_an_empty_Project_instance()
+        private GoMContext CreateTestGoMContext()
         {
-            var newProject = new Project("my/path");
-            newProject.Path.Should().Be("my/path");
-            newProject.Targets.Should().BeEmpty();
+            #region context
+            // GoMContext
+            var newGoMContext = new GoMContext();
+            newGoMContext.RootPath = "my/root/path";
+
+            #region basicGitRepository
+            // BasicGitRepository
+            var newBasicGitRepository = new BasicGitRepository();
+            newBasicGitRepository.Path = "my/basicGitRepo/path";
+            newBasicGitRepository.Url = new Uri("my/basicGitRepo/Url");
+
+            #region gitRepository
+            // GitRepository
+            var newGitRepository = new GitRepository();
+            newGitRepository.Path = "my/branch/path";
+            newGitRepository.Url = new Uri("my/branch/uri");
+            newGitRepository.Details = null;
+
+            #region basicGitBranch
+            // BasicGitBranch
+            var newBasicGitBranch = new BasicGitBranch();
+            newBasicGitBranch.Name = "myBasicGitBranch";
+
+            #region gitBranch
+            // GitBranch
+            var newGitBranch = new GitBranch();
+            newGitBranch.Name = "myGitBranch";
+            newGitBranch.Details = null;
+            #region branchVersionInfo
+            // BranchVersionInfo
+            var newBranchVersionInfo = new BranchVersionInfo();
+            newBranchVersionInfo.LastTagDepth = 1;
+
+            #region versionTag
+            // VersionTag
+            var newVersionTag = new VersionTag();
+            newVersionTag.FullName = "version tag v1.0.0";
+            #endregion
+
+            newBranchVersionInfo.LastTag = newVersionTag;
+            #endregion
+
+            newGitBranch.Version = newBranchVersionInfo;
+            #endregion
+            // Project
+            var newProject = new Project();
+            newProject.Path = "my/project/path";
+            #region target
+            // Target
+            var newTarget = new Target();
+            newTarget.Name = "myTarget x64";
+            #region targetDependency
+            // TargetDependency
+            var newDependency = new TargetDependency();
+            newDependency.Name = "myDependency";
+            newDependency.Version = "v1.0.0";
+            #endregion
+
+            newTarget.Dependencies.Add(newDependency);
+            #endregion
+            newGitBranch.Projects.Add(newProject);
+
+            newBasicGitBranch.Details = newGitBranch;
+            #endregion
+            newGitRepository.Branches.Add(newBasicGitBranch);
+            # endregion
+
+            newBasicGitRepository.Details = newGitRepository;
+            # endregion
+
+            newGoMContext.Repositories.Add(newBasicGitRepository);
+
+            #region packageFeed
+            // PackageFeed
+            var newPackageFeed = new PackageFeed();
+            newPackageFeed.Url = new Uri("my/feed/url");
+
+            #region packageInstance
+            // PackageInstance
+            var newPackageInstance = new PackageInstance();
+            newPackageInstance.Name = "myPackage";
+            newPackageInstance.Version = "v1.0.0";
+            #endregion
+
+            newPackageFeed.Packages.Add(newPackageInstance);
+            #endregion
+
+            newGoMContext.Feeds.Add(newPackageFeed);
+            # endregion
+
+            return newGoMContext;
         }
 
-        [Fact]
-        public void Target_constructor_return_an_empty_Target_instance()
+        public void Create_ALL_THE_THINGS_mutable()
         {
-            var newTarget = new Target("myTestTarget x64");
-            newTarget.Name.Should().Be("myTestTarget x64");
-            newTarget.Dependencies.Should().BeEmpty();
+            #region context
+            // GoMContext
+            var newGoMContext = new GoMContext();
+            newGoMContext.RootPath = "my/root/path";
 
-            var newDependency = new TargetDependency("myDependency", "v1.0.0");
+            #region basicGitRepository
+            // BasicGitRepository
+            var newBasicGitRepository = new BasicGitRepository();
+            newBasicGitRepository.Path = "my/basicGitRepo/path";
+            newBasicGitRepository.Url = new Uri("my/basicGitRepo/Url");
+
+            #region gitRepository
+            // GitRepository
+            var newGitRepository = new GitRepository();
+            newGitRepository.Path = "my/branch/path";
+            newGitRepository.Url = new Uri("my/branch/uri");
+            newGitRepository.Details = null;
+
+            #region basicGitBranch
+            // BasicGitBranch
+            var newBasicGitBranch = new BasicGitBranch();
+            newBasicGitBranch.Name = "myBasicGitBranch";
+
+            #region gitBranch
+            // GitBranch
+            var newGitBranch = new GitBranch();
+            newGitBranch.Name = "myGitBranch";
+            newGitBranch.Details = null;
+            #region branchVersionInfo
+            // BranchVersionInfo
+            var newBranchVersionInfo = new BranchVersionInfo();
+            newBranchVersionInfo.LastTagDepth = 1;
+
+            #region versionTag
+            // VersionTag
+            var newVersionTag = new VersionTag();
+            newVersionTag.FullName = "version tag v1.0.0";
+            #endregion
+
+            newBranchVersionInfo.LastTag = newVersionTag;
+            #endregion
+
+            newGitBranch.Version = newBranchVersionInfo;
+            #endregion
+            // Project
+            var newProject = new Project();
+            newProject.Path = "my/project/path";
+            #region target
+            // Target
+            var newTarget = new Target();
+            newTarget.Name = "myTarget x64";
+            #region targetDependency
+            // TargetDependency
+            var newDependency = new TargetDependency();
+            newDependency.Name = "myDependency";
+            newDependency.Version = "v1.0.0";
+            #endregion
+
             newTarget.Dependencies.Add(newDependency);
+            #endregion
+            newGitBranch.Projects.Add(newProject);
 
-            newTarget.Dependencies[0].Should().Be(newDependency);
+            newBasicGitBranch.Details = newGitBranch;
+            #endregion
+            newGitRepository.Branches.Add(newBasicGitBranch);
+            # endregion
+
+            newBasicGitRepository.Details = newGitRepository;
+            # endregion
+
+            newGoMContext.Repositories.Add(newBasicGitRepository);
+
+            #region packageFeed
+            // PackageFeed
+            var newPackageFeed = new PackageFeed();
+            newPackageFeed.Url = new Uri("my/feed/url");
+
+            #region packageInstance
+            // PackageInstance
+            var newPackageInstance = new PackageInstance();
+            newPackageInstance.Name = "myPackage";
+            newPackageInstance.Version = "v1.0.0";
+            #endregion
+
+            newPackageFeed.Packages.Add(newPackageInstance);
+            #endregion
+
+            newGoMContext.Feeds.Add(newPackageFeed);
+            # endregion
+        }
+
+        public void Create_new_mutable_GoMContext_from_existing_IGoMContext()
+        {
+
         }
     }
 }
