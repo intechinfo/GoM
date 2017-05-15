@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.FileProviders;
-using System;
+﻿using System;
 
 namespace GoM.Core
 {

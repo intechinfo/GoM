@@ -7,7 +7,7 @@ using GoM.Core;
 
 namespace GoM.Persistence
 {
-    interface IPersistance
+    interface IPersistence
     {
 
         IGomContext Load ();
