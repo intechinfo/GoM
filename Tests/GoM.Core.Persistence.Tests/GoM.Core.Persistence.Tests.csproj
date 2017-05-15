@@ -11,6 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Persistence\GoM.Core.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 

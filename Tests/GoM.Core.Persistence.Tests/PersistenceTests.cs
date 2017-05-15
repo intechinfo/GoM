@@ -1,3 +1,4 @@
+using GoM.Core.Mutable;
 using System;
 using Xunit;
 
@@ -11,7 +12,12 @@ namespace GoM.Core.Persistence.Tests
             Assert.True( true );
         }
 
-
+        [Fact]
+        public void t()
+        {
+            IPackageInstance t = new PackageInstance();
+            Assert.True( true );
+        }
 
 
 
