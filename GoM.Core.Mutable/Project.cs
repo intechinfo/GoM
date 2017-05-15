@@ -8,5 +8,7 @@ namespace GoM.Core.Mutable
         public string Path { get; set; }
 
         public List<Target> Targets { get; } = new List<Target>();
+
+        IReadOnlyCollection<ITarget> IProject.Targets => Targets;
     }
 }

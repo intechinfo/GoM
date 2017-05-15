@@ -11,4 +11,3 @@ namespace GoM.Core
         IReadOnlyCollection<IPackageFeed> Feeds { get; }
     }
 }
-)

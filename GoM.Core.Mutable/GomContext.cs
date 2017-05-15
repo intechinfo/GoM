@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoM.Core.Mutable
 {
-    public class GomContext : IGoMContext
+    public class GoMContext : IGoMContext
     {
         public string RootPath { get; set; }
 

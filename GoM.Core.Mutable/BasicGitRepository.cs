@@ -11,4 +11,5 @@ namespace GoM.Core.Mutable
         public GitRepository Details { get; set; }
 
         IGitRepository IBasicGitRepository.Details => Details;
+    }
 }

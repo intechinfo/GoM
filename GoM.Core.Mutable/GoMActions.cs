@@ -6,11 +6,11 @@ namespace GoM.Core.Mutable
 {
     public class GoMActions : IGoMActions
     {
-        public GomContext Refresh(GomContext c)
+        public GoMContext Refresh(GoMContext c)
         {
             throw new NotImplementedException();
         }
 
-        IGomContext IGoMActions.Refresh(IGomContext c) => Refresh((GomContext)c);
+        IGoMContext IGoMActions.Refresh(IGoMContext c) => Refresh((GoMContext)c);
     }
 }
