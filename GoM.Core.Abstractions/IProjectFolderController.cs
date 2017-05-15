@@ -2,7 +2,7 @@
 
 namespace GoM.Core.Abstractions
 {
-    public class IProjectFolderController
+    public interface IProjectFolderController
     {
     }
 }
