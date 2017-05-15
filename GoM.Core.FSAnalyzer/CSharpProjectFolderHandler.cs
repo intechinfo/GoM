@@ -8,7 +8,6 @@ using Microsoft.Extensions.FileProviders;
 
 namespace GoM.Core.FSAnalyzer
 {
-    [ProjectType("C#")]
     public class CSharpProjectFolderHandler : IProjectFolderHandler
     {
         public CSharpProjectFolderHandler(IFileProvider fileProvider)
