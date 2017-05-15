@@ -7,44 +7,29 @@ using System.Threading.Tasks;
 
 namespace GoM.Core.CommandLine
 {
-    class Program
+    class Program : CommandLineApplication
     {
         public static void Main(params string[] args)
         {
-            // Program.exe <-g|--greeting|-$ <greeting>> [name <fullname>]
-            // [-?|-h|--help] [-u|--uppercase]
-            CommandLineApplication cmd = new CommandLineApplication(throwOnUnexpectedArg: false);
-            CommandArgument names = null;
-            cmd.Command("name",
-              (target) =>
-                names = target.Argument(
-                  "fullname",
-                  "Enter the full name of the person to be greeted.",
-                  multipleValues: true));
-            CommandOption greeting = cmd.Option(
-              "-$|-g |--greeting <greeting>",
-              "The greeting to display. The greeting supports"
-              + " a format string where {fullname} will be "
-              + "substituted with the full name.",
-              CommandOptionType.SingleValue);
-            CommandOption uppercase = cmd.Option(
-              "-u | --uppercase", "Display the greeting in uppercase.",
-              CommandOptionType.NoValue);
-            cmd.HelpOption("-? | -h | --help");
-            cmd.OnExecute(() =>
+            CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
+
+            cmdLineApplication.Command("Hello", (cmd) =>
             {
-                if (greeting.HasValue())
+                cmd.Description = "Simple Hello World";
+                cmd.HelpOption("-h");
+
+                cmd.OnExecute(() =>
                 {
-                    Greet(greeting.Value(), names.Values, uppercase.HasValue());
-                }
-                return 0;
-            });
-            cmd.Execute(args);
-        }
-        private static void Greet(
-          string greeting, IEnumerable<string> values, bool useUppercase)
-        {
-            Console.WriteLine(greeting);
+                    Console.WriteLine("Hello World!");
+                    return 0;
+                });
+
+            }, false);
+
+            cmdLineApplication.HelpOption("-x");
+
+            cmdLineApplication.Execute("Hello");
+            
         }
     }
 }
