@@ -8,7 +8,7 @@ namespace GoM.Persistence
 {
     public static class Helper
     {
-        public static XElement ToXML ( this PackageInstance _this )
+        public static XElement ToXML ( this IPackageInstance _this )
         {
             XElement element = new XElement(typeof(PackageInstance).Name);
             element.SetAttributeValue( nameof( _this.Version ), _this.Version );
@@ -16,7 +16,7 @@ namespace GoM.Persistence
             return element;
         }
 
-        public static XElement ToXML(this PackageFeed _this)
+        public static XElement ToXML(this IPackageFeed _this)
         {
             XElement element = new XElement(typeof(PackageFeed).Name);
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
@@ -26,6 +26,13 @@ namespace GoM.Persistence
             }
             return element;
         }
+
+
+
+
+
+
+
 
     }
     class Persistence : IPersistence
