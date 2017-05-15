@@ -2,17 +2,18 @@ using GoM.Core;
 using GoM.Feeds.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GoM.Feeds 
 {
     internal class PypiFeedReader : NpmFeedReader
     {
-        public override IEnumerable<IPackageInstance> GetAllVersions(string name)
+        public override Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
         {
             throw new NotImplementedException();
         }
 
-        public override IEnumerable<ITarget> GetDependencies(string name, string version)
+        public override Task<IEnumerable<ITarget>> GetDependencies(string name, string version)
         {
             throw new NotImplementedException();
         }
