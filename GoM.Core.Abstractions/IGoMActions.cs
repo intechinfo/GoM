@@ -6,7 +6,7 @@ namespace GoM.Core
 {
     public interface IGoMActions
     {
-        IGomContext Refresh(IGomContext c);
+        IGoMContext Refresh(IGoMContext c);
 
     }
 }
