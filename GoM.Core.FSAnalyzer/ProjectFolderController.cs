@@ -16,18 +16,30 @@ namespace GoM.Core.FSAnalyzer
 
             //Check the .git on the path
             PhysicalFileProvider rootPath = new PhysicalFileProvider(path);
+
             if (rootPath.GetDirectoryContents(".git").Exists)
             {
                 IDirectoryContents directories = rootPath.GetDirectoryContents("");
-                IEnumerator<IFileInfo> fileInfos = directories.GetEnumerator();
+                foreach(IFileInfo fileInfo in directories)
+                {
+                    if (fileInfo.IsDirectory)
+                    {
+                        CSharpProjectFolderHandler projectHandler = new CSharpProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
+                        if(projectHandler.Sniff())
+                        {
+                            // If true, add in collection
+                            // Return IProject collection
+                            Project project = new Project();
+                            project.Path = fileInfo.PhysicalPath;
 
+                            // Gotta initialize the targets
+
+                            projects.Add(project);
+                        }
+                    }
+                }
             }
-            //On each project call specialize handler with PhysicalFileProvider
-
-            //If true, add in collection
-            //Return IProject collection
-            IProject project = new Project();
-            projects.Add(project);
+            // On each project call specialize handler with PhysicalFileProvider
             IReadOnlyCollection<IProject> readOnlyProjects = new ReadOnlyCollection<IProject>(projects);
             return readOnlyProjects;
         }
