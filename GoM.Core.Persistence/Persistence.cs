@@ -27,10 +27,46 @@ namespace GoM.Persistence
             return element;
         }
 
+        public static XElement ToXML ( this IGoMContext _this )
+        {
+            XElement element = new XElement(typeof(IGoMContext).Name);
+            element.SetAttributeValue( nameof( _this.RootPath ), _this.RootPath );
+            foreach ( var t in _this.Repositories ) element.Add( t.ToXML() );
+            foreach ( var t in _this.Feeds ) element.Add( t.ToXML() );
+            return element;
+        }
 
+        public static XElement ToXML ( this IProject _this )
+        {
+            XElement element = new XElement(typeof(IGoMContext).Name);
+            element.SetAttributeValue( nameof( _this.Path ), _this.Path );
+            foreach ( var t in _this.Targets ) element.Add( t.ToXML() );
+            return element;
+        }
 
+        public static XElement ToXML ( this ITargetDependency _this )
+        {
+            XElement element = new XElement(typeof(IGoMContext).Name);
+            element.SetAttributeValue( nameof( _this.Name ), _this.Name );
+            element.SetAttributeValue( nameof( _this.Version ), _this.Version );
+            return element;
+        }
 
+        public static XElement ToXML ( this IVersionTag _this )
+        {
+            XElement element = new XElement(typeof(IGoMContext).Name);
+            element.SetAttributeValue( nameof( _this.FullName ), _this.FullName );
+            
+            return element;
+        }
+        public static XElement ToXML ( this ITarget _this )
+        {
+            XElement element = new XElement(typeof(IGoMContext).Name);
+            element.SetAttributeValue( nameof( _this.Name ), _this.Name );
+            foreach ( var t in _this.Dependencies ) element.Add( t.ToXML() );
 
+            return element;
+        }
 
 
 
