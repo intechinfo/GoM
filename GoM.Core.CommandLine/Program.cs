@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,7 +89,37 @@ namespace GoM.Core.CommandLine
                      return 0;
                  });
              });
+            app.Command("files", c =>
+            {
+                
+                c.Description = "Get files";
+                var locationArgument = c.Argument("[location]",
+                                   "Where the files should be located .");
 
+               
+
+                c.HelpOption("-?,|-h|--help");
+
+                c.OnExecute(() =>
+                {
+                    var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
+                    Console.WriteLine(projectPath);
+                    if (File.Exists(projectPath))
+                    {   
+                        ProcessFile(projectPath);
+                    }
+                    else if (Directory.Exists(projectPath))
+                    {          
+                        ProcessDirectory(projectPath);
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} is not a valid file or directory.", projectPath);
+                    }
+                    Console.ReadLine();
+                    return 0;
+                });
+            });
             app.Command("add", (command) =>
             {
                 command.Description = "Ceci est une description.";
@@ -108,5 +139,20 @@ namespace GoM.Core.CommandLine
             app.Execute(args);
            
         }
+        public static void ProcessDirectory(string targetDirectory)
+        {         
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                ProcessFile(fileName);
+
+            string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+            foreach (string subdirectory in subdirectoryEntries)
+                ProcessDirectory(subdirectory);
         }
+        public static void ProcessFile(string path)
+        {
+            Console.WriteLine(Path.GetFileName(path));
+        }
+    }
+
 }   
