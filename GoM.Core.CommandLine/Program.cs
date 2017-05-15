@@ -13,7 +13,8 @@ namespace GoM.Core.CommandLine
         {
             if(args == null || args.Length == 0)
             {
-                Console.WriteLine("No arguments");
+                Array.Resize(ref args, args.Length + 1);
+                args[args.Length - 1] = Console.ReadLine();
             }
             CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
 
@@ -38,6 +39,25 @@ namespace GoM.Core.CommandLine
                 cmd.OnExecute(() =>
                 {
                     Console.WriteLine("Goodbye!");
+                    return 0;
+                });
+
+            }, false);
+
+            //Help implementation
+            cmdLineApplication.Command("h", (cmd) =>
+            {
+                cmd.Description = "Simple GoodBye";
+                cmd.HelpOption("-h");
+
+                cmd.OnExecute(() =>
+                {
+                    var cmds = cmdLineApplication.Commands;
+                    foreach(var command in cmds)
+                    {
+                        Console.WriteLine(command.Name);
+                    }
+                   
                     return 0;
                 });
 
