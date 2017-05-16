@@ -15,7 +15,9 @@ namespace GoM.Core.Persistence
             Path = el.Attribute( nameof( Path ) ).Value;
             Url = new Uri(el.Attribute( nameof( Url ) ).Value);
 
-            Details = new GitRepository(el.Element(nameof(Details)));
+            // c=========================================================================3
+            var node = el.Element(typeof(IGitRepository).Name);
+            Details = node != null ? new GitRepository(node) : null;
         }
 
 

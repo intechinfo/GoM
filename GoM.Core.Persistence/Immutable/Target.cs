@@ -15,7 +15,7 @@ namespace GoM.Core.Persistence
             this.t = node;
             Name = node.Attribute( nameof( Name ) ).Value;
             Dependencies = new List<TargetDependency>();
-            foreach(var t in node.Elements(nameof(Dependencies)))
+            foreach(var t in node.Elements(nameof(ITargetDependency)))
             {
                 Dependencies.Add( new TargetDependency( t ) );
             }

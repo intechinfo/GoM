@@ -15,13 +15,13 @@ namespace GoM.Core.Persistence
         {
             this.root = root;
             Repositories = new List<BasicGitRepository>();
-            foreach(var el in root.Elements( typeof( BasicGitRepository ).Name ) )
+            foreach(var el in root.Elements( typeof( IBasicGitRepository ).Name ) )
             {
                 Repositories.Add( new BasicGitRepository( el ) );
             }
 
             Feeds = new List<PackageFeed>();
-            foreach ( var el in root.Elements( typeof( PackageFeed ).Name ) )
+            foreach ( var el in root.Elements( typeof( IPackageFeed ).Name ) )
             {
                 Feeds.Add( new PackageFeed( el ) );
             }

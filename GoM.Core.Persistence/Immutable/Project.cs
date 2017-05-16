@@ -16,7 +16,7 @@ namespace GoM.Core.Persistence
             Path = node.Attribute( nameof( Path ) ).Value;
 
             Targets = new List<Target>();
-            foreach ( var t in node.Elements(nameof(Targets)))
+            foreach ( var t in node.Elements(nameof(ITarget)))
             {
                 Targets.Add(new Target(t));
             }

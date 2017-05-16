@@ -15,7 +15,9 @@ namespace GoM.Core.Persistence
         {
             this.t = t;
             Name = t.Attribute( nameof( Name ) ).Value;
-            Details = new GitBranch( t.Element( nameof( Details ) ) );
+
+            var node = t.Element( nameof( Details ) );
+            Details = node != null ? new GitBranch( node ) : null;
         }
 
 

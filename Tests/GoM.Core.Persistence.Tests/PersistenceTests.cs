@@ -118,14 +118,6 @@ namespace GoM.Core.Persistence.Tests
             var p = new Persistence();
             GoMContext ctx = (GoMContext)p.Load(rootPath);
 
-            // doc.FirstNode.Remove();
-            // Assert.True(doc.Root.Attribute("GOM_Document_Version").Value == "1");
-
-            Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
-            Assert.True(ctx.Feeds[0].Packages[0].Version == "v1.0.0");
-
-
-
             #region Repo 1
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/mdr");
             Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));

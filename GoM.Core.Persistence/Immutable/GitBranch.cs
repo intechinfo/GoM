@@ -15,7 +15,7 @@ namespace GoM.Core.Persistence
         {
             this.xElement = xElement;
             Projects = new List<Project>();
-            foreach(var t in xElement.Elements(nameof(Projects)))
+            foreach(var t in xElement.Elements(typeof(IProject).Name))
             {
                 Projects.Add( new Project( t ) );
             }

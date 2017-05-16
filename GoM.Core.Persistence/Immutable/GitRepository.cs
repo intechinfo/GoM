@@ -15,7 +15,7 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
 
             Branches = new List<BasicGitBranch>();
-            foreach(var node in xElement.Elements(nameof(Branches)))
+            foreach(var node in xElement.Elements(typeof(IBasicGitBranch).Name))    
             {
                 Branches.Add( new BasicGitBranch( node ) );
             }
