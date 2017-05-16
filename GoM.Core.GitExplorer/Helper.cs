@@ -52,5 +52,15 @@ namespace GoM.Core.GitExplorer
 
             Directory.Delete(target_dir, false);
         }
+
+        public static List<string> getAllFilesInDirectory(string target_dir, string searchPattern = "*")
+        {
+            return Directory.GetFiles(target_dir, searchPattern, SearchOption.AllDirectories).ToList();
+        }
+
+        public static List<string> getAllFoldersInDirectory(string target_dir, string searchPattern = "*")
+        {
+            return Directory.GetDirectories(target_dir, searchPattern, SearchOption.AllDirectories).ToList();
+        }
     }
 }

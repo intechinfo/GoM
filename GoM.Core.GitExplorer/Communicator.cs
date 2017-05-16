@@ -6,6 +6,15 @@ using System.Linq;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
 
+/*
+ *  A faire : 
+ *  + Statistiques sur les extensions de fichiers ( nombre de fichiers par extension)
+ *  + Déterminer le type de projet (application c# windows, android, ios, web, etc...)
+ *  + Déterminer les dépendances utilisées
+ *  ...
+ * 
+ */
+
 namespace GoM.Core.GitExplorer
 {
     public class Communicator
@@ -36,14 +45,14 @@ namespace GoM.Core.GitExplorer
 
                 string path = ReposPath + "/" + repoName;
 
-                bool fileExist = File.Exists(path);
+                bool RepoExist = Directory.Exists(path);
 
                 this.Path = path;
 
                 this.Url = new Uri(this.Source);
 
                 //Return repository if already stored
-                if (fileExist)
+                if (RepoExist)
                 {
                     repo = new Repository(path);
                     this.Repository = repo;
@@ -51,7 +60,7 @@ namespace GoM.Core.GitExplorer
                 }
 
                 //Clone and return repository if not stored
-                Repository.Clone(Path, path);
+                Repository.Clone(Source, path);
                 repo = new Repository(path);
                 this.Repository = repo;
                 return repo;
@@ -71,16 +80,15 @@ namespace GoM.Core.GitExplorer
             }
         }
 
-        // Good ?
+        public List<string> getFiles(string searchPattern ="*") { return Helpers.getAllFilesInDirectory(this.Path, searchPattern);  }
+
+        public List<string> getFolders(string searchPattern = "*") { return Helpers.getAllFoldersInDirectory(this.Path, searchPattern); }
+
         public BasicGitRepository getBasicGitRepository()
         {
-            BasicGitRepository BasicGitRepo = new BasicGitRepository();
-            BasicGitRepo.Path = this.Path;
-            BasicGitRepo.Url = this.Url;
+            BasicGitRepository BasicGitRepo = new BasicGitRepository() { Url = Url, Path = Path };
 
-            GitRepository gitRepo = new GitRepository();
-            gitRepo.Url = BasicGitRepo.Url;
-            gitRepo.Path = BasicGitRepo.Path;
+            GitRepository gitRepo = new GitRepository() { Url = BasicGitRepo.Url, Path = BasicGitRepo.Path };
 
             return BasicGitRepo;
         }
@@ -103,28 +111,25 @@ namespace GoM.Core.GitExplorer
         {
             string branchName = branch.CanonicalName;
 
-            Mutable.GitBranch gitBranch = new GitBranch();
-            gitBranch.Name = branchName;
-            gitBranch.Version = getBranchVersionInfo(branch);
+            Mutable.GitBranch gitBranch = new GitBranch() { Name = branchName, Version = getBranchVersionInfo(branch) };
 
-            Mutable.BasicGitBranch basicGitBranch = new BasicGitBranch();
-            basicGitBranch.Name = branchName;
-            basicGitBranch.Details = gitBranch;
+            Mutable.BasicGitBranch basicGitBranch = new BasicGitBranch() { Name = branchName, Details = gitBranch };
 
             return basicGitBranch;
         }
 
-        // good ?
+        
         private BranchVersionInfo getBranchVersionInfo(Branch branch)
         {
             Mutable.VersionTag versionTag = new VersionTag();
             BranchVersionInfo branchVersionInfo = new BranchVersionInfo();
             int depth = 0;
+
+            // good ?
             foreach (var commit in branch.Commits)
             {
                 foreach (var tag in Repository.Tags)
                 {
-
                     if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
                     {
                         versionTag.FullName = tag.FriendlyName;
