@@ -164,18 +164,18 @@ namespace GoM.Core.Persistence.Tests
         {
             // OK
             var package1 = new Mutable.PackageInstance();
-            package1.Version = "";
-            package1.Name = "";
+            package1.Version = "1.0.0";
+            package1.Name = "bite";
 
             // OK
             var package2 = new Mutable.PackageInstance();
-            package2.Version = "";
-            package2.Name = "";
+            package2.Version = "2.0.0";
+            package2.Name = "pénis";
 
             // OK
             var package3 = new Mutable.PackageInstance();
-            package3.Version = "";
-            package3.Name = "";
+            package3.Version = "1.5.0";
+            package3.Name = "chibre";
 
             // OK
             var feed1 = new Mutable.PackageFeed();
@@ -189,41 +189,41 @@ namespace GoM.Core.Persistence.Tests
             feed2.Url = new Uri( "http://www.google.fr" );
 
             // OK
-            var targetDepency = new Mutable.TargetDependency();
-            targetDepency.Name = "";
-            targetDepency.Version = "";
+            var targetDependency = new Mutable.TargetDependency();
+            targetDependency.Name = "dependency1";
+            targetDependency.Version = "1.0.0";
 
             // OK
             var target1 = new Mutable.Target();
-            target1.Name = "";
-            target1.Dependencies.Add( targetDepency );
+            target1.Name = "target1";
+            target1.Dependencies.Add( targetDependency );
 
             // OK
             var target2 = new Mutable.Target();
-            target2.Name = "";
+            target2.Name = "target2";
             
             // OK
             var target3 = new Mutable.Target();
-            target2.Name = "";
+            target2.Name = "target3";
 
             // OK
             var project = new Mutable.Project();
-            project.Path = "";
+            project.Path = "./fakeproject1/";
             project.Targets.Add(target1);
             project.Targets.Add(target2);
 
             // OK
             var project2 = new Mutable.Project();
-            project.Path = "";
+            project.Path = "./fakeprojet2/";
             project.Targets.Add( target3 );
 
             // OK
             var project3 = new Mutable.Project();
-            project.Path = "";
+            project.Path = "./fakeproject3/";
 
             // OK
             var versionTag = new Mutable.VersionTag();
-            versionTag.FullName = "";
+            versionTag.FullName = "v1.0.0";
             
             // OK
             var branchVersion = new Mutable.BranchVersionInfo();
@@ -233,7 +233,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var realGitbranch = new Mutable.GitBranch();
             realGitbranch.Details = realGitbranch;
-            realGitbranch.Name = "";
+            realGitbranch.Name = "BiteOfTheDead";
 
             realGitbranch.Version = branchVersion;
 
@@ -244,17 +244,17 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var basicbranch = new Mutable.BasicGitBranch();
             basicbranch.Details = realGitbranch;
-            basicbranch.Name = "";
+            basicbranch.Name = "develop";
 
             // OK
             var basicbranch2 = new Mutable.BasicGitBranch();
             basicbranch2.Details = null;
-            basicbranch2.Name = "";
+            basicbranch2.Name = "Cubado";
 
             // OK
             var realgitrepo = new Mutable.GitRepository();
             realgitrepo.Url = new Uri( "http://www.google.fr" );
-            realgitrepo.Path = "";
+            realgitrepo.Path = "/usr/developpement/GoM/";
             realgitrepo.Details = realgitrepo;
             realgitrepo.Branches.Add( basicbranch);
             realgitrepo.Branches.Add( basicbranch2 );
@@ -262,12 +262,12 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var basicrepo2 = new Mutable.BasicGitRepository();
             basicrepo2.Details = realgitrepo;
-            basicrepo2.Path = "";
+            basicrepo2.Path = "/usr/developpement/lolilol";
             basicrepo2.Url = new Uri( "http://www.google.fr" );
 
             // OK
             var basicrepo = new Mutable.BasicGitRepository();
-            basicrepo.Path = "";
+            basicrepo.Path = "/usr/developpement/mdr";
             basicrepo.Url = new Uri( "http://www.google.fr" );
             basicbranch.Details = null;
 
