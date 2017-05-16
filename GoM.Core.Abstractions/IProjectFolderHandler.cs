@@ -4,7 +4,7 @@ namespace GoM.Core.Abstractions
 {
     public interface IProjectFolderHandler
     {
-        bool Sniff();
+        IProjectFolderHandler Sniff();
         IFileProvider FileProvider { get; }
         IProject Read();
     }
