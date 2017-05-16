@@ -57,6 +57,10 @@
       <Project>{115f5512-8c4d-41ba-81c7-12b2626bde57}</Project>
       <Name>GoM.Core.Abstractions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj">
+      <Project>{3d88e13c-2486-424c-835a-77735ca198f0}</Project>
+      <Name>GoM.Core.Mutable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

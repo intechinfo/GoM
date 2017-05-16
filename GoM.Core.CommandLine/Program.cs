@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using GoM.Core.Mutable;
+using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,18 +36,6 @@ namespace GoM.Core.CommandLine
                 CommandOption branchOption = command.Option("-b|--branch",
                     "Add a branch to GoM",
                     CommandOptionType.MultipleValue);
-
-                /*CommandOption excludeBranchOption = command.Option("-e -b| --exclude -branch",
-                    "Exclude a branch to GoM",
-                    CommandOptionType.MultipleValue);
-
-                CommandOption excludeprojectOption = command.Option("-e -p| --exclude -project",
-                   "Exclude a project from a repository",
-                   CommandOptionType.MultipleValue);
-
-                CommandOption excludeAllProjectOption = command.Option("-e -p -all| --exclude -project - all",
-                  "Exclude all projects from the repository",
-                  CommandOptionType.MultipleValue);*/
 
                 CommandArgument projectLocationArgument = command.Argument("[location]","Where the projects should be located");
 
