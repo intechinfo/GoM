@@ -250,4 +250,5 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-Tests/Dev/
+*.orig
+Tests/GoM.Core.Persistence.Tests/.gom

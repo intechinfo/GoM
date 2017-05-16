@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
   </ItemGroup>
   
 </Project>
