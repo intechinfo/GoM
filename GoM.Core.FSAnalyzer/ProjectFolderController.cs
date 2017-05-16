@@ -24,13 +24,13 @@ namespace GoM.Core.FSAnalyzer
                 {
                     if (fileInfo.IsDirectory)
                     {
+                        // On each project call specialize handler with PhysicalFileProvider
                         CSharpProjectFolderHandler projectHandler = new CSharpProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
                         if(projectHandler.Sniff())
                         {
                             // If true, add in collection
                             // Return IProject collection
-                            Project project = new Project();
-                            project.Path = fileInfo.PhysicalPath;
+                            Project project = new Project {Path = fileInfo.PhysicalPath};
 
                             // Gotta initialize the targets
 
@@ -38,8 +38,7 @@ namespace GoM.Core.FSAnalyzer
                         }
                     }
                 }
-            }
-            // On each project call specialize handler with PhysicalFileProvider
+            }          
             IReadOnlyCollection<IProject> readOnlyProjects = new ReadOnlyCollection<IProject>(projects);
             return readOnlyProjects;
         }
