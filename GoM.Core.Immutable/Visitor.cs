@@ -10,11 +10,11 @@ namespace GoM.Core.Immutable
         public virtual GoMContext Visit(GoMContext c)
         {
             var repos = Visit(c.Repositories, Visit);
-            var feeds = Visit(c.Feeds, Visit);
+            //var feeds = Visit(c.Feeds, Visit);
             if (repos != c.Repositories
-                || feeds != c.Feeds)
+                /*|| feeds != c.Feeds*/)
             {
-
+                return GoMContext.Create(c.RootPath, repos, c.Feeds/*feeds*/);
             }
             return c;
         }

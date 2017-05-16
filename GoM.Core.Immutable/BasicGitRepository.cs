@@ -8,7 +8,7 @@ namespace GoM.Core.Immutable
         {
             Path = path ?? throw new ArgumentException("path must not be null");
             Url = url ?? throw new ArgumentException("url must not be null");
-            Details = GitRepository.Create( details );
+            Details = details != null ? GitRepository.Create(details) : null;
         }
 
         public string Path { get; }

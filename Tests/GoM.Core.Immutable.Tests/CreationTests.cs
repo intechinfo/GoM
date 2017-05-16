@@ -30,5 +30,26 @@ namespace GoM.Core.Immutable.Tests
             gomContext = gomContext.UpdateRepository(gomContext.Repositories[0], "newPath");
             gomContext.Repositories[0].Path.Should().Be("newPath");
         }
+
+        [Fact]
+        public void test_toUpper()
+        {
+            // Create BasicGitRepository immutable list
+            var repo = BasicGitRepository.Create("upperCase", new Uri("http://gitBasicUrl"));
+            var repo2 = BasicGitRepository.Create("lowercasePath", new Uri("http://gitBasicUrl"));
+            var repo3 = BasicGitRepository.Create("allcapspath", new Uri("http://gitBasicUrl"));
+            var repositories = ImmutableList.Create(repo, repo2, repo3);
+
+            // Create PackageFeed immutalbe list
+            var packages = ImmutableList.Create(PackageFeed.Create());
+
+            // Create gomContext
+            var gomContext = GoMContext.Create("my/path/upper", repositories, packages);
+
+            var vistor = new GoMContext.ToUppercaseVisitor("upper");
+            GoMContext newContext = vistor.Visit(gomContext);
+
+            newContext.Should().Be(gomContext.RootPath.ToUpperInvariant());
+        }
     }
 }

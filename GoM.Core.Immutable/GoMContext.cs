@@ -91,15 +91,12 @@ namespace GoM.Core.Immutable
             return Create(RootPath, list, Feeds);
         }
 
-        public GoMContext AddOrSetGitBranchDetails( GitRepository repository, IGitBranch detailed)
-        {
-            Visitor v = new 
-        }
+        //public GoMContext AddOrSetGitBranchDetails( GitRepository repository, IGitBranch detailed)
+        //{
+        //    Visitor v = new 
+        //}
 
-
-
-
-        class ToUppercaseVisitor : Visitor
+        public class ToUppercaseVisitor : Visitor
         {
             readonly string _pattern;
 
