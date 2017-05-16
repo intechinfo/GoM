@@ -29,8 +29,7 @@ namespace GoM.Core.FSAnalyzer
                         if(projectHandler.Sniff())
                         {
                             // If true, add in collection
-                            Project project = new Project();
-                            project.Path = fileInfo.PhysicalPath;
+                            Project project = new Project {Path = fileInfo.PhysicalPath};
 
                             // Gotta initialize the targets
 

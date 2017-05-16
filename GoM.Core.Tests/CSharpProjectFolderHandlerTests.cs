@@ -31,5 +31,15 @@ namespace GoM.Core.Tests
             //Assert
             Assert.Equal(projects.Count, 4);
         }
+
+        [Fact]
+        public void test_project_folder_handler_analyze_no_folder_git()
+        {
+            string path = @"D:\VS2017_Projets\PacManFantome";
+            ProjectFolderController projectHandlerController = new ProjectFolderController();
+            System.Collections.Generic.IReadOnlyCollection<IProject> projects = projectHandlerController.Analyze(path);
+            //Assert
+            Assert.Equal(projects.Count, 0);
+        }
     }
 }
