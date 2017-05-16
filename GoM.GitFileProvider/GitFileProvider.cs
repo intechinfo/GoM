@@ -39,7 +39,7 @@ namespace GoM.GitFileProvider
         {
             string[] decomposition = subpath.Split('\\');
             flag = (char)0;
-            if (decomposition.Length == 0) 
+            if (decomposition.Length == 0)
             {
                 type = TYPE.Root;
             }
@@ -81,7 +81,7 @@ namespace GoM.GitFileProvider
             switch (type)
             {
                 case TYPE.Unhandled:
-                    break;
+                    return new NotFoundFileInfo(splitPath.Length == 0 ? "unknown file" : splitPath[splitPath.Length - 1]);
                 case TYPE.Root:
                     FileInfoRefType root = new FileInfoRefType(subpath, splitPath[splitPath.Length - 1]);
                     return root;
@@ -104,11 +104,11 @@ namespace GoM.GitFileProvider
                         return new FileInfoFile(true, 0, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory));
                     }
                 case TYPE.Tags:
-                    break;
+                    return null; // TODO
                 case TYPE.Commits:
-                    break;
+                    return null; // TODO
                 default:
-                    break;
+                    return null;
             }
         }
 
