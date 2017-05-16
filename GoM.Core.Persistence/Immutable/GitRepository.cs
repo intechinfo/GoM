@@ -38,12 +38,12 @@ namespace GoM.Core.Persistence
 
         IReadOnlyCollection<IBasicGitBranch> IGitRepository.Branches => Branches;
 
-        public GitRepository(string path, Uri url, GitRepository details)
+        public GitRepository(string path, Uri url)
         {   
             Branches = new List<BasicGitBranch>();
             Path    = path;
             Url     = url;
-            Details = details;
+            Details = this;
         }
 
 
