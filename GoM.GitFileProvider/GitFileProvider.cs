@@ -125,7 +125,7 @@ namespace GoM.GitFileProvider
 
         private Tree GetTreeWithSpecificFolderName(string folderName, Tree baseTree )
         {
-            baseTree.FirstOrDefault()
+            return null;
         }
 
         public IFileInfo GetFileInfo(string subpath)
