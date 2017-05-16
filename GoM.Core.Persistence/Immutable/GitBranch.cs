@@ -20,7 +20,7 @@ namespace GoM.Core.Persistence
                 Projects.Add( new Project( t ) );
             }
 
-            Version = new BranchVersionInfo( xElement.Element( nameof( Version ) ) );
+            Version = new BranchVersionInfo( xElement.Element( typeof( IBranchVersionInfo ).Name ) );
             Name = xElement.Attribute( nameof( Name ) ).Value;
             Details = new GitBranch( xElement.Element( nameof( GitBranch ) ) );
 
