@@ -18,7 +18,7 @@ namespace GoM.Core.Persistence
             Targets = new List<Target>();
             foreach ( var t in node.Elements(nameof(Targets)))
             {
-                Targets = new Target(t);
+                Targets.Add(new Target(t));
             }
         }
 

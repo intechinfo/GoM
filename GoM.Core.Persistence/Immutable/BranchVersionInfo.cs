@@ -12,6 +12,8 @@ namespace GoM.Core.Persistence
         public BranchVersionInfo ( XElement xElement )
         {
             this.xElement = xElement;
+            LastTag = new VersionTag(xElement.Element( nameof( LastTag ) ));
+            LastTagDepth = int.Parse(xElement.Attribute( nameof( LastTagDepth ) ).Value);
         }
 
 
