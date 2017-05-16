@@ -33,7 +33,7 @@ namespace GoM.GitFileProvider
             {
                 fullpath = fullpath + @"\.git";
             }
-            var dir = new DirectoryInfo(fullpath);
+            var dir = new System.IO.DirectoryInfo(fullpath);
             if (!dir.Exists) return false;
             return true;
         }

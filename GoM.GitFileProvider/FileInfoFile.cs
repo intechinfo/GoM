@@ -9,7 +9,7 @@ using LibGit2Sharp;
 
 namespace GoM.GitFileProvider
 {
-    public class FileInfoFile : IFileInfo
+    internal class FileInfoFile : IFileInfo
     {
         bool _exists;
         long _length;
@@ -17,9 +17,9 @@ namespace GoM.GitFileProvider
         string _name;
         DateTimeOffset _lastModified;
         bool _isDirectory;
-        Blob _file;
+        ReadStreamDecorator _readStreamDeco;
 
-        public FileInfoFile(bool exists, long length, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory, Blob file = null)
+        public FileInfoFile(bool exists, long length, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory, Blob file = null, RepositoryWrapper rw = null)
         {
             _exists = exists;
             _length = length;
@@ -29,9 +29,8 @@ namespace GoM.GitFileProvider
             _name = name;
             _lastModified = lastModified;
             _isDirectory = isDirectory;
-            if (isDirectory)
-                _physicalPath += Path.DirectorySeparatorChar;
-            _file = file;
+            if (file != null)
+                _readStreamDeco = new ReadStreamDecorator(file.GetContentStream(), rw);
         }
 
         public bool Exists => _exists;
@@ -48,8 +47,8 @@ namespace GoM.GitFileProvider
 
         public Stream CreateReadStream()
         {
-            if (_file != null)
-                return _file.GetContentStream();           
+            if (_readStreamDeco != null)
+                return _readStreamDeco;           
             return null;
         }
     }
