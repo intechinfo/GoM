@@ -46,8 +46,7 @@ namespace GoM.Core.FsAnalyzer.Tests
             var provider = new PhysicalFileProvider(@"C:\Users\Alexandre\Documents\IN'TECH\Semestre 7\Javascript\JS_20170113_TP\node-social-server");
             var projectHandler = new ProjectFolderHandler(provider);
             var res = projectHandler.Sniff();
-            res.Read();
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            var projects = res.Read();
             Assert.True(true);
         }
     }

@@ -18,39 +18,43 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
-            JObject jObj = JObject.Parse(jsonFileString);
             List<TargetDependency> targetDependencies = new List<TargetDependency>();
 
+            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
+            /*JObject jObj = JObject.Parse(jsonFileString);
             JProperty dependenciesJson = jObj.Property("dependencies");
             IJEnumerable<JToken> dependenciesTokens = dependenciesJson.Children().Children();
-            int count = dependenciesTokens.Count();
+            */
 
-            foreach (JToken item in dependenciesTokens)
+            dynamic jsConfigFileContent = JsonConvert.DeserializeObject(jsonFileString);
+            dynamic dependencies = jsConfigFileContent["dependencies"];
+            dynamic devDependencies = jsConfigFileContent["devDependencies"];
+
+            foreach (var d in dependencies)
             {
-                var t = item.Values<JToken>();
-                TargetDependency tDependendy = new TargetDependency
-                {
-                    Name = "test",
-                    Version = dependenciesJson.Value.ToString()
-                };
-                targetDependencies.Add(tDependendy);
+                targetDependencies.Add(
+                    new TargetDependency
+                    {
+                        Name = d.Name,
+                        Version = d.Value
+                    }
+                );
             }
-
-            JProperty devDependenciesJson = jObj.Property("devDependencies");
-            JEnumerable<JToken> devDependenciesTokens = devDependenciesJson.Children();
-
-            foreach (JToken item in devDependenciesTokens)
+            foreach (var d in devDependencies)
             {
-                TargetDependency tDependendy = new TargetDependency
-                {
-                    Name = devDependenciesJson.Name,
-                    Version = devDependenciesJson.Value.ToString()
-                };
-                targetDependencies.Add(tDependendy);
+                targetDependencies.Add(
+                    new TargetDependency
+                    {
+                        Name = d.Name,
+                        Version = d.Value
+                    }
+                );
             }
-
-            return null;
+            Target target = new Target();
+            target.Dependencies.AddRange(targetDependencies);
+            IEnumerable<ITarget> targs = new List<ITarget>();
+            targs.ToList().Add(target);
+            return targs;
         }
     }
 }
