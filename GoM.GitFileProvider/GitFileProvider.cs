@@ -16,14 +16,12 @@ namespace GoM.GitFileProvider
     {
         readonly string _rootPath;
         readonly bool _exist;
-        readonly RepositoryWrapper _repoWrapper;
 
 
         public GitFileProvider(string rootPath)
         {
             _rootPath = rootPath;
             _exist = IsCorrectGitDirectory();
-            _repoWrapper = new RepositoryWrapper();
         }
 
         private bool IsCorrectGitDirectory()
@@ -84,16 +82,18 @@ namespace GoM.GitFileProvider
                 case TYPE.Unhandled:
                     return NotFoundDirectoryContents.Singleton;
                 case TYPE.Root:
-                    using (Repository repo = _repoWrapper.Create(_rootPath))
+                    using (RepositoryWrapper rw = new RepositoryWrapper())
                     {
-                        Branch head = repo.Head;
+                        rw.Create(_rootPath);
+                        Branch head = rw.Repo.Head;
                         if (head == null) return NotFoundDirectoryContents.Singleton;
                         return CreateDirectoryInfo(head.Tip.Tree);
                     }
                 case TYPE.Branches:
-                    using (Repository repo = _repoWrapper.Create(_rootPath))
+                    using (RepositoryWrapper rw = new RepositoryWrapper())
                     {
-                        Branch branch = repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
+                        rw.Create(_rootPath);
+                        Branch branch = rw.Repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
                         if (branch == null)
                             return NotFoundDirectoryContents.Singleton;
                         string pathToFileFromBranch = "";
@@ -136,9 +136,10 @@ namespace GoM.GitFileProvider
                 return new FileInfoRefType(_rootPath + @"\branches", "branches");
             else
             {
-                using (Repository repo = _repoWrapper.Create(_rootPath))
+                using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
-                    Branch b = repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
+                    rw.Create(_rootPath);
+                    Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                     if (b == null)
                         return new NotFoundFileInfo("Invalid"); ; // TODO
                     string pathToFileFromBranch = "";
@@ -166,9 +167,10 @@ namespace GoM.GitFileProvider
                 return new FileInfoRefType(_rootPath + @"\branches", "branches");
             else
             {
-                using (Repository repo = _repoWrapper.Create(_rootPath))
+                using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
-                    Branch b = repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
+                    rw.Create(_rootPath);
+                    Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                             
                 }
             }

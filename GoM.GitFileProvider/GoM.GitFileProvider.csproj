@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileInfoDir.cs" />
+    <Compile Include="DirectoryInfo.cs" />
     <Compile Include="FileInfoFile.cs" />
     <Compile Include="FileInfoRef.cs" />
     <Compile Include="FileInfoRefType.cs" />

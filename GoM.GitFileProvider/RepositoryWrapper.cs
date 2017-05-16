@@ -5,17 +5,21 @@ namespace GoM.GitFileProvider
 {
     internal class RepositoryWrapper : IDisposable
     {
-        private Repository _repo;
-        internal Repository Create(string rootPath)
-        {
-            _repo = new Repository(rootPath);
-            return _repo;
-        }
+        internal Repository Repo { get; private set; }
+        internal int StreamWrapperCount { get; set; }
 
         public void Dispose()
         {
-            _repo.Dispose();
-            _repo = null;
+            if (StreamWrapperCount == 0)
+            {
+                Repo.Dispose();
+                Repo = null;
+            }
+        }
+
+        internal void Create(string rootPath)
+        {
+            Repo = new Repository(rootPath);
         }
     }
 }
