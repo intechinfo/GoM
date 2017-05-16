@@ -16,6 +16,14 @@ namespace GoM.Core.CommandLine
             var app = new CommandLineApplication(throwOnUnexpectedArg: false);
             app.Name = "GoM";
 
+            app.HelpOption("-h|--help");
+
+            app.OnExecute(() =>
+            {
+                app.ShowHelp("gom");
+                return 0;
+            });
+
             app.Command("add", (command) =>
             {
                 command.Description = "This command allow to the user to add repository and projects to his GoM";
@@ -41,8 +49,7 @@ namespace GoM.Core.CommandLine
 
                 command.OnExecute(() =>
                 {
-                    var location = projectLocationArgument.Values.Count() > 0 ? projectLocationArgument.Value : "no value";
-                    Console.WriteLine(location);
+                    // To immplement 
                     return 0;
                 });
             });
@@ -62,7 +69,7 @@ namespace GoM.Core.CommandLine
                     CommandOptionType.MultipleValue);
 
                  var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
-                   "Exclude all branchs from GoM",
+                   "Exclude all branches from GoM",
                    CommandOptionType.MultipleValue);
 
                  var excludeProjectOPtion = command.Option("-p|--project",
@@ -72,9 +79,15 @@ namespace GoM.Core.CommandLine
                  var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
                    "Exclude all projects from GoM",
                    CommandOptionType.MultipleValue);
+
+                 command.OnExecute(() =>
+                 {
+                     // To immplement 
+                     return 0;
+                 });
              });
 
-            /// Command list file
+            /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
 
@@ -108,7 +121,6 @@ namespace GoM.Core.CommandLine
                 app.Execute(args);
             }
         
-
         public static void ProcessDirectory(string targetDirectory)
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
