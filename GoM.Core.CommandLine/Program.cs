@@ -109,7 +109,7 @@ namespace GoM.Core.CommandLine
                             ft.Nodes = new List<FileTree>();
                             GetNodes(projectPath, ft);
                             string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
-                            File.WriteAllText(@"C:\Users\Flo\Desktop\INTECH\JsonResultGoM\fileList.json", json);
+                            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(),"fileList.json"), json);
                             ProcessDirectory(projectPath, fileList);
 
                         }
@@ -141,8 +141,7 @@ namespace GoM.Core.CommandLine
                 foreach (string item in Directory.GetDirectories(path))
                 {
                     
-                    FileTree n = new FileTree();
-                    
+                    FileTree n = new FileTree();                   
                     n.Data = item;
                     n.Nodes = new List<FileTree>();
                     GetFiles(item, n);
