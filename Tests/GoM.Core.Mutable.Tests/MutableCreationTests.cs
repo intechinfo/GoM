@@ -24,7 +24,6 @@ namespace GoM.Core.Mutable.Tests
             var newGitRepository = new GitRepository();
             newGitRepository.Path = "my/branch/path";
             newGitRepository.Url = new Uri("http://my/branch/uri");
-            newGitRepository.Details = null;
 
             #region basicGitBranch
             // BasicGitBranch
@@ -35,7 +34,6 @@ namespace GoM.Core.Mutable.Tests
             // GitBranch
             var newGitBranch = new GitBranch();
             newGitBranch.Name = "myGitBranch";
-            newGitBranch.Details = null;
             #region branchVersionInfo
             // BranchVersionInfo
             var newBranchVersionInfo = new BranchVersionInfo();
