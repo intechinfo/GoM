@@ -46,7 +46,10 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        public GoMContext WithAll(string path = null, ImmutableList<BasicGitRepository> repositories = null, ImmutableList<PackageFeed> feeds = null)
+        public GoMContext WithAll(
+            string path = null, 
+            ImmutableList<BasicGitRepository> repositories = null, 
+            ImmutableList<PackageFeed> feeds = null)
         {
             if (_rootPath == path && _repositories == repositories && _feeds == feeds)
             {
@@ -76,6 +79,58 @@ namespace GoM.Core.Immutable
         {
             var tmpRepositories = _repositories.Remove(repoToRemove);
             return new GoMContext(_rootPath, tmpRepositories, _feeds);
+        }
+
+        public GoMContext AddOrSetGitRepositoryDetails(IGitRepository detailed)
+        {
+            if (detailed != null) throw new ArgumentNullException(nameof(detailed));
+            var basic = Repositories.FirstOrDefault(r => r.Path == detailed.Path);
+            ImmutableList<BasicGitRepository> list = basic == null
+                    ? Repositories.Add(BasicGitRepository.Create(detailed))
+                    : Repositories.SetItem(Repositories.IndexOf(basic), BasicGitRepository.Create(detailed));
+            return Create(RootPath, list, Feeds);
+        }
+
+        public GoMContext AddOrSetGitBranchDetails( GitRepository repository, IGitBranch detailed)
+        {
+            Visitor v = new 
+        }
+
+
+
+
+        class ToUppercaseVisitor : Visitor
+        {
+            readonly string _pattern;
+
+            public ToUppercaseVisitor( string pattern )
+            {
+                _pattern = pattern;
+            }
+
+            public override GoMContext Visit(GoMContext c)
+            {
+                if( !c.RootPath.All( x => Char.IsUpper(x)) && c.RootPath.Contains(_pattern) )
+                {
+                    c = c.WithAll(c.RootPath.ToUpperInvariant(), c.Repositories, c.Feeds);
+                }
+                return base.Visit(c);
+            }
+
+            protected override BasicGitRepository Visit(BasicGitRepository r)
+            {
+                if (!r.Path.All(x => Char.IsUpper(x)) && r.Path.Contains(_pattern))
+                {
+                    r = r.WithAll(r.Path.ToUpperInvariant(), r.Url, r.Details );
+                }
+                return base.Visit(r);
+            }
+
+            protected override GitRepository Visit(GitRepository r)
+            {
+                return base.Visit(r);
+            }
+
         }
 
     }

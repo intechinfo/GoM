@@ -4,43 +4,42 @@ namespace GoM.Core.Immutable
 {
     public class BasicGitRepository : IBasicGitRepository
     {
-        private readonly string _path;
-
-        private readonly Uri _url;
-
-        private readonly GitRepository _details;
-
-        private BasicGitRepository(string path, Uri url, GitRepository details = null)
+        private BasicGitRepository(string path, Uri url, IGitRepository details = null)
         {
-            _path = path ?? throw new ArgumentException("path must not be null");
-            _url = url ?? throw new ArgumentException("url must not be null");
-            _details = details;
+            Path = path ?? throw new ArgumentException("path must not be null");
+            Url = url ?? throw new ArgumentException("url must not be null");
+            Details = GitRepository.Create( details );
         }
 
-        public string Path => _path;
+        public string Path { get; }
 
-        public Uri Url => _url;
+        public Uri Url { get; }
 
-        public GitRepository Details => _details;
+        public GitRepository Details { get; }
 
-        IGitRepository IBasicGitRepository.Details => _details;
+        IGitRepository IBasicGitRepository.Details => Details;
 
         public BasicGitRepository WithAll(string path = null, Uri url = null, GitRepository details = null)
         {
-            if (_path == path && _url == url && _details == details)
+            if (Path == path && Url == url && Details == details)
             {
                 return this;
             }
-            path = path ?? _path;
-            url = url ?? _url;
-            details = details ?? _details;
+            path = path ?? Path;
+            url = url ?? Url;
+            details = details ?? Details;
 
             return new BasicGitRepository(path, url, details);
         }
 
         public static BasicGitRepository Create(string path, Uri url)
         {
-            return new BasicGitRepository(path, url);
+            return new BasicGitRepository(path, url );
+        }
+
+        public static BasicGitRepository Create( IGitRepository details )
+        {
+            return new BasicGitRepository(details.Path, details.Url, details);
         }
     }
 }
