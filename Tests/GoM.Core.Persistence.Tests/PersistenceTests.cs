@@ -283,7 +283,16 @@ namespace GoM.Core.Persistence.Tests
             return ctx;
         }
 
-
+        [Fact]
+        public void try_init_works()
+        {
+            var path = Path.Combine( TuPath(), ".gom");
+            if(Directory.Exists(path)) Directory.Delete( path, true);
+            Persistence p = new Persistence();
+            string outPath;
+            Assert.True( p.TryInit( TuPath(), out outPath ) );
+            Assert.False( p.TryInit( TuPath(), out outPath ) );
+        }
 
     }
 }
