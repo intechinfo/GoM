@@ -102,6 +102,15 @@ namespace GoM.Core.Persistence.Tests
             IGoMContext context = new GoMContext(doc.Root);
         }
 
+        public IGoMContext GenerateFakeContextHelper()
+        {
+
+
+
+
+        }
+
+
 
     }
 }
