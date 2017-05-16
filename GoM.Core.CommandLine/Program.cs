@@ -42,47 +42,36 @@ namespace GoM.Core.CommandLine
                 command.OnExecute(() =>
                 {
                     var location = projectLocationArgument.Values.Count() > 0 ? projectLocationArgument.Value : "no value";
-                    //var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetDirectories(location);
                     Console.WriteLine(location);
                     return 0;
                 });
             });
 
-            app.Command("attack", (command) =>
-            {
-                command.Description = "Instruct the ninja to go and attack!";
-                command.HelpOption("-h|--help");
+            /// This command allow to exclude from GoM the repo/branch/project
+            app.Command("remove", (command) =>
+             {
+                 command.Description = "Exclude repository/branch/project";
+                 command.HelpOption("-h|--help");
 
-                var excludeOption = command.Option("-e|--exclude <exclusions>",
-                               "Branch/Repository to exclude of the selection.",
-                               CommandOptionType.MultipleValue);
+                 var excludeRepoOPtion = command.Option("-r|--repository",
+                     "Exclude a repository from GoM",
+                     CommandOptionType.MultipleValue);
 
-                var screamOption = command.Option("-s|--scream",
-                                       "Scream while attacking",
-                                       CommandOptionType.NoValue);
+                 var excludeBranchOPtion = command.Option("-b|--branch",
+                    "Exclude one branch from GoM",
+                    CommandOptionType.MultipleValue);
 
-                command.OnExecute(() =>
-                {
-                    var exclusions = excludeOption.Values;
-                    var attacking = (new List<string>
-                {
-                    "dragons",
-                    "badguys",
-                    "civilians",
-                    "animals"
-                }).Where(x => !exclusions.Contains(x));
+                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
+                   "Exclude all branchs from GoM",
+                   CommandOptionType.MultipleValue);
 
-                    Console.Write("Ninja is attacking " + string.Join(", ", attacking));
+                 var excludeProjectOPtion = command.Option("-p|--project",
+                   "Exclude one project from GoM",
+                   CommandOptionType.MultipleValue);
 
-                    if (screamOption.HasValue())
-                    {
-                        Console.Write(" while screaming");
-                    }
-
-                    Console.WriteLine();
-
-                    return 0;
-                });
+                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
+                   "Exclude all projects from GoM",
+                   CommandOptionType.MultipleValue);
              });
 
             /// Command list file
