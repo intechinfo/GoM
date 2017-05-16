@@ -7,7 +7,7 @@ namespace GoM.Core.Mutable
     {
         public string Path { get; set; }
 
-        public List<Dependency> Targets { get; } = new List<Dependency>();
+        public List<Target> Targets { get; } = new List<Target>();
 
         public Project Details => this;
 
