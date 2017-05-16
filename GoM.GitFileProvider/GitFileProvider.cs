@@ -71,9 +71,27 @@ namespace GoM.GitFileProvider
         {
             if (!_exist)
                 return NotFoundDirectoryContents.Singleton;
-            using (Repository repo = _repoWrapper.Create(_rootPath + subpath))
+            string[] splitPath = PathDecomposition(subpath, out TYPE type, out char flag);
+            switch (type)
             {
-
+                case TYPE.Unhandled:
+                    return NotFoundDirectoryContents.Singleton;
+                case TYPE.Root:
+                    using (Repository repo = _repoWrapper.Create(_rootPath))
+                    {
+                        Branch head = repo.Head;
+                        if (head == null) return NotFoundDirectoryContents.Singleton;
+                        var dircontent = head.Tip.Tree;
+                    }
+                    break;
+                case TYPE.Branches:
+                    break;
+                case TYPE.Tags:
+                    break;
+                case TYPE.Commits:
+                    break;
+                default:
+                    break;
             }
             return null;
         }
