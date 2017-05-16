@@ -39,10 +39,9 @@ namespace GoM.Core.FSAnalyzer.Utils
                             Name = name,
                             Version = vIdx == -1 ? "" : x.Substring(vIdx)
                         };
-                    yield return new Target()
-                    {
-                        Name = "",
-                    };
+                    var target = new Target();
+                    target.Dependencies.AddRange(targets);
+                    yield return target;
                     break;
                 }
             }
