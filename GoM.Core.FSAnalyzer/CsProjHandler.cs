@@ -24,7 +24,7 @@ namespace GoM.Core.FSAnalyzer
         public override IProject Read()
         {
             var proj = Files.First(x => Path.GetExtension(x.PhysicalPath) == ".csproj");
-            CsProjParser parser = new CsProjParser(proj.PhysicalPath);
+            CsProjParser parser = new CsProjParser(proj);
 
             var targets = parser.Read();
             return new Project()

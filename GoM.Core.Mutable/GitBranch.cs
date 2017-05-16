@@ -12,7 +12,7 @@ namespace GoM.Core.Mutable
 
         public string Name { get; set; }
 
-        public GitBranch Details { get; set; }
+        public GitBranch Details => this;
 
         IReadOnlyCollection<IProject> IGitBranch.Projects => Projects;
 

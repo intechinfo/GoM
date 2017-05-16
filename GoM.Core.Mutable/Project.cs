@@ -9,6 +9,10 @@ namespace GoM.Core.Mutable
 
         public List<Dependency> Targets { get; } = new List<Dependency>();
 
+        public Project Details => this;
+
         IReadOnlyCollection<ITarget> IProject.Targets => Targets;
+
+        IProject IBasicProject.Details => Details;
     }
 }
