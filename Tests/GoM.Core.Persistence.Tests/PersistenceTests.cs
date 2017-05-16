@@ -111,6 +111,13 @@ namespace GoM.Core.Persistence.Tests
             Console.Write( ctx );
 
         }
+        [Fact]
+        public void try_save()
+        {
+            IGoMContext completeFake = GenerateFakeContextHelper();
+            Persistence p = new Persistence();
+            p.Save( completeFake );
+        }
 
         public IGoMContext GenerateFakeContextHelper()
         {
@@ -225,7 +232,7 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             Mutable.GoMContext ctx = new Mutable.GoMContext();
-            ctx.RootPath = "";
+            ctx.RootPath = "C:\\Users\\Red\\Desktop\\Dev\\GoM";
             ctx.Feeds.Add( feed1 );
             ctx.Feeds.Add( feed2 );
             ctx.Repositories.Add( basicrepo2 );
