@@ -22,6 +22,8 @@ namespace GoM.GitFileProvider
             _exists = exists;
             _length = length;
             _physicalPath = physicalPath;
+            if (isDirectory)
+                _physicalPath += Path.DirectorySeparatorChar;
             _name = name;
             _lastModified = lastModified;
             _isDirectory = isDirectory;

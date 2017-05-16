@@ -33,7 +33,7 @@ namespace GoM.GitFileProvider
             {
                 fullpath = fullpath + @"\.git";
             }
-            var dir = new DirectoryInfo(fullpath);
+            var dir = new System.IO.DirectoryInfo(fullpath);
             if (!dir.Exists) return false;
             return true;
         }
@@ -86,11 +86,21 @@ namespace GoM.GitFileProvider
                     {
                         Branch head = repo.Head;
                         if (head == null) return NotFoundDirectoryContents.Singleton;
-                        var dircontent = head.Tip.Tree;
+                        return CreateDirectoryInfo(head.Tip.Tree);
                     }
-                    break;
                 case TYPE.Branches:
-                    break;
+                    using (Repository repo = _repoWrapper.Create(_rootPath))
+                    {
+                        Branch branch = repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
+                        if (branch == null)
+                            return NotFoundDirectoryContents.Singleton;
+                        string pathToFileFromBranch = "";
+                        for (int i = 2; i < splitPath.Length; i++)
+                            pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
+                        if (pathToFileFromBranch.Trim().Equals(""))
+                            return CreateDirectoryInfo(branch.Tip.Tree);
+                    }
+                        break;
                 case TYPE.Tags:
                     break;
                 case TYPE.Commits:
@@ -99,6 +109,23 @@ namespace GoM.GitFileProvider
                     break;
             }
             return null;
+        }
+
+        private DirectoryInfo CreateDirectoryInfo(Tree tree)
+        {
+            List<IFileInfo> files = new List<IFileInfo>();
+            foreach (var file in tree)
+            {
+                FileInfoFile f = new FileInfoFile(true, 0, _rootPath + @"\" + file.Name, file.Name, default(DateTimeOffset), (file.Mode == Mode.Directory));
+                files.Add(f);
+            }
+            DirectoryInfo fDir = new DirectoryInfo(files);
+            return fDir;
+        }
+
+        private Tree GetTreeWithSpecificFolderName(string folderName, Tree baseTree )
+        {
+            baseTree.FirstOrDefault()
         }
 
         public IFileInfo GetFileInfo(string subpath)

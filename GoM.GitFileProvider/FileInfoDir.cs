@@ -5,10 +5,10 @@ using Microsoft.Extensions.FileProviders;
 
 namespace GoM.GitFileProvider
 {
-    class FileInfoDir : IDirectoryContents
+    class DirectoryInfo : IDirectoryContents
     {
         readonly List<IFileInfo> _files;
-        public FileInfoDir( List<IFileInfo> files)
+        public DirectoryInfo( List<IFileInfo> files)
         {
             _files = files;
         }
