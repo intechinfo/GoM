@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Abstractions", "GoM.Core.Abstractions\GoM.Core.Abstractions.csproj", "{115F5512-8C4D-41BA-81C7-12B2626BDE57}"
 EndProject
@@ -71,6 +71,22 @@ Global
 		{961DE9AF-5741-4ED8-845E-8DB529BF5B17}.Release|x64.Build.0 = Release|Any CPU
 		{961DE9AF-5741-4ED8-845E-8DB529BF5B17}.Release|x86.ActiveCfg = Release|Any CPU
 		{961DE9AF-5741-4ED8-845E-8DB529BF5B17}.Release|x86.Build.0 = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|ARM.Build.0 = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|x64.Build.0 = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{A89CC87A-B7FC-405D-8DF2-640CA57060EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
