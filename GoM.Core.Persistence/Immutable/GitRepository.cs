@@ -22,9 +22,12 @@ namespace GoM.Core.Persistence
 
             Path = xElement.Attribute( nameof( Path ) ).Value;
             Url = new Uri(xElement.Attribute(nameof(Url)).Value);
-            Details = new GitRepository( xElement.Element( nameof( Details ) ) );
-
-
+        }
+        public GitRepository ( string path, Uri url )
+        {
+            Branches = new List<BasicGitBranch>();
+            Path = path;
+            Url = url;
         }
 
 
@@ -32,19 +35,11 @@ namespace GoM.Core.Persistence
 
         public Uri Url { get; }
 
-        public GitRepository Details { get; }
-
-        IGitRepository IBasicGitRepository.Details => Details;
+        IGitRepository IBasicGitRepository.Details => this;
 
         IReadOnlyCollection<IBasicGitBranch> IGitRepository.Branches => Branches;
 
-        public GitRepository(string path, Uri url)
-        {   
-            Branches = new List<BasicGitBranch>();
-            Path    = path;
-            Url     = url;
-            Details = this;
-        }
+        
 
 
     }

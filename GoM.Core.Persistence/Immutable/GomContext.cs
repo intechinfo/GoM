@@ -37,7 +37,7 @@ namespace GoM.Core.Persistence
 
         IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => Feeds;
 
-        public GoMContext(string rootPath)
+        public GoMContext(string rootPath, List<BasicGitRepository> repo, List<PackageFeed> feed)
         {
             RootPath     = rootPath;
             Repositories = new List<BasicGitRepository>();
