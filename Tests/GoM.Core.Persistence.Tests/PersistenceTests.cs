@@ -106,37 +106,83 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void load_the_gom_context_from_gom_file()
         {
-            string rootPath = ".";
+            string rootPath = "C:\\Users\\Red\\Desktop\\Dev\\GoM";
             string folderName = ".gom";
-            string fileName = "";
+            string fileName = "context";
 
             var data = File.ReadAllText(Path.Combine(rootPath, folderName, fileName));
-
             XDocument doc = XDocument.Parse(data);
 
             doc.FirstNode.Remove();
             var ctx = new GoMContext(doc.Root);
 
-            Assert.True(ctx.RootPath == ".");
+            Assert.True(ctx.RootPath == "C:\\Users\\Red\\Desktop\\Dev\\GoM");
 
-            Assert.True(ctx.Repositories[0].Path == ".");
-            Assert.True(ctx.Repositories[0].Url == new Uri("http://github.com/projet.git"));
-            Assert.True(ctx.Repositories[0].Details.Path == "repo");
-            Assert.True(ctx.Repositories[0].Details.Url == new Uri(""));
-
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "projet");
-
-
-
-            Assert.True(ctx.Feeds[0].Url == new Uri("http://google.fr"));
+            Assert.True(doc.Root.Attribute("GOM_Document_Version").Value == "1");
 
             Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
             Assert.True(ctx.Feeds[0].Packages[0].Version == "v1.0.0");
 
 
 
+            #region Repo 1
+            Assert.True(ctx.Repositories[0].Path == "/usr/developpement/mdr");
+            Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[0].Details == null);
+            #endregion
 
+            #region Repo 2
+            Assert.True(ctx.Repositories[1].Path == "/usr/developpement/lolilol");
+            Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[1].Details.Path == "/usr/developpement/GoM/");
+            Assert.True(ctx.Repositories[1].Details.Url == new Uri("http://www.google.fr"));
 
+            #region Branch 1
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Name == "develop");
+
+            #region Projet 1
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Path == "./fakeproject1/");
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Name == "target1");
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name == "dependency1");
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version == "1.0.0");
+
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[1].Name == "target2");
+            #endregion
+
+            #region Projet 2
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[1].Path == "./fakeproject2/");
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[1].Targets[0].Name == "target3");
+            #endregion
+
+            #region Projet 3
+            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[2].Path == "./fakeproject3/");
+            #endregion
+            #endregion
+
+            #region Branch 2
+            Assert.True(ctx.Repositories[1].Details.Branches[1].Name == "Cubado");
+            Assert.True(ctx.Repositories[1].Details.Branches[1].Details == null);
+            #endregion
+
+            #endregion
+
+            #region Feed 1
+            Assert.True(ctx.Feeds[0].Url == new Uri("http://google.fr"));
+
+            // Packages 1, 2 et 3
+            Assert.True(ctx.Feeds[0].Packages[0].Version == "1.0.0");
+            Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
+
+            Assert.True(ctx.Feeds[0].Packages[1].Version == "2.0.0");
+            Assert.True(ctx.Feeds[0].Packages[1].Name == "pénis");
+
+            Assert.True(ctx.Feeds[0].Packages[2].Version == "3.0.0");
+            Assert.True(ctx.Feeds[0].Packages[2].Name == "chibre");
+            #endregion
+
+            #region Feed 2
+            Assert.True(ctx.Feeds[1].Url == new Uri("http://google.com"));
+            #endregion
         }
 
         [Fact]
@@ -153,7 +199,7 @@ namespace GoM.Core.Persistence.Tests
         {
             IGoMContext completeFake = GenerateFakeContextHelper();
             Persistence p = new Persistence();
-            p.Save( completeFake );
+            p.Save(completeFake);
         }
 
         public IGoMContext GenerateFakeContextHelper()
@@ -166,7 +212,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var package2 = new Mutable.PackageInstance();
             package2.Version = "2.0.0";
-            package2.Name = "p�nis";
+            package2.Name = "pénis";
 
             // OK
             var package3 = new Mutable.PackageInstance();
@@ -182,7 +228,7 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             var feed2 = new Mutable.PackageFeed();
-            feed2.Url = new Uri("http://www.google.fr");
+            feed2.Url = new Uri("http://www.google.com");
 
             // OK
             var targetDependency = new Mutable.TargetDependency();
@@ -192,7 +238,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var target1 = new Mutable.Target();
             target1.Name = "target1";
-            target1.Dependencies.Add( targetDependency );
+            target1.Dependencies.Add(targetDependency);
 
             // OK
             var target2 = new Mutable.Target();
