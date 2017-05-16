@@ -85,7 +85,6 @@ namespace GoM.Core.CommandLine
                     return 0;
                 });
              });
-
             app.Command("files", c =>
             {
 
@@ -93,34 +92,32 @@ namespace GoM.Core.CommandLine
                 var locationArgument = c.Argument("[location]",
                                    "Where the files should be located .");
 
+                    c.HelpOption("-?,|-h|--help");
 
-
-                c.HelpOption("-?,|-h|--help");
-
-                c.OnExecute(() =>
-                {
-                    var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
-                    Console.WriteLine(projectPath);
-                    if (File.Exists(projectPath))
+                    c.OnExecute(() =>
                     {
-                        ProcessFile(projectPath);
-                    }
-                    else if (Directory.Exists(projectPath))
-                    {
-                        ProcessDirectory(projectPath);
-                    }
-                    else
-                    {
-                        Console.WriteLine("{0} is not a valid file or directory.", projectPath);
-                    }
-                    Console.ReadLine();
-                    return 0;
+                        var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
+                        Console.WriteLine(projectPath);
+                        if (File.Exists(projectPath))
+                        {
+                            ProcessFile(projectPath);
+                        }
+                        else if (Directory.Exists(projectPath))
+                        {
+                            ProcessDirectory(projectPath);
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} is not a valid file or directory.", projectPath);
+                        }
+                        Console.ReadLine();
+                        return 0;
+                    });
                 });
-            });
-    
-            app.Execute(args);
-           
-        }
+
+                app.Execute(args);
+            }
+        
 
         public static void ProcessDirectory(string targetDirectory)
         {
@@ -137,4 +134,7 @@ namespace GoM.Core.CommandLine
             Console.WriteLine(Path.GetFileName(path));
         }
     }
-}
+       
+    }
+
+
