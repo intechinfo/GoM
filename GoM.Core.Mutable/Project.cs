@@ -7,7 +7,7 @@ namespace GoM.Core.Mutable
     {
         public string Path { get; set; }
 
-        public List<Target> Targets { get; } = new List<Target>();
+        public List<Dependency> Targets { get; } = new List<Dependency>();
 
         IReadOnlyCollection<ITarget> IProject.Targets => Targets;
     }

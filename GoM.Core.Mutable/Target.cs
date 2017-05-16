@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GoM.Core.Mutable
 {
-    public class Target : ITarget
+    public class Dependency : ITarget
     {
         public string Name { get; set; }
 
