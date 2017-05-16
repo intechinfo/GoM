@@ -11,6 +11,11 @@ namespace GoM.Core.Persistence.Tests
 {
     public class PersistenceTests
     {
+        string TuPath( [System.Runtime.CompilerServices.CallerFilePath] string s = "" )
+        {
+            return Path.GetDirectoryName( s );
+        }
+
         [Fact]
         public void test_runner_working()
         {
@@ -269,7 +274,7 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             Mutable.GoMContext ctx = new Mutable.GoMContext();
-            ctx.RootPath = "C:\\Users\\Red\\Desktop\\Dev\\GoM";
+            ctx.RootPath = TuPath();
             ctx.Feeds.Add(feed1);
             ctx.Feeds.Add(feed2);
             ctx.Repositories.Add(basicrepo2);
