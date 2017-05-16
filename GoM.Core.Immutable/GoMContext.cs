@@ -14,9 +14,9 @@ namespace GoM.Core.Immutable
 
         private GoMContext(string path, ImmutableList<BasicGitRepository> repositories, ImmutableList<PackageFeed> feeds)
         {
-            _rootPath = path;
-            _repositories = repositories;
-            _feeds = feeds;
+            _rootPath = path ?? throw new ArgumentException("path must not be null");
+            _repositories = repositories ?? throw new ArgumentException("repositories must not be null");
+            _feeds = feeds ?? throw new ArgumentException("feeds must not be null");
         }
 
         private GoMContext(string path)
@@ -31,9 +31,18 @@ namespace GoM.Core.Immutable
             _feeds = (ImmutableList<PackageFeed>)context.Feeds;
         }
 
+        public string RootPath => _rootPath;
+
+        public ImmutableList<BasicGitRepository> Repositories => _repositories;
+
+        public ImmutableList<PackageFeed> Feeds => _feeds;
+
+        IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => _repositories;
+        IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => _feeds;
+
         public GoMContext WithAll(string path = null, ImmutableList<BasicGitRepository> repositories = null, ImmutableList<PackageFeed> feeds = null)
         {
-            if(_rootPath == path && _repositories == repositories && _feeds == feeds)
+            if (_rootPath == path && _repositories == repositories && _feeds == feeds)
             {
                 return this;
             }
@@ -44,15 +53,6 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
 
         }
-
-        public string RootPath => _rootPath;
-
-        public ImmutableList<BasicGitRepository> Repositories => _repositories;
-
-        public ImmutableList<PackageFeed> Feeds => _feeds;
-
-        IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => _repositories;
-        IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => _feeds;
 
     }
 }
