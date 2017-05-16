@@ -14,6 +14,16 @@ namespace GoM.Core.FSAnalyzer
         public IEnumerable<IFileInfo> Files => FileProvider.GetDirectoryContents("./");
         public IEnumerable<string> FileExtensions => Files.Select(x => Path.GetExtension(x.PhysicalPath));
 
+        protected BaseProjectFolderHandler(IFileProvider provider)
+        {
+            FileProvider = provider;
+        }
+
+        public bool HasFile(string fileName)
+        {
+            return Files.Select(x => x.Name).Contains(fileName);
+        }
+
         public virtual IProjectFolderHandler Sniff()
         {
             throw new NotImplementedException();

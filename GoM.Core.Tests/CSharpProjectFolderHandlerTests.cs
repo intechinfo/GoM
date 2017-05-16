@@ -14,6 +14,7 @@ namespace GoM.Core.Tests
             var provider = new PhysicalFileProvider(@"D:\Projects\Eval c#\ITI.DocLib.Model");
             var projectHandler = new ProjectFolderHandler(provider);
             var res = projectHandler.Sniff();
+            res.Read();
             Console.WriteLine(Directory.GetCurrentDirectory());
             Assert.True(true);
         }

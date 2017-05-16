@@ -9,26 +9,25 @@ namespace GoM.Core.FSAnalyzer
 {
     public class ProjectFolderHandler : BaseProjectFolderHandler
     {
-        public ProjectFolderHandler(IFileProvider fileProvider)
+        public ProjectFolderHandler(IFileProvider provider) : base(provider)
         {
-            FileProvider = fileProvider;
         }
 
         public override IProjectFolderHandler Sniff()
         {
             if (FileExtensions.Contains(".csproj"))
             {
-                // Dispatch to CsharpHandler
-            } else if (Files.Select(x => x.Name).Contains("package.json"))
+                return new CsharpProjectHandler(FileProvider).Sniff();
+            } else if (HasFile("package.json"))
             {
-                // Dispatch to JsHandler   
+                // Dispatch to JsHandler
             }
             return this;
         }
 
         public override IProject Read()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
