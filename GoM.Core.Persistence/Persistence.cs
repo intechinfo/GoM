@@ -12,6 +12,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this IPackageInstance _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IPackageInstance).Name);
             element.SetAttributeValue( nameof( _this.Version ), _this.Version );
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
@@ -20,6 +21,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML(this IPackageFeed _this)
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IPackageFeed).Name);
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach ( IPackageInstance package in _this.Packages )
@@ -31,6 +33,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this IGoMContext _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IGoMContext).Name);
             element.SetAttributeValue( nameof( _this.RootPath ), _this.RootPath );
             foreach ( var t in _this.Repositories ) element.Add( t.ToXML() );
@@ -40,6 +43,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this IProject _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IGoMContext).Name);
             element.SetAttributeValue( nameof( _this.Path ), _this.Path );
             foreach ( var t in _this.Targets ) element.Add( t.ToXML() );
@@ -48,6 +52,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this ITargetDependency _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IGoMContext).Name);
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
             element.SetAttributeValue( nameof( _this.Version ), _this.Version );
@@ -56,6 +61,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this IVersionTag _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IGoMContext).Name);
             element.SetAttributeValue( nameof( _this.FullName ), _this.FullName );
             
@@ -64,6 +70,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML ( this ITarget _this )
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IGoMContext).Name);
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
             foreach ( var t in _this.Dependencies ) element.Add( t.ToXML() );
@@ -73,6 +80,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML(this IBasicGitBranch _this)
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IBasicGitBranch).Name);
             element.SetAttributeValue(nameof(_this.Name), _this.Name);
             element.Add( _this.Details.ToXML() );
@@ -81,6 +89,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML(this IBranchVersionInfo _this)
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IBasicGitBranch).Name);
             element.SetAttributeValue(nameof(_this.LastTagDepth), _this.LastTagDepth);
             element.Add( _this.LastTag.ToXML() );
@@ -89,6 +98,7 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML(this IBasicGitRepository _this)
         {
+            if ( _this == null ) return null;
             XElement element = new XElement(typeof(IBasicGitRepository).Name);
             element.SetAttributeValue(nameof(_this.Path), _this.Path);
             element.SetAttributeValue(nameof(_this.Url), _this.Url);
@@ -99,30 +109,34 @@ namespace GoM.Core.Persistence
 
         public static XElement ToXML(this IGitBranch _this)
         {
+            if ( _this == null ) return null;
+
             XElement element = new XElement(typeof(IGitBranch).Name);
             element.Add(_this.Version.ToXML());
             foreach (var t in _this.Projects) element.Add(t.ToXML());
 
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
-            element.Add( _this.Details.ToXML() );
+            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
         public static XElement ToXML(this IGitRepository _this)
         {
+            if ( _this == null ) return null;
+
             XElement element = new XElement(typeof(IGitRepository).Name);
 
             element.SetAttributeValue( nameof( _this.Path ), _this.Path );
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach (var t in _this.Branches) element.Add(t.ToXML());
 
-            element.Add( _this.Details.ToXML() );
+            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
     }
 
-    class Persistence : IPersistence
+    public class Persistence : IPersistence
     {
         string FolderName { get; }
         string FileName { get; }
@@ -145,6 +159,7 @@ namespace GoM.Core.Persistence
         {
             if ( context == null ) throw new ArgumentNullException();
 
+            Directory.CreateDirectory( Path.Combine( context.RootPath, FolderName ));
             using ( var stream = File.Create( Path.Combine( context.RootPath, FolderName, FileName ) ) )
             {
                 XDocument doc = new XDocument();
