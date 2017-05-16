@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 namespace GoM.Core.CommandLine
 {
     class Program
@@ -18,6 +18,7 @@ namespace GoM.Core.CommandLine
 
             app.OnExecute(() => {
                 Console.WriteLine("Hello World!");
+                
                 return 0;
             });
 
@@ -97,19 +98,28 @@ namespace GoM.Core.CommandLine
                     c.OnExecute(() =>
                     {
                         var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
-                        Console.WriteLine(projectPath);
+                        List<string> fileList = new List<string>();
                         if (File.Exists(projectPath))
                         {
-                            ProcessFile(projectPath);
+                            ProcessFile(projectPath, fileList);
                         }
                         else if (Directory.Exists(projectPath))
                         {
-                            ProcessDirectory(projectPath);
+                            FileTree ft = new FileTree();
+                            ft.Nodes = new List<FileTree>();
+                            GetNodes(projectPath, ft);
+                            string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
+                            File.WriteAllText(@"C:\Users\Flo\Desktop\INTECH\JsonResultGoM\fileList.json", json);
+                            ProcessDirectory(projectPath, fileList);
+
                         }
                         else
                         {
                             Console.WriteLine("{0} is not a valid file or directory.", projectPath);
                         }
+
+                        
+        
                         Console.ReadLine();
                         return 0;
                     });
@@ -117,21 +127,55 @@ namespace GoM.Core.CommandLine
 
                 app.Execute(args);
             }
-        
 
-        public static void ProcessDirectory(string targetDirectory)
+        public static void GetNodes(string path, FileTree ft)
+        {
+            if (File.Exists(path))
+            {
+                ft = new FileTree(path);
+            }
+            else if (Directory.Exists(path))
+            {               
+                GetFiles(path, ft);
+                ft.Data = "\\";
+                foreach (string item in Directory.GetDirectories(path))
+                {
+                    
+                    FileTree n = new FileTree();
+                    
+                    n.Data = item;
+                    n.Nodes = new List<FileTree>();
+                    GetFiles(item, n);
+                    ft.Nodes.Add(n);
+                    GetNodes(item, ft);
+                }
+            }
+        }
+
+        public static void GetFiles(string path, FileTree ft)
+        {
+            foreach (string item in Directory.GetFiles(path))
+            {              
+                ft.Nodes.Add(new FileTree(item));
+            }
+
+        }
+        public static void ProcessDirectory(string targetDirectory, List<string> fileList)
         {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             foreach (string fileName in fileEntries)
-                ProcessFile(fileName);
+                ProcessFile(fileName,fileList);
 
             string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
-            foreach (string subdirectory in subdirectoryEntries)
-                ProcessDirectory(subdirectory);
+            
+            foreach (string subdirectory in subdirectoryEntries)      
+                ProcessDirectory(subdirectory,fileList);
         }
-        public static void ProcessFile(string path)
+        public static List<string> ProcessFile(string path,List<string> fileList)
         {
             Console.WriteLine(Path.GetFileName(path));
+            fileList.Add(Path.GetFileName(path));
+            return fileList;
         }
     }
        
