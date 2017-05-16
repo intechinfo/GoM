@@ -58,6 +58,7 @@ namespace GoM.GitFileProvider
         {
             _rw.StreamWrapperCount--;
             _rw.Dispose();
+            _stream.Dispose();
         }
     }
 }

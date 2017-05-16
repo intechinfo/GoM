@@ -135,14 +135,35 @@ namespace GoM.GitFileProvider
         private IFileInfo GetFileCommit(string[] splitPath, string subpath, char flag)
         {
             if (flag == '*')
-                return new FileInfoRefType(_rootPath + @"\branches", "branches");
+                return new FileInfoRefType(_rootPath + @"\commits", "commits");
             else
             {
                 using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
                     rw.Create(_rootPath);
-                    Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
-                            
+                    string commitHash = splitPath[1];
+                    Commit commit = rw.Repo.Lookup<Commit>(commitHash);
+                    if (commit == null)
+                        return new NotFoundFileInfo("InvalidSha");
+                    string relativePath = GetRelativePath(splitPath, 3);
+                    if (String.IsNullOrEmpty(relativePath))
+                    {
+                        TreeEntry entry = commit.Tree.FirstOrDefault();
+                        if (entry == null)
+                        {
+                            return new NotFoundFileInfo("NoFile");
+                        }
+                        else
+                        {
+                            if (entry.TargetType == TreeEntryTargetType.Blob)
+                                return new FileInfoFile(true, null, null, default(DateTimeOffset), entry.Target as Blob, rw);
+                        }
+                    }
+                    TreeEntry node = commit.Tree[relativePath];
+                    if (node == null)
+                        return new NotFoundFileInfo("InvalidPath");
+                    if (node.TargetType == TreeEntryTargetType.Blob)
+                        return new FileInfoFile(true, relativePath, splitPath[splitPath.Length - 1], default(DateTimeOffset), node.Target as Blob, rw);
                 }
             }
             return null;
@@ -176,7 +197,7 @@ namespace GoM.GitFileProvider
             }
         }
 
-        private string GetRelativePath(string[] splitPath)
+        private string GetRelativePath(string[] splitPath, int offset = 2)
         {
             string RelativePath = "";
             for (int i = 2; i < splitPath.Length; i++)
