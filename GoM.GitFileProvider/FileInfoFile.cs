@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using LibGit2Sharp;
 
 namespace GoM.GitFileProvider
 {
-    class FileInfoFile : IFileInfo
+    public class FileInfoFile : IFileInfo
     {
         bool _exists;
         long _length;
@@ -16,8 +17,9 @@ namespace GoM.GitFileProvider
         string _name;
         DateTimeOffset _lastModified;
         bool _isDirectory;
+        Blob _file;
 
-        public FileInfoFile(bool exists, long length, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory)
+        public FileInfoFile(bool exists, long length, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory, Blob file = null)
         {
             _exists = exists;
             _length = length;
@@ -27,6 +29,9 @@ namespace GoM.GitFileProvider
             _name = name;
             _lastModified = lastModified;
             _isDirectory = isDirectory;
+            if (isDirectory)
+                _physicalPath += Path.DirectorySeparatorChar;
+            _file = file;
         }
 
         public bool Exists => _exists;
@@ -43,7 +48,9 @@ namespace GoM.GitFileProvider
 
         public Stream CreateReadStream()
         {
-            throw new NotImplementedException();
+            if (_file != null)
+                return _file.GetContentStream();           
+            return null;
         }
     }
 }

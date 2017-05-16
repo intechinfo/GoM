@@ -146,5 +146,27 @@ namespace GoM.GitFileProvider.Tests
                     item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
             }
         }
+
+        [Test]
+        public void FileInfo_Read_Same_File_In_Two_Different_Branches_Should_Not_Be_Equal()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInBranchGuillaume = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GitFileProvider.cs");
+            Stream stream1 = fileInBranchGuillaume.CreateReadStream();
+
+            byte[] buffer1 = new byte[1024];
+            stream1.Read(buffer1, 0, 1024);
+
+
+            IFileInfo fileInBranchMPT = git.GetFileInfo(@"branches\origin/perso-guillaume\GoM.GitFileProvider\GitFileProvider.cs");
+            Stream stream2 = fileInBranchMPT.CreateReadStream();
+            byte[] buffer2 = new byte[1024];
+            stream2.Read(buffer2, 0, 1024);
+            buffer1.Should().NotBeEquivalentTo(buffer2);
+            stream1.Dispose();
+            stream2.Dispose();
+            buffer1 = null;
+            buffer2 = null;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace GoM.GitFileProvider
             {
                 fullpath = fullpath + @"\.git";
             }
-            var dir = new System.IO.DirectoryInfo(fullpath);
+            var dir = new DirectoryInfo(fullpath);
             if (!dir.Exists) return false;
             return true;
         }
@@ -47,6 +47,7 @@ namespace GoM.GitFileProvider
                 decomposition[0] = subpath.Trim();
             }
             flag = (char)0;
+
             if (decomposition[0].Equals(""))
             {
                 type = TYPE.Root;
@@ -54,10 +55,6 @@ namespace GoM.GitFileProvider
             else if (decomposition[0].Equals("branches"))
             {
                 type = TYPE.Branches;
-                if (decomposition.Length <= 1 || decomposition[1].Equals("*"))
-                    flag = '*'; 
-                else
-                    flag = 'n'; 
             }
             else if (decomposition[0].Equals("tags"))
             {
@@ -69,6 +66,11 @@ namespace GoM.GitFileProvider
             }
             else
                 type = TYPE.Unhandled;
+
+            if (decomposition.Length <= 1 || decomposition[1].Equals("*"))
+                flag = '*';
+            else
+                flag = 'n';
             return decomposition;
         }
 
@@ -128,10 +130,56 @@ namespace GoM.GitFileProvider
             return null;
         }
 
+        private IFileInfo GetFileBranch(string[] splitPath, string subpath, char flag)
+        {
+            if (flag == '*')
+                return new FileInfoRefType(_rootPath + @"\branches", "branches");
+            else
+            {
+                using (Repository repo = _repoWrapper.Create(_rootPath))
+                {
+                    Branch b = repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
+                    if (b == null)
+                        return new NotFoundFileInfo("Invalid"); ; // TODO
+                    string pathToFileFromBranch = "";
+                    for (int i = 2; i < splitPath.Length; i++)
+                        pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
+                    if (pathToFileFromBranch.Trim().Equals(""))
+                        return new FileInfoRef(true, -1, _rootPath + subpath, b.FriendlyName, default(DateTimeOffset), true);
+                    TreeEntry node = b[pathToFileFromBranch];
+
+                    if (node == null)
+                        return new NotFoundFileInfo("Invalid");
+                    
+                    FileInfoFile f = new FileInfoFile(true, 0, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory), (Blob)node.Target);
+                    
+                    Stream s = f.CreateReadStream();
+                    s.Dispose();
+                    return f;
+                }
+            }
+        }
+
+        private IFileInfo GetFileCommit(string[] splitPath, string subpath, char flag)
+        {
+            if (flag == '*')
+                return new FileInfoRefType(_rootPath + @"\branches", "branches");
+            else
+            {
+                using (Repository repo = _repoWrapper.Create(_rootPath))
+                {
+                    Branch b = repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
+                            
+                }
+            }
+            return null;
+        }
+
         public IFileInfo GetFileInfo(string subpath)
         {
             if (subpath == null)
                 return new NotFoundFileInfo("Invalid");
+
             TYPE type;
             char flag;
             string[] splitPath = PathDecomposition(subpath, out type, out flag);
@@ -142,35 +190,15 @@ namespace GoM.GitFileProvider
                 case TYPE.Unhandled:
                     return new NotFoundFileInfo("Invalid");
                 case TYPE.Root:
-                    FileInfoRefType root = new FileInfoRefType(_rootPath, "root");
-                    return root;
+                    return new FileInfoRefType(_rootPath, "root");
                 case TYPE.Branches:
-                    if (flag == '*')
-                        return new FileInfoRefType(_rootPath + @"\branches", "branches");
-                    else
-                    {
-                        using(Repository repo = _repoWrapper.Create(_rootPath))
-                        {
-                            Branch b = repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
-                            if (b == null)
-                                return new NotFoundFileInfo("Invalid"); ; // TODO
-                            string pathToFileFromBranch = "";
-                            for (int i = 2; i < splitPath.Length; i++)
-                                pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length-1)?@"\":"");
-                            if (pathToFileFromBranch.Trim().Equals(""))
-                                return new FileInfoRef(true, -1, _rootPath + subpath, b.FriendlyName, default(DateTimeOffset), true);
-                            TreeEntry node = b[pathToFileFromBranch];
-                            if (node == null)
-                                return new NotFoundFileInfo("Invalid");
-                            return new FileInfoFile(true, 0, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory));
-                        }
-                    }
+                    return GetFileBranch(splitPath, subpath, flag);
                 case TYPE.Tags:
                     return null; // TODO
                 case TYPE.Commits:
-                    return null; // TODO
+                    return GetFileCommit(splitPath, subpath, flag);
                 default:
-                    return null;
+                    return null; // TODO
             }
         }
 
