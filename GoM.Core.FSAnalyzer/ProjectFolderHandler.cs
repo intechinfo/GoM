@@ -21,6 +21,9 @@ namespace GoM.Core.FSAnalyzer
             } else if (HasFile("package.json"))
             {
                 return new JsProjectHandler(FileProvider).Sniff();
+            } else if (HasFile("setup.py"))
+            {
+                return new PythonProjectHandler(FileProvider).Sniff();
             }
             return null;
         }
