@@ -145,7 +145,6 @@ namespace GoM.Core.Persistence
             FileName = fileName;
         }
 
-
         public IGoMContext Load (string rootPath)
         {
             var data = File.ReadAllText( Path.Combine( rootPath, FolderName, FileName ) );
@@ -168,9 +167,15 @@ namespace GoM.Core.Persistence
 
         }
 
-        bool IPersistence.TryInit ( out string pathFound )
+        public bool TryInit ( string currentPath, out string pathFound )
         {
+            pathFound = "";
 
+
+            if(Directory.Exists(Path.Combine(currentPath, FolderName)))
+            {
+
+            }
 
             throw new NotImplementedException();
         }

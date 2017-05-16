@@ -7,15 +7,16 @@ using GoM.Core; using System;
 
 namespace GoM.Core.Persistence
 {
-    interface IPersistence
+    public interface IPersistence
     {
         /// <summary>
         /// Create new gom project 
         /// in case a project already in current directory tree, retun false & out a path
         /// </summary>
+        /// <param name="currentPath">currentPath</param>
         /// <param name="pathFound">path of existing gom projetc if found</param>
         /// <returns>true if init success</returns>
-        bool TryInit ( out string pathFound );
+        bool TryInit ( string currentPath, out string pathFound );
 
         /// <summary>
         /// Load from .gom folder in given path
