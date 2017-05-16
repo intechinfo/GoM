@@ -11,10 +11,10 @@ namespace GoM.Core.Persistence
     {
         /// <summary>
         /// Create new gom project 
-        /// in case a project already in current directory tree, retun false & out a path
+        /// in case a project already in current directory tree, return false & out a path
         /// </summary>
         /// <param name="currentPath">currentPath</param>
-        /// <param name="pathFound">path of existing gom projetc if found</param>
+        /// <param name="pathFound">path of existing gom project if found</param>
         /// <returns>true if init success</returns>
         bool TryInit ( string currentPath, out string pathFound );
 
