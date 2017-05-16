@@ -290,8 +290,23 @@ namespace GoM.Core.Persistence.Tests
             if(Directory.Exists(path)) Directory.Delete( path, true);
             Persistence p = new Persistence();
             string outPath;
+
             Assert.True( p.TryInit( TuPath(), out outPath ) );
+            Assert.True( outPath == string.Empty );
+
             Assert.False( p.TryInit( TuPath(), out outPath ) );
+            Assert.True(outPath == TuPath());
+
+            Assert.False( p.TryInit( TuPath(), out outPath ) );
+            Assert.True( outPath == TuPath() );
+
+            Directory.Delete( path, true );
+            Assert.True( p.TryInit( TuPath(), out outPath ) );
+            Assert.True( outPath == string.Empty );
+
+            Assert.False( p.TryInit( TuPath(), out outPath ) );
+            Assert.True( outPath == TuPath() );
+
         }
 
     }
