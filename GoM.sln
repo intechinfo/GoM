@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable", "GoM.Core.Mutable\GoM.Core.Mutable.csproj", "{3D88E13C-2486-424C-835A-77735CA198F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F22E8EC-8517-4569-B107-F33869C280A9}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\CreateSampleRoot.bat = Tests\CreateSampleRoot.bat
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable.Tests", "Tests\GoM.Core.Mutable.Tests\GoM.Core.Mutable.Tests.csproj", "{98F93F56-F621-4C2B-BF36-8A58A371BDD8}"
 EndProject
