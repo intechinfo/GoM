@@ -8,5 +8,10 @@ namespace GoM.Core.Immutable
         Uri IPackageFeed.Url => throw new NotImplementedException();
 
         IReadOnlyCollection<IPackageInstance> IPackageFeed.Packages => throw new NotImplementedException();
+
+        public static PackageFeed Create()
+        {
+            return new PackageFeed();
+        }
     }
 }
