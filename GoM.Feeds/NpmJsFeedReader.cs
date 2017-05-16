@@ -13,16 +13,22 @@ namespace GoM.Feeds
     internal class NpmJsFeedReader : NpmFeedReader
     {
         HttpClient _client;
-        string _versionsListUrl = "http://registry.npmjs.org/";
+        string _baseUrl = "http://registry.npmjs.org/";
         internal NpmJsFeedReader()
         {
             _client = new HttpClient();
         }
 
+        public override string BaseUrl
+        {
+            get { return _baseUrl; }
+        }
+
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
-            string resp = await  _client.GetStringAsync(_versionsListUrl + name );
+            name = name.ToLowerInvariant();
+            string resp = await  _client.GetStringAsync(_baseUrl + name );
             JObject o = JObject.Parse(resp);
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
 
@@ -41,10 +47,24 @@ namespace GoM.Feeds
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
-           
-            string resp = await _client.GetStringAsync(_versionsListUrl + name+'/'+version);
+            name = name.ToLowerInvariant();
+            version = version.ToLowerInvariant();
 
-            throw new NotImplementedException();
+            string resp = await _client.GetStringAsync(_baseUrl + name+'/'+version);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : "+version+" found.");
+
+            JObject dependencies = new JObject( o.Property("dependencies"));
+            var list = new List<ITarget>();
+            var target = new Target { Name = o.Value<string>("name") };
+            //iterate on eah version of the json
+            foreach (var item in dependencies)
+            {
+                string depName = item.Key;
+                string depVersion = item.Value.ToString();
+                target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+            }
+            return list;
         }
     }
 }

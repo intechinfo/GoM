@@ -11,7 +11,7 @@ namespace GoM.Feeds
 
         public IFeedReader GetInstance()
         {
-            return new PypiFeedReader();
+            return new PypiOrgFeedReader();
         }
     }
 }

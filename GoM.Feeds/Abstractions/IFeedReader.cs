@@ -11,6 +11,6 @@ namespace GoM.Feeds.Abstractions
         Task<IEnumerable<IPackageInstance>> GetAllVersions(string name);
 
         Task<IEnumerable<ITarget>> GetDependencies(string name, string version);
-       
+        string BaseUrl { get; }
     }
 }
