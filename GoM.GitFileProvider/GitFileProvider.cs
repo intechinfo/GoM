@@ -101,9 +101,12 @@ namespace GoM.GitFileProvider
                             pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
                         if (pathToFileFromBranch.Trim().Equals(""))
                             return CreateDirectoryInfo(branch.Tip.Tree);
+                        var f = branch.Tip.Tree[@"GoM.GitFileProvider\"];
+                        if (f.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
+                        return CreateDirectoryInfo(f.Target as Tree);
                     }
-                        break;
                 case TYPE.Tags:
+
                     break;
                 case TYPE.Commits:
                     break;
@@ -118,16 +121,11 @@ namespace GoM.GitFileProvider
             List<IFileInfo> files = new List<IFileInfo>();
             foreach (var file in tree)
             {
-                FileInfoFile f = new FileInfoFile(true, 0, _rootPath + @"\" + file.Name, file.Name, default(DateTimeOffset), (file.Mode == Mode.Directory));
+                FileInfoDirectory f = new FileInfoDirectory(true, _rootPath + @"\" + file.Name, file.Name);
                 files.Add(f);
             }
             DirectoryInfo fDir = new DirectoryInfo(files);
             return fDir;
-        }
-
-        private Tree GetTreeWithSpecificFolderName(string folderName, Tree baseTree )
-        {
-            return null;
         }
 
         private IFileInfo GetFileBranch(string[] splitPath, string subpath, char flag)
