@@ -112,7 +112,7 @@ namespace GoM.Core.CommandLine
                             ft.Nodes = new List<FileTree>();
                             GetNodes(projectPath, ft);
                             string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
-                            File.WriteAllText(@"C:\Users\Flo\Desktop\INTECH\JsonResultGoM\fileList.json", json);
+                            File.WriteAllText(@"C:\Users\Loïc\Desktop\Cours INTECH Alternance\gom\GoM\GoMfileList.json", json);
                             ProcessDirectory(projectPath, fileList);
 
                         }
