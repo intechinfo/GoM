@@ -11,7 +11,7 @@ namespace GoM.Core.Mutable
 
         public Uri Url { get; set; }
 
-        public GitRepository Details { get; set; }
+        public GitRepository Details => this;
 
         IGitRepository IBasicGitRepository.Details => Details;
 
