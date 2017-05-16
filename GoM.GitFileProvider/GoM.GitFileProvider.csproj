@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DirectoryInfo.cs" />
+    <Compile Include="FileInfoDirectory.cs" />
     <Compile Include="FileInfoFile.cs" />
     <Compile Include="FileInfoRef.cs" />
     <Compile Include="FileInfoRefType.cs" />
