@@ -3,6 +3,8 @@ using System;
 using GoM.Core.Persistence;
 using System.IO;
 using System.Xml.Linq;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace GoM.Core.Persistence
 {
@@ -116,7 +118,6 @@ namespace GoM.Core.Persistence
             foreach (var t in _this.Projects) element.Add(t.ToXML());
 
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
-            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
@@ -130,7 +131,6 @@ namespace GoM.Core.Persistence
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach (var t in _this.Branches) element.Add(t.ToXML());
 
-            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
@@ -146,7 +146,6 @@ namespace GoM.Core.Persistence
             FolderName = folderName;
             FileName = fileName;
         }
-
 
         public IGoMContext Load (string rootPath)
         {
@@ -170,7 +169,70 @@ namespace GoM.Core.Persistence
 
         }
 
+        public bool TryInit ( string currentPath, out string pathFound )
+        {
+            if ( currentPath == null ) throw new ArgumentNullException();
+            if ( !Directory.Exists( currentPath ) ) throw new ArgumentException();
 
+            pathFound = "";
+            bool result = true;
+            bool stop = false;
+            DirectoryInfo di = new DirectoryInfo(currentPath);
+
+            // Search .gom folder in parents
+            do
+            {
+                if ( di.GetDirectories().FirstOrDefault((el) => { return el.Name == FolderName; } ) != null )
+                {
+                    pathFound = currentPath;
+                    stop = true;
+                    result = false;
+                }
+                if(di.Parent == null)
+                {
+                    pathFound = string.Empty;
+                    stop = true;
+                }
+
+                di = di.Parent;
+            } while ( !stop );
+
+            // if we don't have .gom folder => create it and poplate GoMContext
+            if(result)
+            {
+
+                Mutable.GoMContext ctx = new Mutable.GoMContext();
+                ctx.RootPath = currentPath;
+
+                DirectoryInfo dinfo = new DirectoryInfo(currentPath);
+                var allgitrepo = SearchGitFolder( dinfo );
+                foreach(var path in allgitrepo)
+                {
+                    var repo = new Mutable.BasicGitRepository();
+                    repo.Path = path;
+                    repo.Url = null;
+                    repo.Details = null;
+                    ctx.Repositories.Add(repo);
+                }
+
+                Save( ctx );
+            }
+
+            return result;
+        }
+
+        private List<string> SearchGitFolder(DirectoryInfo di)
+        {
+            var current = new List<string>();
+
+            if ( di.EnumerateDirectories().FirstOrDefault((el) => { return el.FullName == ".git"; } ) !=null ) current.Add( di.FullName );
+
+            foreach(var directory in di.EnumerateDirectories())
+            {
+                current.AddRange( SearchGitFolder( directory ) );
+            }
+            return current;
+        }
 
     }
 }
