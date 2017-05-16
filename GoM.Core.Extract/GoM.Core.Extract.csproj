@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.23.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+  </ItemGroup>
+
+</Project>
