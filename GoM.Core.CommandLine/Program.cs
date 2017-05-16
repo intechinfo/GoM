@@ -12,66 +12,9 @@ namespace GoM.Core.CommandLine
     {
         public static void Main(params string[] args)
         {
-            /*if(args == null || args.Length == 0)
-            {
-                Array.Resize(ref args, args.Length + 1);
-                args[args.Length - 1] = Console.ReadLine();
-            }
-            CommandLineApplication cmdLineApplication = new CommandLineApplication(false);
-
-            cmdLineApplication.Command("Hello", (cmd) =>
-            {
-                cmd.Description = "Simple Hello World";
-                cmd.HelpOption("-h");
-
-                cmd.OnExecute(() =>
-                {
-                    Console.WriteLine("Hello World!");
-                    return 0;
-                });
-
-            }, false);
-
-            cmdLineApplication.Command("GoodBye", (cmd) =>
-            {
-                cmd.Description = "Simple GoodBye";
-                cmd.HelpOption("-h");
-
-                cmd.OnExecute(() =>
-                {
-                    Console.WriteLine("Goodbye!");
-                    return 0;
-                });
-
-            }, false);
-
-            //Help implementation
-            cmdLineApplication.Command("h", (cmd) =>
-            {
-                cmd.Description = "Simple GoodBye";
-                cmd.HelpOption("-h");
-
-                cmd.OnExecute(() =>
-                {
-                    var cmds = cmdLineApplication.Commands;
-                    foreach(var command in cmds)
-                    {
-                        Console.WriteLine(command.Name);
-                    }
-                   
-                    return 0;
-                });
-
-            }, false);
-            foreach (var cnt in args)
-            {
-                cmdLineApplication.Execute(cnt);
-            }
-            
-            Console.ReadLine();*/
             var app = new CommandLineApplication(throwOnUnexpectedArg: false);
             app.Name = "gom";
-            app.HelpOption("-?,|-h|--help");
+            app.HelpOption("-h|--help");
 
             app.OnExecute(() => {
                 Console.WriteLine("Hello World!");
@@ -85,9 +28,62 @@ namespace GoM.Core.CommandLine
 
                  command.OnExecute(() =>
                  {
-                     Console.WriteLine("Bene Bene Bene");
+                     Console.WriteLine("");
                      return 0;
                  });
+             });
+
+            app.Command("add", (command) =>
+            {
+                command.Description = "Ceci est une description.";
+                command.HelpOption("-h|--help");
+
+                var locationArgument = command.Argument("[location]",
+                                    "Where the ninja should hide.");
+
+                command.OnExecute(() =>
+                {
+                    var location = locationArgument.Values.Count() > 0 ? locationArgument.Value : "under a turtle";
+                    Console.WriteLine("Ninja is hidden " + location);
+                    return 0;
+                });
+            });
+
+            app.Command("attack", (command) =>
+            {
+                command.Description = "Instruct the ninja to go and attack!";
+                command.HelpOption("-?|-h|--help");
+
+                var excludeOption = command.Option("-e|--exclude <exclusions>",
+                               "Branch/Repository to exclude of the selection.",
+                               CommandOptionType.MultipleValue);
+
+                var screamOption = command.Option("-s|--scream",
+                                       "Scream while attacking",
+                                       CommandOptionType.NoValue);
+
+                command.OnExecute(() =>
+                {
+                    var exclusions = excludeOption.Values;
+                    var attacking = (new List<string>
+                {
+                    "dragons",
+                    "badguys",
+                    "civilians",
+                    "animals"
+                }).Where(x => !exclusions.Contains(x));
+
+                    Console.Write("Ninja is attacking " + string.Join(", ", attacking));
+
+                    if (screamOption.HasValue())
+                    {
+                        Console.Write(" while screaming");
+                    }
+
+                    Console.WriteLine();
+
+                    return 0;
+                });
              });
             app.Command("files", c =>
             {
@@ -98,7 +94,7 @@ namespace GoM.Core.CommandLine
 
                
 
-                c.HelpOption("-?,|-h|--help");
+            app.Command("files", c =>
 
                 c.OnExecute(() =>
                 {
@@ -120,27 +116,43 @@ namespace GoM.Core.CommandLine
                     return 0;
                 });
             });
-            app.Command("add", (command) =>
             {
-                command.Description = "Ceci est une description.";
-                command.HelpOption("-?,|-h|--help");
 
-                var locationArgument = command.Argument("[location]",
-                                    "Where the ninja should hide.");
+                c.Description = "Get files";
+                var locationArgument = c.Argument("[location]",
+                                   "Where the files should be located .");
 
-                command.OnExecute(() =>
+
+
+                c.HelpOption("-?,|-h|--help");
+
+                c.OnExecute(() =>
                 {
-                    var location = locationArgument.Values.Count() > 0 ? locationArgument.Value : "under a turtle";
-                    Console.WriteLine("Ninja is hidden " + location);
+                    var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
+                    Console.WriteLine(projectPath);
+                    if (File.Exists(projectPath))
+                    {
+                        ProcessFile(projectPath);
+                    }
+                    else if (Directory.Exists(projectPath))
+                    {
+                        ProcessDirectory(projectPath);
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} is not a valid file or directory.", projectPath);
+                    }
+                    Console.ReadLine();
                     return 0;
                 });
             });
-
+    
             app.Execute(args);
            
         }
+
         public static void ProcessDirectory(string targetDirectory)
-        {         
+        {
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             foreach (string fileName in fileEntries)
                 ProcessFile(fileName);
@@ -154,5 +166,10 @@ namespace GoM.Core.CommandLine
             Console.WriteLine(Path.GetFileName(path));
         }
     }
+        public static void ProcessFile(string path)
+        {
+            Console.WriteLine(Path.GetFileName(path));
+        }
+    }
 
-}   
+}
