@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoM.Core.Immutable\GoM.Core.Immutable.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Immutable\GoM.Core.Immutable.csproj" />
   </ItemGroup>
 
   <ItemGroup>
