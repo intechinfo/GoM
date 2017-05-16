@@ -20,9 +20,9 @@ namespace GoM.Core.FSAnalyzer
                 return new CsharpProjectHandler(FileProvider).Sniff();
             } else if (HasFile("package.json"))
             {
-                // Dispatch to JsHandler
+                return new JsProjectHandler(FileProvider).Sniff();
             }
-            return this;
+            return null;
         }
 
         public override IProject Read()

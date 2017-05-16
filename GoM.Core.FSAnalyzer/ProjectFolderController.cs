@@ -25,15 +25,14 @@ namespace GoM.Core.FSAnalyzer
                     if (fileInfo.IsDirectory)
                     {
                         // On each project call specialize handler with PhysicalFileProvider
-                        CSharpProjectFolderHandler projectHandler = new CSharpProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
-                        if(projectHandler.Sniff())
+                        ProjectFolderHandler projectHandler = new ProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
+                        if(projectHandler.Sniff() != null)
                         {
                             // If true, add in collection
                             // Return IProject collection
                             Project project = new Project {Path = fileInfo.PhysicalPath};
 
                             // Gotta initialize the targets
-
                             projects.Add(project);
                         }
                     }
