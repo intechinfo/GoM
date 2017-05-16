@@ -11,9 +11,9 @@ namespace GoM.Core.Persistence.Tests
 {
     public class PersistenceTests
     {
-        string TuPath( [System.Runtime.CompilerServices.CallerFilePath] string s = "" )
+        string TuPath([System.Runtime.CompilerServices.CallerFilePath] string s = "")
         {
-            return Path.GetDirectoryName( s );
+            return Path.GetDirectoryName(s);
         }
 
         [Fact]
@@ -111,19 +111,15 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void load_the_gom_context_from_gom_file()
         {
-            string rootPath = "C:\\Users\\Red\\Desktop\\Dev\\GoM";
-            string folderName = ".gom";
-            string fileName = "context";
+            try_save();
 
-            var data = File.ReadAllText(Path.Combine(rootPath, folderName, fileName));
-            XDocument doc = XDocument.Parse(data);
+            string rootPath = TuPath();
 
-            doc.FirstNode.Remove();
-            var ctx = new GoMContext(doc.Root);
+            var p = new Persistence();
+            GoMContext ctx = (GoMContext)p.Load(rootPath);
 
-            Assert.True(ctx.RootPath == "C:\\Users\\Red\\Desktop\\Dev\\GoM");
-
-            Assert.True(doc.Root.Attribute("GOM_Document_Version").Value == "1");
+            // doc.FirstNode.Remove();
+            // Assert.True(doc.Root.Attribute("GOM_Document_Version").Value == "1");
 
             Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
             Assert.True(ctx.Feeds[0].Packages[0].Version == "v1.0.0");
@@ -199,7 +195,6 @@ namespace GoM.Core.Persistence.Tests
             Console.Write(ctx);
 
         }
-        [Fact]
         public void try_save()
         {
             IGoMContext completeFake = GenerateFakeContextHelper();
@@ -332,12 +327,12 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void try_init_works()
         {
-            var path = Path.Combine( TuPath(), ".gom");
-            if(Directory.Exists(path)) Directory.Delete( path, true);
+            var path = Path.Combine(TuPath(), ".gom");
+            if (Directory.Exists(path)) Directory.Delete(path, true);
             Persistence p = new Persistence();
             string outPath;
-            Assert.True( p.TryInit( TuPath(), out outPath ) );
-            Assert.False( p.TryInit( TuPath(), out outPath ) );
+            Assert.True(p.TryInit(TuPath(), out outPath));
+            Assert.False(p.TryInit(TuPath(), out outPath));
         }
 
     }
