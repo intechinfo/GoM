@@ -116,7 +116,6 @@ namespace GoM.Core.Persistence
             foreach (var t in _this.Projects) element.Add(t.ToXML());
 
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
-            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
@@ -130,7 +129,6 @@ namespace GoM.Core.Persistence
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach (var t in _this.Branches) element.Add(t.ToXML());
 
-            //element.Add( _this.Details.ToXML() );
             return element;
         }
 
@@ -170,7 +168,11 @@ namespace GoM.Core.Persistence
 
         }
 
+        bool IPersistence.TryInit ( out string pathFound )
+        {
 
 
+            throw new NotImplementedException();
+        }
     }
 }
