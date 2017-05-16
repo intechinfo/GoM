@@ -7,11 +7,14 @@ namespace GoM.Feeds
 {
     internal class PypiFactory : IFeedFactory
     {
-        public string SniffingKeyword => "pypi.python.org";
-
-        public IFeedReader GetInstance()
+        public IFeedReader GetFeedReader()
         {
-            return new PypiOrgFeedReader();
+            throw new NotImplementedException();
+        }
+
+        public IFeedFactory Snif()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -19,11 +19,6 @@ namespace GoM.Feeds
             _client = new HttpClient();
         }
 
-        public override string BaseUrl
-        {
-            get { return _baseUrl; }
-        }
-
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -65,6 +60,11 @@ namespace GoM.Feeds
                 target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
             }
             return list;
+        }
+
+        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        {
+            throw new NotImplementedException();
         }
     }
 }

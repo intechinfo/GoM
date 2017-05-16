@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using GoM.Core;
 using GoM.Feeds.Abstractions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
@@ -11,17 +14,15 @@ namespace GoM.Feeds
 
         public FeedManager()
         {
-            //_factory = "zob";    
+            _factory = new DefaultFeedFactory();   
         }
 
-        public void Register(IFeedFactory factory)
+        public IDictionary<IPackageInstance, IEnumerable<IPackageInstance>> GetNewestVersions(List<IPackageFeed> packageFeeds, List<IPackageInstance> packages)
         {
-            
-        }
-
-        public void Sniff(Uri uri)
-        {
-            throw new NotImplementedException();
+            IEnumerable<IFeedReader> feeds = _factory.Snif(packageFeeds);
+            var toDo = packages.Join(feeds, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.GetNewestVersions(p.Name, p.Version) } );
+            Task.WaitAll(toDo.Select(x => x.T).ToArray());
+            return toDo.ToDictionary(x => x.P, x => x.T.Result);
         }
     }
 }
