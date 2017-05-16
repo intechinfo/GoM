@@ -52,5 +52,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj">
+      <Project>{115f5512-8c4d-41ba-81c7-12b2626bde57}</Project>
+      <Name>GoM.Core.Abstractions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
