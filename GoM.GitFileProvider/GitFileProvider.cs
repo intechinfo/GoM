@@ -82,31 +82,10 @@ namespace GoM.GitFileProvider
                 case TYPE.Unhandled:
                     return NotFoundDirectoryContents.Singleton;
                 case TYPE.Root:
-                    using (RepositoryWrapper rw = new RepositoryWrapper())
-                    {
-                        rw.Create(_rootPath);
-                        Branch head = rw.Repo.Head;
-                        if (head == null) return NotFoundDirectoryContents.Singleton;
-                        return CreateDirectoryInfo(head.Tip.Tree);
-                    }
+                    return GetDirectoryRoot();
                 case TYPE.Branches:
-                    using (RepositoryWrapper rw = new RepositoryWrapper())
-                    {
-                        rw.Create(_rootPath);
-                        Branch branch = rw.Repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
-                        if (branch == null)
-                            return NotFoundDirectoryContents.Singleton;
-                        string pathToFileFromBranch = "";
-                        for (int i = 2; i < splitPath.Length; i++)
-                            pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
-                        if (pathToFileFromBranch.Trim().Equals(""))
-                            return CreateDirectoryInfo(branch.Tip.Tree);
-                        var f = branch.Tip.Tree[@"GoM.GitFileProvider\"];
-                        if (f.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
-                        return CreateDirectoryInfo(f.Target as Tree);
-                    }
+                    return GetDirectoryBranch(splitPath, subpath, flag);
                 case TYPE.Tags:
-
                     break;
                 case TYPE.Commits:
                     break;
@@ -116,12 +95,13 @@ namespace GoM.GitFileProvider
             return null;
         }
 
-        private DirectoryInfo CreateDirectoryInfo(Tree tree)
+        private DirectoryInfo CreateDirectoryInfo(Tree tree, RepositoryWrapper rw)
         {
             List<IFileInfo> files = new List<IFileInfo>();
             foreach (var file in tree)
             {
-                FileInfoDirectory f = new FileInfoDirectory(true, _rootPath + @"\" + file.Name, file.Name);
+                IFileInfo f = file.Mode == Mode.Directory ? new FileInfoDirectory(true, _rootPath + @"\" + file.Name, file.Name) as IFileInfo
+                                                          : new FileInfoFile(true, _rootPath + @"\" + file.Name, file.Name, DateTimeOffset.MinValue, file.Target as Blob, rw);
                 files.Add(f);
             }
             DirectoryInfo fDir = new DirectoryInfo(files);
@@ -140,15 +120,13 @@ namespace GoM.GitFileProvider
                     Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                     if (b == null)
                         return new NotFoundFileInfo("Invalid"); ; // TODO
-                    string pathToFileFromBranch = "";
-                    for (int i = 2; i < splitPath.Length; i++)
-                        pathToFileFromBranch += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
-                    if (pathToFileFromBranch.Trim().Equals(""))
+                    string pathToFileFromBranch = GetRelativePath(splitPath);
+                    if (String.IsNullOrEmpty(pathToFileFromBranch))
                         return new FileInfoRef(true, -1, _rootPath + subpath, b.FriendlyName, default(DateTimeOffset), true);
                     TreeEntry node = b[pathToFileFromBranch];
                     if (node == null)
                         return new NotFoundFileInfo("Invalid");
-                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory), (Blob)node.Target, rw);
+                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (Blob)node.Target, rw);
                     return f;
                 }
             }
@@ -168,6 +146,42 @@ namespace GoM.GitFileProvider
                 }
             }
             return null;
+        }
+
+        private IDirectoryContents GetDirectoryBranch(string[] splitPath, string subpath, char flag)
+        {
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                Branch branch = rw.Repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
+                if (branch == null)
+                    return NotFoundDirectoryContents.Singleton;
+                string relativePath = GetRelativePath(splitPath);
+                if (String.IsNullOrEmpty(relativePath))
+                    return CreateDirectoryInfo(branch.Tip.Tree, rw);
+                var f = branch.Tip.Tree[relativePath];
+                if (f?.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
+                return CreateDirectoryInfo(f.Target as Tree, rw);
+            }
+        }
+
+        private IDirectoryContents GetDirectoryRoot()
+        {
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                Branch head = rw.Repo.Head;
+                if (head == null) return NotFoundDirectoryContents.Singleton;
+                return CreateDirectoryInfo(head.Tip.Tree, rw);
+            }
+        }
+
+        private string GetRelativePath(string[] splitPath)
+        {
+            string RelativePath = "";
+            for (int i = 2; i < splitPath.Length; i++)
+                RelativePath += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
+            return RelativePath.Trim();
         }
 
         public IFileInfo GetFileInfo(string subpath)

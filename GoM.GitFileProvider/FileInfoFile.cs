@@ -16,18 +16,14 @@ namespace GoM.GitFileProvider
         string _physicalPath;
         string _name;
         DateTimeOffset _lastModified;
-        bool _isDirectory;
         ReadStreamDecorator _readStreamDeco;
 
-        public FileInfoFile(bool exists, string physicalPath, string name, DateTimeOffset lastModified, bool isDirectory, Blob file = null, RepositoryWrapper rw = null)
+        public FileInfoFile(bool exists, string physicalPath, string name, DateTimeOffset lastModified, Blob file = null, RepositoryWrapper rw = null)
         {
             _exists = exists;
             _physicalPath = physicalPath;
-            if (isDirectory)
-                _physicalPath += Path.DirectorySeparatorChar;
             _name = name;
             _lastModified = lastModified;
-            _isDirectory = isDirectory;
             if (file != null)
             {
                 _length = file.Size;
@@ -45,7 +41,7 @@ namespace GoM.GitFileProvider
 
         public DateTimeOffset LastModified => _lastModified;
 
-        public bool IsDirectory => _isDirectory;
+        public bool IsDirectory => false;
 
         public Stream CreateReadStream()
         {

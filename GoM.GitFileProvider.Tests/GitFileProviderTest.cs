@@ -101,11 +101,11 @@ namespace GoM.GitFileProvider.Tests
         public void FileInfo_Of_Specific_Branch_Called_By_Name()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            IFileInfo namedBranch = git.GetFileInfo(@"branches\perso_yazman");
+            IFileInfo namedBranch = git.GetFileInfo(@"branches\origin/perso_yazman");
 
             namedBranch.Exists.Should().BeTrue();
-            namedBranch.Name.Should().Be("perso_yazman");
-            namedBranch.PhysicalPath.Should().Be(ProjectRootPath+@"branches\perso_yazman");
+            namedBranch.Name.Should().Be("origin/perso_yazman");
+            namedBranch.PhysicalPath.Should().Be(ProjectRootPath+@"branches\origin/perso_yazman");
             namedBranch.Length.Should().Be(-1);
             namedBranch.LastModified.Should().Be(default(DateTimeOffset));
         }
@@ -129,11 +129,29 @@ namespace GoM.GitFileProvider.Tests
 
         }
         [Test]
-        public void GetDirectoryContents()
+        public void GetDirectoryContents_Root()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             var rootDir = git.GetDirectoryContents("");
 
+            foreach (var item in rootDir)
+            {
+                item.Exists.Should().BeTrue();
+                if (item.IsDirectory)
+                {
+                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
+
+                }
+                else
+                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
+            }
+        }
+
+        [Test]
+        public void GetDirectoryContents_Branch()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            var rootDir = git.GetDirectoryContents(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider");
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
