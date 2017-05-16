@@ -119,42 +119,42 @@ namespace GoM.Core.Persistence.Tests
             GoMContext ctx = (GoMContext)p.Load(rootPath);
 
             #region Repo 1
-            Assert.True(ctx.Repositories[0].Path == "/usr/developpement/mdr");
-            Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
-            Assert.True(ctx.Repositories[0].Details == null);
+            Assert.True(ctx.Repositories[1].Path == "/usr/developpement/mdr");
+            Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[1].Details == null);
             #endregion
 
             #region Repo 2
-            Assert.True(ctx.Repositories[1].Path == "/usr/developpement/lolilol");
-            Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
-            Assert.True(ctx.Repositories[1].Details.Path == "/usr/developpement/GoM/");
-            Assert.True(ctx.Repositories[1].Details.Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
+            Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
+            Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
 
             #region Branch 1
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Name == "develop");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "develop");
 
             #region Projet 1
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Path == "./fakeproject1/");
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Name == "target1");
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name == "dependency1");
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version == "1.0.0");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Path == "./fakeproject1/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Name == "target1");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name == "dependency1");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version == "1.0.0");
 
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[0].Targets[1].Name == "target2");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[1].Name == "target2");
             #endregion
 
             #region Projet 2
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[1].Path == "./fakeproject2/");
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[1].Targets[0].Name == "target3");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Path == "./fakeproject2/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Targets[0].Name == "target3");
             #endregion
 
             #region Projet 3
-            Assert.True(ctx.Repositories[1].Details.Branches[0].Details.Projects[2].Path == "./fakeproject3/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[2].Path == "./fakeproject3/");
             #endregion
             #endregion
 
             #region Branch 2
-            Assert.True(ctx.Repositories[1].Details.Branches[1].Name == "Cubado");
-            Assert.True(ctx.Repositories[1].Details.Branches[1].Details == null);
+            Assert.True(ctx.Repositories[0].Details.Branches[1].Name == "Cubado");
+            Assert.True(ctx.Repositories[0].Details.Branches[1].Details == null);
             #endregion
 
             #endregion
@@ -169,7 +169,7 @@ namespace GoM.Core.Persistence.Tests
             Assert.True(ctx.Feeds[0].Packages[1].Version == "2.0.0");
             Assert.True(ctx.Feeds[0].Packages[1].Name == "pénis");
 
-            Assert.True(ctx.Feeds[0].Packages[2].Version == "3.0.0");
+            Assert.True(ctx.Feeds[0].Packages[2].Version == "1.5.0");
             Assert.True(ctx.Feeds[0].Packages[2].Name == "chibre");
             #endregion
 
