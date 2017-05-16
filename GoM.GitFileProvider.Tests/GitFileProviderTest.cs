@@ -14,8 +14,10 @@ namespace GoM.GitFileProvider.Tests
     [TestFixture]
     public class GitFileProviderTest
     {
+        private string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+
         [Test]
-        public void Create_GitFilesProvide()
+        public void Create_GitFileProvider_And_Tests_Correct_And_Incorrect_Git_Repository_Paths()
         {
             bool exist;
             string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
@@ -43,6 +45,19 @@ namespace GoM.GitFileProvider.Tests
             GitFileProvider git4 = new GitFileProvider(ProjectRootPath + @"\Wrong\Path\.git");
             exist = (bool)typeof(GitFileProvider).GetField("_exist", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(git4);
             exist.Should().Be(false);
+        }
+
+        [Test]
+        public void FileInfo_Of_Root_Should_Return_FileInfoRefType_Containing_Name_And_Path()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo rootInfo = git.GetFileInfo("");
+
+            rootInfo.Exists.Should().BeFalse();
+            rootInfo.Name.Should().Be("root");
+            rootInfo.PhysicalPath.Should().Be(ProjectRootPath);
+            rootInfo.Length.Should().Be(-1);
+            rootInfo.LastModified.Should().Be(default(DateTimeOffset));
         }
     }
 }
