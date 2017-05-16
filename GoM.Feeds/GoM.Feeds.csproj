@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
   </ItemGroup>
 
 </Project>

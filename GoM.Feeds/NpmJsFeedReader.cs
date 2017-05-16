@@ -2,19 +2,69 @@
 using GoM.Feeds.Abstractions;
 using System;
 using System.Collections.Generic;
-
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using GoM.Core.Mutable;
+using System.Linq;
 namespace GoM.Feeds
 {
     internal class NpmJsFeedReader : NpmFeedReader
     {
-        public override IEnumerable<IPackageInstance> GetAllVersions(string name)
+        HttpClient _client;
+        string _baseUrl = "http://registry.npmjs.org/";
+        internal NpmJsFeedReader()
         {
-            throw new NotImplementedException();
+            _client = new HttpClient();
         }
 
-        public override IEnumerable<ITarget> GetDependencies(string name, string version)
+        public override string BaseUrl
         {
-            throw new NotImplementedException();
+            get { return _baseUrl; }
+        }
+
+        public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
+            name = name.ToLowerInvariant();
+            string resp = await  _client.GetStringAsync(_baseUrl + name );
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
+
+            var list = new List<IPackageInstance>();
+            JObject versions = new JObject( o.Property("versions"));
+            //iterate on eah version of the json
+            foreach (var item in versions)
+            {
+                string packageVersion = item.Key;
+                string packageName = item.Value["name"].ToString();
+                list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+            }
+            return list;
+        }
+        public override async Task<IEnumerable<ITarget>> GetDependencies(string name, string version)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
+            if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
+            name = name.ToLowerInvariant();
+            version = version.ToLowerInvariant();
+
+            string resp = await _client.GetStringAsync(_baseUrl + name+'/'+version);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : "+version+" found.");
+
+            JObject dependencies = new JObject( o.Property("dependencies"));
+            var list = new List<ITarget>();
+            var target = new Target { Name = o.Value<string>("name") };
+            //iterate on eah version of the json
+            foreach (var item in dependencies)
+            {
+                string depName = item.Key;
+                string depVersion = item.Value.ToString();
+                target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+            }
+            return list;
         }
     }
 }
