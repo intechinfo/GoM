@@ -114,39 +114,28 @@ namespace GoM.Core.Persistence.Tests
 
             XDocument doc = XDocument.Parse(data);
 
-
-
-
-
-            //var t = from c in doc.FirstNode select "";
-
             doc.FirstNode.Remove();
             var ctx = new GoMContext(doc.Root);
 
-            Assert.True (ctx.RootPath == ".");
-            foreach (var repositories in ctx.Repositories)
-            {
-                Assert.True(repositories.Path == ".");
-                Assert.True(repositories.Url == new Uri("http://github.com/projet.git"));
-                Assert.True(repositories.Details.Path == "repo");
-                Assert.True(repositories.Details.Url == new Uri(""));
-                foreach( var y in  repositories.Details.Branches)
-                {
-                    Assert.True(y.Name == "projet");
-                }
-            }
-            foreach (var feed in ctx.Feeds)
-            {
-                Assert.True(feed.Url == new Uri ("http://google.fr"));
-                foreach( var package in feed.Packages)
-                {
-                    Assert.True(package.Name == "bite");
-                    Assert.True(package.Version == "v1.0.0");
-                }
-            }
-            
+            Assert.True(ctx.RootPath == ".");
 
-            Console.WriteLine("");
+            Assert.True(ctx.Repositories[0].Path == ".");
+            Assert.True(ctx.Repositories[0].Url == new Uri("http://github.com/projet.git"));
+            Assert.True(ctx.Repositories[0].Details.Path == "repo");
+            Assert.True(ctx.Repositories[0].Details.Url == new Uri(""));
+
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "projet");
+
+
+
+            Assert.True(ctx.Feeds[0].Url == new Uri("http://google.fr"));
+
+            Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
+            Assert.True(ctx.Feeds[0].Packages[0].Version == "v1.0.0");
+
+
+
+
 
         }
 
@@ -156,7 +145,7 @@ namespace GoM.Core.Persistence.Tests
 
             var ctx = GenerateFakeContextHelper();
 
-            Console.Write( ctx );
+            Console.Write(ctx);
 
         }
 
@@ -179,14 +168,14 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             var feed1 = new Mutable.PackageFeed();
-            feed1.Url = new Uri( "http://www.google.fr" );
-            feed1.Packages.Add( package1 );
-            feed1.Packages.Add( package2 );
-            feed1.Packages.Add( package3 );
+            feed1.Url = new Uri("http://www.google.fr");
+            feed1.Packages.Add(package1);
+            feed1.Packages.Add(package2);
+            feed1.Packages.Add(package3);
 
             // OK
             var feed2 = new Mutable.PackageFeed();
-            feed2.Url = new Uri( "http://www.google.fr" );
+            feed2.Url = new Uri("http://www.google.fr");
 
             // OK
             var targetDepency = new Mutable.TargetDependency();
@@ -196,12 +185,12 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var target1 = new Mutable.Target();
             target1.Name = "";
-            target1.Dependencies.Add( targetDepency );
+            target1.Dependencies.Add(targetDepency);
 
             // OK
             var target2 = new Mutable.Target();
             target2.Name = "";
-            
+
             // OK
             var target3 = new Mutable.Target();
             target2.Name = "";
@@ -215,7 +204,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var project2 = new Mutable.Project();
             project.Path = "";
-            project.Targets.Add( target3 );
+            project.Targets.Add(target3);
 
             // OK
             var project3 = new Mutable.Project();
@@ -224,7 +213,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var versionTag = new Mutable.VersionTag();
             versionTag.FullName = "";
-            
+
             // OK
             var branchVersion = new Mutable.BranchVersionInfo();
             branchVersion.LastTag = versionTag;
@@ -253,31 +242,31 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             var realgitrepo = new Mutable.GitRepository();
-            realgitrepo.Url = new Uri( "http://www.google.fr" );
+            realgitrepo.Url = new Uri("http://www.google.fr");
             realgitrepo.Path = "";
             realgitrepo.Details = realgitrepo;
-            realgitrepo.Branches.Add( basicbranch);
-            realgitrepo.Branches.Add( basicbranch2 );
+            realgitrepo.Branches.Add(basicbranch);
+            realgitrepo.Branches.Add(basicbranch2);
 
             // OK
             var basicrepo2 = new Mutable.BasicGitRepository();
             basicrepo2.Details = realgitrepo;
             basicrepo2.Path = "";
-            basicrepo2.Url = new Uri( "http://www.google.fr" );
+            basicrepo2.Url = new Uri("http://www.google.fr");
 
             // OK
             var basicrepo = new Mutable.BasicGitRepository();
             basicrepo.Path = "";
-            basicrepo.Url = new Uri( "http://www.google.fr" );
+            basicrepo.Url = new Uri("http://www.google.fr");
             basicbranch.Details = null;
 
             // OK
             Mutable.GoMContext ctx = new Mutable.GoMContext();
             ctx.RootPath = "";
-            ctx.Feeds.Add( feed1 );
-            ctx.Feeds.Add( feed2 );
-            ctx.Repositories.Add( basicrepo2 );
-            ctx.Repositories.Add( basicrepo );
+            ctx.Feeds.Add(feed1);
+            ctx.Feeds.Add(feed2);
+            ctx.Repositories.Add(basicrepo2);
+            ctx.Repositories.Add(basicrepo);
 
             return ctx;
         }
