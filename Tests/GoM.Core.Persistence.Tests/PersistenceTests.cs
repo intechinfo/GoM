@@ -303,7 +303,7 @@ namespace GoM.Core.Persistence.Tests
             var basicrepo = new Mutable.BasicGitRepository();
             basicrepo.Path = "/usr/developpement/mdr";
             basicrepo.Url = new Uri("http://www.google.fr");
-            basicbranch.Details = null;
+            basicrepo.Details = null;
 
             // OK
             Mutable.GoMContext ctx = new Mutable.GoMContext();
