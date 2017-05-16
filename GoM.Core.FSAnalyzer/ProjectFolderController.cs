@@ -30,8 +30,7 @@ namespace GoM.Core.FSAnalyzer
                         {
                             // If true, add in collection
                             // Return IProject collection
-                            Project project = new Project {Path = fileInfo.PhysicalPath};
-
+                            IProject project = projectHandler.Read();
                             // Gotta initialize the targets
                             projects.Add(project);
                         }

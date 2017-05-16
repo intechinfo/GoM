@@ -1,4 +1,5 @@
 ﻿using GoM.Core.Abstractions;
+using GoM.Core.Mutable;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 using System;
@@ -20,11 +21,14 @@ namespace GoM.Core.FSAnalyzer
             return this;
         }
 
-        public IProject Read(string path)
+        public override IProject Read()
         {
+            string path = this.FileProvider.GetFileInfo("./").PhysicalPath + @"\package.json";
             string jsonFileString = File.ReadAllText(path);
             object jsonFile = JsonConvert.DeserializeObject(jsonFileString);
-            return null;
+
+            Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath };
+            return project;
         }
     }
 }

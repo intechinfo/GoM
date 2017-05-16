@@ -38,5 +38,17 @@ namespace GoM.Core.Tests
             //Assert
             Assert.Equal(projects.Count, 0);
         }
+
+        [Fact]
+
+        public void test_javascript_project_handler_read()
+        {
+            var provider = new PhysicalFileProvider(@"C:\Users\Alexandre\Documents\IN'TECH\Semestre 7\Javascript\JS_20170113_TP\node-social-server");
+            var projectHandler = new ProjectFolderHandler(provider);
+            var res = projectHandler.Sniff();
+            res.Read();
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Assert.True(true);
+        }
     }
 }
