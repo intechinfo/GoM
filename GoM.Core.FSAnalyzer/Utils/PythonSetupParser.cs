@@ -4,9 +4,9 @@ using System.Text;
 
 namespace GoM.Core.FSAnalyzer.Utils
 {
-    public class CsProjParser : BaseConfigParser
+    public class PythonSetupParser : BaseConfigParser
     {
-        public CsProjParser(string path) : base(path)
+        public PythonSetupParser(string path) : base(path)
         {
         }
 

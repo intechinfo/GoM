@@ -4,13 +4,16 @@ using System.Text;
 
 namespace GoM.Core.FSAnalyzer.Utils
 {
-    public class CsProjParser : BaseConfigParser
+    public abstract class BaseConfigParser
     {
-        public CsProjParser(string path) : base(path)
+        public string Path { get; }
+
+        protected BaseConfigParser(string path)
         {
+            Path = path;
         }
 
-        public override IEnumerable<ITarget> Read()
+        public virtual IEnumerable<ITarget> Read()
         {
             throw new NotImplementedException();
         }
