@@ -74,6 +74,7 @@
     <Compile Include="FileInfoRef.cs" />
     <Compile Include="FileInfoRefType.cs" />
     <Compile Include="GitFileProvider.cs" />
+    <Compile Include="GitFilesWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadStreamDecorator.cs" />
     <Compile Include="RepositoryWrapper.cs" />

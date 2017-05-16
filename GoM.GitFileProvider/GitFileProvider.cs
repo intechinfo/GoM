@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using LibGit2Sharp;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.FileProviders.Physical;
 
 enum TYPE {Unhandled = -1, Root = 0, Branches, Tags, Commits};
 namespace GoM.GitFileProvider
@@ -16,14 +17,30 @@ namespace GoM.GitFileProvider
     {
         readonly string _rootPath;
         readonly bool _exist;
-
+        readonly GitFilesWatcher _rootWatcher;
 
         public GitFileProvider(string rootPath)
         {
             _rootPath = rootPath;
             _exist = IsCorrectGitDirectory();
+            if (_exist)
+            {
+                _rootWatcher = new GitFilesWatcher(GetPathToGit(), new System.IO.FileSystemWatcher(GetPathToGit()), false);
+               
+                WatchGitDirectory().GetAwaiter().GetResult();
+            }
         }
+        
 
+        private string GetPathToGit()
+        {
+            string fullpath = _rootPath;
+            if (!Regex.IsMatch(_rootPath, @".git\\?$"))
+            {
+                fullpath = fullpath + @"\.git\";
+            }
+            return fullpath;
+        }
         private bool IsCorrectGitDirectory()
         {
             string fullpath = _rootPath;
@@ -232,9 +249,17 @@ namespace GoM.GitFileProvider
             }
         }
 
+        public bool IsValidFilter(string filter)
+        {
+            // TODO
+            return true;
+        }
+
         public IChangeToken Watch(string filter)
         {
-            throw new NotImplementedException();
+            if (!IsValidFilter(filter))
+                return NullChangeToken.Singleton;
+            return null;
         }
 
     }
