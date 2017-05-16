@@ -48,7 +48,31 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
-        public void FileInfo_Of_Root_Should_Return_FileInfoRefType_Containing_Name_And_Path()
+        public void FileInfo_Of_Null_String_Should_Return_Default_FileInfo_With_Name_Invalid()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo file = git.GetFileInfo(null);
+            file.Should().NotBeNull();
+            file.Name.Should().Be("Invalid");
+            file.PhysicalPath.Should().Be(null);
+            file.Length.Should().Be(-1);
+            file.Exists.Should().Be(false);
+        }
+
+        [Test]
+        public void FileInfo_Of_Invalid_String_Should_Return_Default_FileInfo_With_Name_Invalid()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo file = git.GetFileInfo("IdontExist");
+            file.Should().NotBeNull();
+            file.Name.Should().Be("Invalid");
+            file.PhysicalPath.Should().Be(null);
+            file.Length.Should().Be(-1);
+            file.Exists.Should().Be(false);
+        }
+
+        [Test]
+        public void FileInfo_Of_Root_Should_Return_FileInfoRefType_With_Name_Root_And_PhysicalPath_Equals_ProjectRootPath()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo rootInfo = git.GetFileInfo("");
@@ -58,6 +82,51 @@ namespace GoM.GitFileProvider.Tests
             rootInfo.PhysicalPath.Should().Be(ProjectRootPath);
             rootInfo.Length.Should().Be(-1);
             rootInfo.LastModified.Should().Be(default(DateTimeOffset));
+        }
+
+        [Test]
+        public void FileInfo_Of_Branches()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo branchesFile = git.GetFileInfo("branches");
+
+            branchesFile.Exists.Should().BeFalse();
+            branchesFile.Name.Should().Be("branches");
+            branchesFile.PhysicalPath.Should().Be(ProjectRootPath+@"\branches");
+            branchesFile.Length.Should().Be(-1);
+            branchesFile.LastModified.Should().Be(default(DateTimeOffset));
+        }
+
+        [Test]
+        public void FileInfo_Of_Specific_Branch_Called_By_Name()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo namedBranch = git.GetFileInfo(@"branches\perso_yazman");
+
+            namedBranch.Exists.Should().BeTrue();
+            namedBranch.Name.Should().Be("perso_yazman");
+            namedBranch.PhysicalPath.Should().Be(ProjectRootPath+@"branches\perso_yazman");
+            namedBranch.Length.Should().Be(-1);
+            namedBranch.LastModified.Should().Be(default(DateTimeOffset));
+        }
+
+        [Test]
+        public void FileInfo_Of_File_In_Specific_Branch()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInBranch = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config");
+
+            fileInBranch.Exists.Should().BeTrue();
+            fileInBranch.Name.Should().Be("app.config");
+            fileInBranch.PhysicalPath.Should().Be(ProjectRootPath + @"\branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config");
+            fileInBranch.Length.Should().BeGreaterThan(-1);
+            fileInBranch.LastModified.Should().Be(default(DateTimeOffset));
+        }
+
+        [Test]
+        public void FileInfo_Of_Dir_In_Specific_Branch()
+        {
+
         }
     }
 }
