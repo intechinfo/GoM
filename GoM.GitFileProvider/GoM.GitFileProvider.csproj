@@ -75,6 +75,7 @@
     <Compile Include="FileInfoRefType.cs" />
     <Compile Include="GitFileProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadStreamDecorator.cs" />
     <Compile Include="RepositoryWrapper.cs" />
   </ItemGroup>
   <ItemGroup>

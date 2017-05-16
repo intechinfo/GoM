@@ -146,14 +146,9 @@ namespace GoM.GitFileProvider
                     if (pathToFileFromBranch.Trim().Equals(""))
                         return new FileInfoRef(true, -1, _rootPath + subpath, b.FriendlyName, default(DateTimeOffset), true);
                     TreeEntry node = b[pathToFileFromBranch];
-
                     if (node == null)
                         return new NotFoundFileInfo("Invalid");
-                    
-                    FileInfoFile f = new FileInfoFile(true, 0, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory), (Blob)node.Target);
-                    
-                    Stream s = f.CreateReadStream();
-                    s.Dispose();
+                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (node.Mode == Mode.Directory), (Blob)node.Target, rw);
                     return f;
                 }
             }
