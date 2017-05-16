@@ -20,9 +20,7 @@ namespace GoM.Core.Persistence.Tests
         public void first_xml_try_on_package_instance()
         {
 
-            PackageInstance pi = new PackageInstance();
-            pi.Name = "SDL";
-            pi.Version = "2.0";
+            PackageInstance pi = new PackageInstance("SDL", "2.0");
 
             XDocument doc = new XDocument();
             doc.Add();
@@ -40,14 +38,11 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void xml_works_using_extensions()
         {
-            PackageInstance pi = new PackageInstance() { Name = "SDL", Version="2.0" };
-            PackageInstance pi2 = new PackageInstance() { Name = "SDLbit", Version="2.0" };
-            PackageInstance pi3 = new PackageInstance() { Name = "SDLou", Version="2.0" };
+            PackageInstance pi = new PackageInstance("SDL", "2.0");
+            PackageInstance pi2 = new PackageInstance("SDL2", "2.0");
+            PackageInstance pi3 = new PackageInstance("SDL3", "2.0");
 
-            PackageFeed pf = new PackageFeed()
-            {
-                Url = new Uri("http://www.google.fr")
-            };
+            PackageFeed pf = new PackageFeed(new Uri("http://www.google.fr"));
             pf.Packages.Add( pi );
             pf.Packages.Add( pi2 );
             pf.Packages.Add( pi3 );
@@ -66,14 +61,11 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void first_xml_try_create_multiple_node ()
         {
-            PackageInstance pi = new PackageInstance() { Name = "SDL", Version="2.0" };
-            PackageInstance pi2 = new PackageInstance() { Name = "SDLbit", Version="2.0" };
-            PackageInstance pi3 = new PackageInstance() { Name = "SDLou", Version="2.0" };
+            PackageInstance pi = new PackageInstance("SDL", "2.0");
+            PackageInstance pi2 = new PackageInstance("SDL2", "2.02");
+            PackageInstance pi3 = new PackageInstance("SDL3", "2.03");
 
-            PackageFeed pf = new PackageFeed()
-            {
-                Url = new Uri("http://www.google.fr")
-            };
+            PackageFeed pf = new PackageFeed(new Uri("http://www.google.fr"));
             pf.Packages.Add( pi );
             pf.Packages.Add( pi2 );
             pf.Packages.Add( pi3 );
@@ -107,7 +99,7 @@ namespace GoM.Core.Persistence.Tests
         {
             var data = File.ReadAllText( Path.Combine( ".", ".gom", "name" ) );
             XDocument doc = XDocument.Parse( data );
-            IGoMContext context = new GoMContext();
+            IGoMContext context = new GoMContext(doc.Root);
         }
 
 
