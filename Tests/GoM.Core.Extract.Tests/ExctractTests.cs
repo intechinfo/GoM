@@ -13,7 +13,7 @@ namespace GoM.Core.Extract.Tests
         public void folderIsGitRepository()
         {
 
-            ReadProject rp = new ReadProject(this.pathTest);
+            ReadRepository rp = new ReadRepository(this.pathTest);
             rp.gitRepositoryExist().Should().Be(true);
         }
 
