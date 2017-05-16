@@ -13,7 +13,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class JsProjectHandler : BaseProjectFolderHandler
     {
-        public JsProjectHandler(IFileProvider provider) : base(provider)
+        public JsProjectHandler(IFileProvider file) : base(file)
         {
         }
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GoM.Core.FSAnalyzer.Utils
@@ -17,19 +18,21 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath);
+            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
             JObject jObj = JObject.Parse(jsonFileString);
             List<TargetDependency> targetDependencies = new List<TargetDependency>();
 
             JProperty dependenciesJson = jObj.Property("dependencies");
-            JEnumerable<JToken> dependenciesTokens = dependenciesJson.Children();
+            IJEnumerable<JToken> dependenciesTokens = dependenciesJson.Children().Children();
+            int count = dependenciesTokens.Count();
 
             foreach (JToken item in dependenciesTokens)
             {
+                var t = item.Values<JToken>();
                 TargetDependency tDependendy = new TargetDependency
                 {
-                    Name = dependenciesJson.Name,
-                    Version = (string) dependenciesJson.Value
+                    Name = "test",
+                    Version = dependenciesJson.Value.ToString()
                 };
                 targetDependencies.Add(tDependendy);
             }
@@ -42,7 +45,7 @@ namespace GoM.Core.FSAnalyzer.Utils
                 TargetDependency tDependendy = new TargetDependency
                 {
                     Name = devDependenciesJson.Name,
-                    Version = (string) devDependenciesJson.Value
+                    Version = devDependenciesJson.Value.ToString()
                 };
                 targetDependencies.Add(tDependendy);
             }
