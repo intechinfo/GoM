@@ -26,7 +26,7 @@ namespace GoM.Core.FsAnalyzer.Tests
             var tDependencies = target.Select( e => e.Dependencies )
                                       .ToList();
 
-            tDependencies[0].Should().HaveCount( 5, "We have 5 dependencies" );
+            tDependencies[0].Should().HaveCount( 5, "We have 5 required dependencies" );
         }
     }
 }
