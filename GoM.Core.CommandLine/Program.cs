@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using GoM.Core.Mutable;
+using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,79 +14,81 @@ namespace GoM.Core.CommandLine
         public static void Main(params string[] args)
         {
             var app = new CommandLineApplication(throwOnUnexpectedArg: false);
-            app.Name = "gom";
+            app.Name = "GoM";
+                
+
             app.HelpOption("-h|--help");
 
-            app.OnExecute(() => {
-                Console.WriteLine("Hello World!");
-                
+            app.OnExecute(() =>
+            {
+                app.ShowHelp("gom");
                 return 0;
             });
 
-            app.Command("hide", (command) =>
+            app.Command("add", (command) =>
+            {
+                command.Description = "This command allow to the user to add repository and projects to his GoM";
+                command.HelpOption("-h|--help");
+
+                CommandOption repositoryOption = command.Option("-r|--repository",
+                    "Repository to add to GoM"
+                    ,CommandOptionType.MultipleValue);
+
+                CommandOption projectOption = command.Option("-p|--project",
+                    "Project to add to the repository",
+                    CommandOptionType.MultipleValue);
+
+                CommandOption allProjectOption = command.Option("-p -all|--project -all",
+                   "Add all the projects to the repository",
+                   CommandOptionType.MultipleValue);
+
+                CommandOption branchOption = command.Option("-b|--branch",
+                    "Add a branch to GoM",
+                    CommandOptionType.MultipleValue);
+
+                CommandArgument projectLocationArgument = command.Argument("[location]","Where the projects should be located");
+
+                command.OnExecute(() =>
+                {
+                    // To immplement 
+                    return 0;
+                });
+            });
+
+            /// This command allow to exclude from GoM the repo/branch/project
+            app.Command("remove", (command) =>
              {
-                 command.Description = "Ceci est une description.";
-                 command.HelpOption("-?,|-h|--help");
+                 command.Description = "Exclude repository/branch/project";
+                 command.HelpOption("-h|--help");
+
+                 var excludeRepoOPtion = command.Option("-r|--repository",
+                     "Exclude a repository from GoM",
+                     CommandOptionType.MultipleValue);
+
+                 var excludeBranchOPtion = command.Option("-b|--branch",
+                    "Exclude one branch from GoM",
+                    CommandOptionType.MultipleValue);
+
+                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
+                   "Exclude all branches from GoM",
+                   CommandOptionType.MultipleValue);
+
+                 var excludeProjectOPtion = command.Option("-p|--project",
+                   "Exclude one project from GoM",
+                   CommandOptionType.MultipleValue);
+
+                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
+                   "Exclude all projects from GoM",
+                   CommandOptionType.MultipleValue);
 
                  command.OnExecute(() =>
                  {
-                     Console.WriteLine("");
+                     // To immplement 
                      return 0;
                  });
              });
 
-            app.Command("add", (command) =>
-            {
-                command.Description = "Ceci est une description.";
-                command.HelpOption("-h|--help");
-
-                var locationArgument = command.Argument("[location]",
-                                    "Where the ninja should hide.");
-
-                command.OnExecute(() =>
-                {
-                    var location = locationArgument.Values.Count() > 0 ? locationArgument.Value : "under a turtle";
-                    Console.WriteLine("Ninja is hidden " + location);
-                    return 0;
-                });
-            });
-
-            app.Command("attack", (command) =>
-            {
-                command.Description = "Instruct the ninja to go and attack!";
-                command.HelpOption("-?|-h|--help");
-
-                var excludeOption = command.Option("-e|--exclude <exclusions>",
-                               "Branch/Repository to exclude of the selection.",
-                               CommandOptionType.MultipleValue);
-
-                var screamOption = command.Option("-s|--scream",
-                                       "Scream while attacking",
-                                       CommandOptionType.NoValue);
-
-                command.OnExecute(() =>
-                {
-                    var exclusions = excludeOption.Values;
-                    var attacking = (new List<string>
-                {
-                    "dragons",
-                    "badguys",
-                    "civilians",
-                    "animals"
-                }).Where(x => !exclusions.Contains(x));
-
-                    Console.Write("Ninja is attacking " + string.Join(", ", attacking));
-
-                    if (screamOption.HasValue())
-                    {
-                        Console.Write(" while screaming");
-                    }
-
-                    Console.WriteLine();
-
-                    return 0;
-                });
-             });
+            /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
 
@@ -157,7 +160,6 @@ namespace GoM.Core.CommandLine
             {              
                 ft.Nodes.Add(new FileTree(item));
             }
-
         }
         public static void ProcessDirectory(string targetDirectory, List<string> fileList)
         {
