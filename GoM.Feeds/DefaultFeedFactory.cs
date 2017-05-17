@@ -22,7 +22,7 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> FeedReaders => _factories.SelectMany(x => x.FeedReaders);
 
-        public IEnumerable<IFeedReader> Snif(List<Uri> links)
+        public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)
         {
             return links.SelectMany(l => Snif(l));
         }

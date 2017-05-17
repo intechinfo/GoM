@@ -17,7 +17,7 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
-        public IEnumerable<IFeedReader> Snif(List<Uri> links)
+        public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)
         {
             return links.SelectMany(x => Snif(x));
         }
