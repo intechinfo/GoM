@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoM.Feeds.Tests
 {
-    class NugetFeedsReaderTests
+    public class NugetFeedsReaderTests
     {
     }
 }
