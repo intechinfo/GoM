@@ -12,11 +12,18 @@ namespace GoM.Core.Immutable
             RootPath = path ?? throw new ArgumentException(nameof(path));
         }
 
-        private GoMContext(string path, ImmutableList<BasicGitRepository> repositories = null, ImmutableList<PackageFeed> feeds = null)
+        private GoMContext(string path, ImmutableList<BasicGitRepository> repositories, ImmutableList<PackageFeed> feeds)
         {
             RootPath = path ?? throw new ArgumentException(nameof(path));
             Repositories = repositories ?? throw new ArgumentException(nameof(repositories));
             Feeds = feeds ?? throw new ArgumentException(nameof(feeds));
+
+            if (Repositories.Any(rep => rep != null)) throw new ArgumentException($"A repository in {nameof(repositories)} is null");
+            if (Feeds.Any(feed => feed != null)) throw new ArgumentException($"A feed in {nameof(feeds)} is null");
+
+            // Check duplicates on repositories(path && url) and feeds (url)
+            bool isDuplicates = false;
+            //isDuplicates = repositories.Distinct()
         }
 
         private GoMContext(IGoMContext context)
