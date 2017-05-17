@@ -21,10 +21,6 @@ namespace GoM.Core.FSAnalyzer.Utils
             List<TargetDependency> targetDependencies = new List<TargetDependency>();
 
             string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
-            /*JObject jObj = JObject.Parse(jsonFileString);
-            JProperty dependenciesJson = jObj.Property("dependencies");
-            IJEnumerable<JToken> dependenciesTokens = dependenciesJson.Children().Children();
-            */
 
             dynamic jsConfigFileContent = JsonConvert.DeserializeObject(jsonFileString);
             dynamic dependencies = jsConfigFileContent["dependencies"];

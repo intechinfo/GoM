@@ -29,8 +29,8 @@ namespace GoM.Core.FSAnalyzer
             JsSetupParser parser = new JsSetupParser(this.FileProvider.GetFileInfo("./"));
             var targets = parser.Read();
 
-            Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath};
-            List<Target> list = targets.Select(o=> o as Target).ToList();
+            Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath };
+            List<Target> list = targets.Select(o => o as Target).ToList();
 
             project.Targets.AddRange(list);
             return project;
