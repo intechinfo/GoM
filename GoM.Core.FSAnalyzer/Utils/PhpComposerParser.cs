@@ -20,10 +20,7 @@ namespace GoM.Core.FSAnalyzer.Utils
         public override IEnumerable<ITarget> Read()
         {
             List<TargetDependency> targets = new List<TargetDependency>();
-            //PhysicalFileProvider pfp = new PhysicalFileProvider( _file );
-            //Stream phpConfigFile = pfp.GetFileInfo( "./samplePhpComposer.json" ).CreateReadStream();
-            //StreamReader sr = new StreamReader( phpConfigFile );
-            string fileContent = sr.ReadToEnd();
+            string fileContent = ReadFileContent();
             dynamic phpConfigFileContent = JsonConvert.DeserializeObject(fileContent);
             dynamic dependencies = phpConfigFileContent["require"];
 
