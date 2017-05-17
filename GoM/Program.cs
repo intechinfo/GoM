@@ -109,13 +109,10 @@ namespace GoM
             /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
-
                 c.Description = "Get directories and files relative to a path";
                 var locationArgument = c.Argument("[location]",
                                    "Where the files should be located .");
-
                 c.HelpOption("-?,|-h|--help");
-
                 c.OnExecute(() =>
                 {
                     var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
@@ -132,14 +129,11 @@ namespace GoM
                         string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
                         File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
                         ProcessDirectory(projectPath, fileList);
-
                     }
                     else
                     {
                         Console.WriteLine("{0} is not a valid file or directory.", projectPath);
                     }
-
-                    Console.ReadLine();
                     return 0;
                 });
             });
@@ -166,6 +160,7 @@ namespace GoM
                     ft.Nodes.Add(n);
                     GetChildren(item, n);
                 }
+ 
             }
         }
         public static void GetChildren(string path, FileTree ft)
