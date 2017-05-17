@@ -30,5 +30,25 @@ namespace GoM.Core.FsAnalyzer.Tests
 
             result.Should().BeOfType(typeof(PackagesConfigHandler));
         }
+
+        [Fact]
+        public void Test_project_handler_return_python_handler_on_python_project()
+        {
+            var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Python/"));
+            var handler = new ProjectFolderHandler(provider);
+            var result = handler.Sniff();
+
+            result.Should().BeOfType(typeof(PythonProjectHandler));
+        }
+
+        [Fact]
+        public void Test_project_handler_return_php_handler_on_php_project()
+        {
+            var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Php/"));
+            var handler = new ProjectFolderHandler(provider);
+            var result = handler.Sniff();
+
+            result.Should().BeOfType(typeof(PhpProjectHandler));
+        }
     }
 }

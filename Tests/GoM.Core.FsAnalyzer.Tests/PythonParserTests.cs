@@ -15,7 +15,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         [Fact]
         public void Test_python_parser_valid_file_return_correct_number_of_targets()
         {
-            var file = new PhysicalFileInfo(new FileInfo(Path.Combine(SampleDirectory, "Python/valid_setup.py")));
+            var file = new PhysicalFileInfo(new FileInfo(Path.Combine(SampleDirectory, "Python/setup.py")));
             var parser = new PythonSetupParser(file);
             var targets = parser.Read().ToList();
             targets.Should().HaveCount(1, "Only one target can be specified in a python setup file");

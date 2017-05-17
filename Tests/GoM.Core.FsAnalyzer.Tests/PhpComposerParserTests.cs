@@ -16,7 +16,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void test_php_config_file()
         {
             IFileProvider provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Php"));
-            IFileInfo file = provider.GetFileInfo( "sampleComposer.json" );
+            IFileInfo file = provider.GetFileInfo( "composer.json" );
 
             PhpComposerParser pcp = new PhpComposerParser( file );
             var t = pcp.Read();

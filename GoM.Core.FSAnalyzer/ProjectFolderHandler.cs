@@ -19,15 +19,18 @@ namespace GoM.Core.FSAnalyzer
             {
                 return new CsharpProjectHandler( FileProvider ).Sniff();
             }
-            else if( HasFile( "package.json" ) )
+            if( HasFile( "package.json" ) )
             {
                 return new JsProjectHandler( FileProvider ).Sniff();
             }
-            else if( HasFile( "setup.py" ) )
+            if( HasFile( "setup.py" ) )
             {
                 return new PythonProjectHandler( FileProvider ).Sniff();
             }
-            else if( HasFile( "composer.json" ) ) return new PhpProjectHandler( FileProvider ).Sniff();
+            if (HasFile("composer.json"))
+            {
+                return new PhpProjectHandler( FileProvider ).Sniff();
+            }
             return null;
         }
 

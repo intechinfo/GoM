@@ -9,9 +9,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         [Fact]
         public void CsProjParser()
         {
-            var p = new PhysicalFileInfo(new System.IO.FileInfo("call your own path to test"));
-            var t = new CsProjParser(p);
-            var k = t.Read();
+
         }
     }
 }

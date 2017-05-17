@@ -16,6 +16,11 @@ namespace GoM.Core.FSAnalyzer
         {
         }
 
+        public override IProjectFolderHandler Sniff()
+        {
+            return this;
+        }
+
         public override IProject Read()
         {
             var packageConfigFile = Files.FirstOrDefault(x => x.Name == "packages.config");

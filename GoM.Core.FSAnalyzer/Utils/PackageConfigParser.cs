@@ -17,16 +17,14 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<Target> target = new List<Target>();
             var physicalPath = Source.PhysicalPath;
-            XDocument xml = new XDocument();
             FileStream xmlStream = new FileStream(physicalPath, FileMode.Open);
             var result = XDocument.Load(xmlStream);
+            var dict = new Dictionary<string, List<TargetDependency>>();
             if (result.Root != null)
             {
                 var pac = (from c in result.Root.Elements("package")
                     select c).ToArray();
-                var ta = new Target();
 
                 for (var i = 0; i < pac.Count(); i++)
                 {
@@ -34,19 +32,23 @@ namespace GoM.Core.FSAnalyzer.Utils
                     var version = pac[i].Attribute("version") != null ? pac[i].Attribute("version").Value : "null";
                     var targetFramework = pac[i].Attribute("targetFramework") != null ? pac[i].Attribute("targetFramework").Value : "null";
 
-                    ta = new Target()
+                    if (!dict.ContainsKey(targetFramework))
                     {
-                        Name = targetFramework
-                    };
-                    ta.Dependencies.Add(new TargetDependency()
+                        dict.Add(targetFramework, new List<TargetDependency>());
+                    }
+                    dict[targetFramework].Add(new TargetDependency()
                     {
                         Name = id,
                         Version = version
                     });
-                    target.Add(ta);
                 }
             }
-            return target;
+            foreach (var kvp in dict)
+            {
+                var target = new Target() {Name = kvp.Key};
+                target.Dependencies.AddRange(kvp.Value);
+                yield return target;
+            }
         }
     }
 }
