@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
+
 namespace GoM.Feeds.Tests
 {
     public class NugetFeedsReaderTests

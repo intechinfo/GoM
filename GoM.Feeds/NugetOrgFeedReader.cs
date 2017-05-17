@@ -32,7 +32,7 @@ namespace GoM.Feeds
             {
                 o = JObject.Parse(resp);
             }
-            catch(JsonReaderException e)
+            catch(JsonReaderException)
             {
                 return false;
             }
