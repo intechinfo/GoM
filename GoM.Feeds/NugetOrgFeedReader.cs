@@ -52,12 +52,15 @@ namespace GoM.Feeds
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
 
             var list = new List<IPackageInstance>();
-            JObject versions = new JObject(o.Property("versions"));
+            JArray versions = o["versions"] as JArray;
             //iterate on eah version of the json
             foreach (var item in versions)
             {
-                string packageVersion = item.Key;
-                list.Add(new PackageInstance { Name = name, Version = packageVersion });
+                if (SemVersion.TryParse(item.ToString(), out SemVersion item_v))
+                {
+                    string packageVersion = item.ToString();
+                    list.Add(new PackageInstance { Name = name, Version = packageVersion });
+                }
             }
             return list;
         }
@@ -105,7 +108,8 @@ namespace GoM.Feeds
         public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => x.Version > SemVersion.Parse(version));
+            var ver = SemVersion.Parse(version);
+            return res.Where(x => SemVersion.Parse(x.Version) > ver);
         }
     }
 }
