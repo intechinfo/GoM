@@ -14,6 +14,13 @@ namespace GoM.GitFileProvider
     {
         readonly string _rootPath;
         readonly bool _exist;
+        const string INVALID_PATH = "Invalid path";
+        const string INVALID_BRANCH = "The branch don't exist in the repository";
+        const string INVALID_TAG = "The tag don't exist in the repository";
+        const string INVALID_COMMIT = "The commit don't exist in the repository";
+        const string INVALID_REPOSITORY = "The Repository doesn't exist";
+        const string INVALID_HEAD = "The repository doesn't contain head";
+        const string INVALID_COMMAND = "The command doesn't exist";
 
         public GitFileProvider(string rootPath)
         {
@@ -23,8 +30,8 @@ namespace GoM.GitFileProvider
 
         public IDirectoryContents GetDirectoryContents(string subpath)
         {
-            if (!_exist)
-                return NotFoundDirectoryContents.Singleton;
+            if (subpath == null) return NotFoundDirectoryContents.Singleton;
+            if (!_exist) return NotFoundDirectoryContents.Singleton;
             string[] splitPath = PathDecomposition(subpath, out TYPE type, out char flag);
             switch (type)
             {
@@ -40,7 +47,6 @@ namespace GoM.GitFileProvider
                     return GetDirectoryCommit(splitPath, subpath, flag);
                 case TYPE.Head:
                     return GetDirectoryHead(splitPath, subpath);
-
                 default:
                     return NotFoundDirectoryContents.Singleton;
             }
@@ -49,19 +55,16 @@ namespace GoM.GitFileProvider
         public IFileInfo GetFileInfo(string subpath)
         {
             if (subpath == null)
-                return new NotFoundFileInfo("Invalid");
-
-            TYPE type;
-            char flag;
-            string[] splitPath = PathDecomposition(subpath, out type, out flag);
+                return new NotFoundFileInfo(INVALID_COMMAND);
             if (!_exist)
-                return new NotFoundFileInfo("Invalid");
+                return new NotFoundFileInfo(INVALID_REPOSITORY);
+            string[] splitPath = PathDecomposition(subpath, out TYPE type, out char flag);
             switch (type)
             {
                 case TYPE.Unhandled:
-                    return new NotFoundFileInfo("Invalid");
+                    return new NotFoundFileInfo(INVALID_COMMAND);
                 case TYPE.Root:
-                    return new FileInfoRefType(_rootPath, "root");
+                    return new FileInfoRefType(_rootPath, INVALID_COMMAND);
                 case TYPE.Branches:
                     return GetFileBranch(splitPath, subpath, flag);
                 case TYPE.Tags:
@@ -71,7 +74,7 @@ namespace GoM.GitFileProvider
                 case TYPE.Head:
                     return GetFileHead(splitPath, subpath, flag);
                 default:
-                    return null; // TODO
+                    return new NotFoundFileInfo(INVALID_COMMAND);
             }
         }
 
@@ -142,87 +145,12 @@ namespace GoM.GitFileProvider
             List<IFileInfo> files = new List<IFileInfo>();
             foreach (var file in tree)
             {
-                IFileInfo f = file.Mode == Mode.Directory ? new FileInfoDirectory(true, _rootPath + @"\" + file.Name, file.Name) as IFileInfo
+                IFileInfo f = file.TargetType != TreeEntryTargetType.Blob ? new FileInfoDirectory(true, _rootPath + @"\" + file.Name, file.Name) as IFileInfo
                                                           : new FileInfoFile(true, _rootPath + @"\" + file.Name, file.Name, DateTimeOffset.MinValue, file.Target as Blob, rw);
                 files.Add(f);
             }
             DirectoryInfo fDir = new DirectoryInfo(files);
             return fDir;
-        }
-
-        private IFileInfo GetFileBranch(string[] splitPath, string subpath, char flag)
-        {
-            if (flag == '*')
-                return new FileInfoRefType(_rootPath + @"\branches", "branches");
-            else
-            {
-                using (RepositoryWrapper rw = new RepositoryWrapper())
-                {
-                    rw.Create(_rootPath);
-                   
-                    Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
-                    return BranchFileManager(rw, b, splitPath, subpath);
-                }
-            }
-        }
-
-        private IFileInfo GetFileCommit(string[] splitPath, string subpath, char flag)
-        {
-            if (flag == '*')
-                return new FileInfoRefType(_rootPath + @"\commits", "commits");
-            else
-            {
-                using (RepositoryWrapper rw = new RepositoryWrapper())
-                {
-                    rw.Create(_rootPath);
-                    string commitHash = splitPath[1];
-                    Commit commit = rw.Repo.Lookup<Commit>(commitHash);
-                    if (commit == null)
-                        return new NotFoundFileInfo("InvalidSha");
-                    string relativePath = GetRelativePath(splitPath);
-                    if (String.IsNullOrEmpty(relativePath))
-                    {
-                        TreeEntry entry = commit.Tree.FirstOrDefault();
-                        if (entry == null)
-                        {
-                            return new NotFoundFileInfo("NoFile");
-                        }
-                        else
-                        {
-                            if (entry.TargetType == TreeEntryTargetType.Blob)
-                                return new FileInfoFile(true, null, null, default(DateTimeOffset), entry.Target as Blob, rw);
-                        }
-                    }
-                    TreeEntry node = commit.Tree[relativePath];
-                    if (node == null)
-                        return new NotFoundFileInfo("InvalidPath");
-                    if (node.TargetType == TreeEntryTargetType.Blob)
-                        return new FileInfoFile(true, relativePath, splitPath[splitPath.Length - 1], default(DateTimeOffset), node.Target as Blob, rw);
-                }
-            }
-            return null;
-        }
-
-        private IFileInfo GetFileTag(string[] splitPath, string subPath, char flag)
-        {
-            if (flag == '*')
-                return new FileInfoRefType(_rootPath + @"\tags", "tags");
-            using (RepositoryWrapper rw = new RepositoryWrapper())
-            {
-                rw.Create(_rootPath);
-                Tag tag = rw.Repo.Tags.FirstOrDefault(t => t.FriendlyName == splitPath[1]);
-                if (tag == null) return new NotFoundFileInfo("Tag doesn't exist");
-                string relativePath = GetRelativePath(splitPath);
-                if (relativePath == null) return new NotFoundFileInfo("Invalid Path");
-                var commit = rw.Repo.Lookup<Commit>(tag.Target.Sha);
-                var tree = commit?.Tree[relativePath];
-                if (tree == null) return new NotFoundFileInfo("Invalid Path");
-                if (tree.TargetType == TreeEntryTargetType.Tree)
-                    return new FileInfoRef(true, -1, _rootPath + @"\" + subPath, tree.Name, DateTimeOffset.MaxValue, true);
-                if (tree.TargetType == TreeEntryTargetType.Blob)
-                    return new FileInfoFile(true, _rootPath + @"\" + subPath, tree.Name, commit.Committer.When, tree.Target as Blob, rw);
-            }
-            return new NotFoundFileInfo("Invalid Path");
         }
 
         private IDirectoryContents GetDirectoryBranch(string[] splitPath, string subPath, char flag)
@@ -327,12 +255,65 @@ namespace GoM.GitFileProvider
             }
         }
 
-        private string GetRelativePath(string[] splitPath, int index = 2)
+        private IFileInfo GetFileBranch(string[] splitPath, string subpath, char flag)
         {
-            string RelativePath = "";
-            for (int i = index; i < splitPath.Length; i++)
-                RelativePath += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
-            return RelativePath.Trim();
+            if (flag == '*')
+                return new FileInfoRefType(_rootPath + @"\branches", "branches");
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+
+                Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
+                return BranchFileManager(rw, b, splitPath, subpath);
+            }
+        }
+
+        private IFileInfo GetFileCommit(string[] splitPath, string subpath, char flag)
+        {
+            if (flag == '*')
+                return new FileInfoRefType(_rootPath + @"\commits", "commits");
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                string commitHash = splitPath[1];
+                Commit commit = rw.Repo.Lookup<Commit>(commitHash);
+                if (commit == null)
+                    return new NotFoundFileInfo(INVALID_COMMIT);
+                string relativePath = GetRelativePath(splitPath);
+                if (String.IsNullOrEmpty(relativePath))
+                    return new NotFoundFileInfo(INVALID_PATH);
+                TreeEntry node = commit.Tree[relativePath];
+                if (node == null)
+                    return new NotFoundFileInfo(INVALID_PATH);
+                if (node.TargetType == TreeEntryTargetType.Tree)
+                    return new FileInfoRef(true, -1, _rootPath + @"\" + subpath, node.Name, DateTimeOffset.MaxValue, true);
+                if (node.TargetType == TreeEntryTargetType.Blob)
+                    return new FileInfoFile(true, _rootPath + @"\" + subpath, node.Name, commit.Committer.When, node.Target as Blob, rw);
+            }
+            return new NotFoundFileInfo(INVALID_PATH);
+        }
+
+        private IFileInfo GetFileTag(string[] splitPath, string subPath, char flag)
+        {
+            if (flag == '*')
+                return new FileInfoRefType(_rootPath + @"\tags", "tags");
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                Tag tag = rw.Repo.Tags.FirstOrDefault(t => t.FriendlyName == splitPath[1]);
+                if (tag == null) return new NotFoundFileInfo(INVALID_TAG);
+                string relativePath = GetRelativePath(splitPath);
+                if (relativePath == null) return new NotFoundFileInfo(INVALID_PATH);
+                var commit = rw.Repo.Lookup<Commit>(tag.Target.Sha);
+                if (commit == null) return new NotFoundFileInfo(INVALID_TAG);
+                var tree = commit.Tree[relativePath];
+                if (tree == null) return new NotFoundFileInfo(INVALID_PATH);
+                if (tree.TargetType == TreeEntryTargetType.Tree)
+                    return new FileInfoRef(true, -1, _rootPath + @"\" + subPath, tree.Name, DateTimeOffset.MaxValue, true);
+                if (tree.TargetType == TreeEntryTargetType.Blob)
+                    return new FileInfoFile(true, _rootPath + @"\" + subPath, tree.Name, commit.Committer.When, tree.Target as Blob, rw);
+            }
+            return new NotFoundFileInfo(INVALID_PATH);
         }
 
         private IFileInfo GetFileHead(string[] splitPath, string subpath, char flag)
@@ -347,15 +328,26 @@ namespace GoM.GitFileProvider
         private IFileInfo BranchFileManager(RepositoryWrapper rw, Branch branch, string[] splitPath, string subpath)
         {
             if (branch == null)
-                return new NotFoundFileInfo("Invalid"); ; // TODO
+                return new NotFoundFileInfo(INVALID_BRANCH);
             string pathToFileFromBranch = GetRelativePath(splitPath);
             if (String.IsNullOrEmpty(pathToFileFromBranch))
-                return new FileInfoRef(true, -1, _rootPath + subpath, branch.FriendlyName, default(DateTimeOffset), true);
+                return new NotFoundFileInfo(INVALID_PATH);
             TreeEntry node = branch[pathToFileFromBranch];
             if (node == null)
-                return new NotFoundFileInfo("Invalid");
-            FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], branch.Tip.Committer.When, (Blob)node.Target, rw);
-            return f;
+                return new NotFoundFileInfo(INVALID_PATH);
+            if (node.TargetType == TreeEntryTargetType.Tree)
+                return new FileInfoRef(true, -1, _rootPath + @"\" + subpath, node.Name, DateTimeOffset.MaxValue, true);
+            if (node.TargetType == TreeEntryTargetType.Blob)
+                return new FileInfoFile(true, _rootPath + @"\" + subpath, node.Name, branch.Tip.Committer.When, node.Target as Blob, rw);
+            return new NotFoundFileInfo(INVALID_PATH);
+        }
+
+        private string GetRelativePath(string[] splitPath, int index = 2)
+        {
+            string RelativePath = "";
+            for (int i = index; i < splitPath.Length; i++)
+                RelativePath += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
+            return RelativePath.Trim();
         }
 
         public IChangeToken Watch(string filter)
