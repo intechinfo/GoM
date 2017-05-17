@@ -156,7 +156,7 @@ namespace GoM
             else if (Directory.Exists(path))
             {
                 GetFiles(path, ft);
-                ft.Data = "\\";
+                ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
                 {
 
