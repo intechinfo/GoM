@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -18,6 +19,15 @@ namespace GoM.Core.FsAnalyzer.Tests
 
             targets.Should().HaveCount(1, "Only one target can be specified in a packages.config");
             targets[0].Dependencies.Should().HaveCount(3, "3 dependencies were specified in the sample package.config");
+        }
+
+        [Fact]
+        public void Test_packagesconfig_parser_invalid_file_raises_exception()
+        {
+            var file = new PhysicalFileInfo(new FileInfo("Invalid/path"));
+            var parser = new PackageConfigParser(file);
+            parser.Invoking(x => x.Read().ToList())
+                .ShouldThrow<DirectoryNotFoundException>();
         }
     }
 }

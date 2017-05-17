@@ -17,9 +17,7 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            var physicalPath = Source.PhysicalPath;
-            FileStream xmlStream = new FileStream(physicalPath, FileMode.Open);
-            var result = XDocument.Load(xmlStream);
+            var result = XDocument.Load(Source.CreateReadStream());
             var dict = new Dictionary<string, List<TargetDependency>>();
             if (result.Root != null)
             {
