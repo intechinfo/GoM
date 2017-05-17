@@ -170,8 +170,6 @@ namespace GoM.GitFileProvider
                    
                     Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                     return BranchFileManager(rw, b, splitPath, subpath);
-                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], b.Tip.Committer.When, (Blob)node.Target, rw);
-                    
                 }
             }
         }
