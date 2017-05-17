@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
-
+using GoM.GitFileProvider;
+using Microsoft.Extensions.FileProviders;
 /*
  *  A faire : 
  *  + Statistiques sur les extensions de fichiers ( nombre de fichiers par extension)
@@ -42,13 +43,16 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         public Uri Url { get; }
 
+        public GitFileProvider.GitFileProvider FileProvider { get; }
+
         public Communicator(string source)
         {
-
             ReposPath = REPOS_DIRECTORY;
             Source = source;
             Url = new Uri(source);
             Repository = loadRepository();
+            FileProvider = new GitFileProvider.GitFileProvider(Directory.GetCurrentDirectory()+"\\"+Path);
+
         }
 
         /// <summary>
@@ -134,26 +138,44 @@ namespace GoM.Core.GitExplorer
         }
 
         /// <summary>
-        /// Get All Branches of repository
+        /// Get All Branches from DirectoryContents
         /// </summary>
         /// <returns>List<BasicGitBranch></returns>
+        public IDirectoryContents directoryContents()
+        {
+            return FileProvider.GetDirectoryContents("branches");
+        }
+
+        public IEnumerable<string> getAllBranchesName()
+        {
+           IDirectoryContents branches = directoryContents();
+           return branches.Select(c => c.Name);
+        }
+
         public List<BasicGitBranch> getAllBranches()
         {
             List<BasicGitBranch> branches = new List<BasicGitBranch>();
+
             using (Repository)
             {
-                foreach (var branch in Repository.Branches.ToList())
+                
+                foreach (var branch in directoryContents().ToList())
                 {
-                    branches.Add(convertBranchToGitBranch(branch));
-                }
-            }
 
+                    Branch br = Repository.Branches.Where(b => b.FriendlyName.Equals(branch.Name))
+                                .First();
+                    branches.Add(convertBranchToGitBranch(br));
+                }
+               
+            }
+           
+           
             return branches;
         }
 
         private BasicGitBranch convertBranchToGitBranch(Branch branch)
         {
-            string branchName = branch.CanonicalName;
+            string branchName = branch.FriendlyName;
 
             Mutable.GitBranch gitBranch = new GitBranch() { Name = branchName, Version = getBranchVersionInfo(branch) };
 

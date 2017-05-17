@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
+using Microsoft.Extensions.FileProviders;
+
 namespace GoM.Core.GitExplorer
 {
     interface ICommunicator
@@ -61,10 +63,23 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         /// <returns>BasicGitRepository</returns>
         BasicGitRepository getBasicGitRepository();
+
         /// <summary>
         /// Get All Branches of repository
         /// </summary>
-        /// <returns>List<BasicGitBranch></returns>
+        /// <returns>IDirectoryContents</returns>
+        IDirectoryContents directoryContents();
+
+        /// <summary>
+        /// Get All Branches name
+        /// </summary>
+        /// <returns>IEnumerable<string></returns>
+        IEnumerable<string> getAllBranchesName();
+
+        /// <summary>
+        /// Get All Branches of a repository
+        /// </summary>
+        /// <returns>IEnumerable<string></returns>
         List<BasicGitBranch> getAllBranches();
     }
 }

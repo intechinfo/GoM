@@ -30,7 +30,7 @@ namespace GoM.Core.GitExplorer.Tests
         public void Check_get_all_branches()
         {
             Communicator communicator = new Communicator(url);
-            Assert.AreNotEqual(0, communicator.getAllBranches().Count);
+            Assert.AreNotEqual(0, communicator.getAllBranches().Count());
         }
 
         [TestMethod]
@@ -47,10 +47,19 @@ namespace GoM.Core.GitExplorer.Tests
             Assert.AreNotEqual(0, communicator.getFolders().Count);
         }
 
+        [TestMethod]
+        public void Check_branches_names_are_provided()
+        {
+            Communicator communicator = new Communicator(url);
+            Assert.AreNotEqual(0, communicator.getAllBranchesName());
+        }
+
         [TestCleanup]
         public void CleanTests()
         {
             Helpers.DeleteDirectory("repos");
         }
+
+
     }
 }

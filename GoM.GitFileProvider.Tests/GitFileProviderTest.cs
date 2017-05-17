@@ -3,25 +3,27 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoM.GitFileProvider.Tests
 {
     [TestFixture]
     public class GitFileProviderTest
     {
-        private string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+        private string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        const string INVALID_PATH = "Invalid path";
+        const string INVALID_BRANCH = "The branch don't exist in the repository";
+        const string INVALID_TAG = "The tag don't exist in the repository";
+        const string INVALID_COMMIT = "The commit don't exist in the repository";
+        const string INVALID_REPOSITORY = "The Repository doesn't exist";
+        const string INVALID_HEAD = "The repository doesn't contain head";
+        const string INVALID_COMMAND = "The command doesn't exist";
 
         [Test]
         public void Create_GitFileProvider_And_Tests_Correct_And_Incorrect_Git_Repository_Paths()
         {
             bool exist;
-            string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             exist = (bool)typeof(GitFileProvider).GetField("_exist", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(git);
@@ -54,7 +56,7 @@ namespace GoM.GitFileProvider.Tests
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo file = git.GetFileInfo(null);
             file.Should().NotBeNull();
-            file.Name.Should().Be("Invalid");
+            file.Name.Should().Be(INVALID_COMMAND);
             file.PhysicalPath.Should().Be(null);
             file.Length.Should().Be(-1);
             file.Exists.Should().Be(false);
@@ -66,7 +68,7 @@ namespace GoM.GitFileProvider.Tests
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo file = git.GetFileInfo("IdontExist");
             file.Should().NotBeNull();
-            file.Name.Should().Be("Invalid");
+            file.Name.Should().Be(INVALID_COMMAND);
             file.PhysicalPath.Should().Be(null);
             file.Length.Should().Be(-1);
             file.Exists.Should().Be(false);
@@ -79,7 +81,7 @@ namespace GoM.GitFileProvider.Tests
             IFileInfo rootInfo = git.GetFileInfo("");
 
             rootInfo.Exists.Should().BeFalse();
-            rootInfo.Name.Should().Be("root");
+            rootInfo.Name.Should().Be(INVALID_COMMAND);
             rootInfo.PhysicalPath.Should().Be(ProjectRootPath);
             rootInfo.Length.Should().Be(-1);
             rootInfo.LastModified.Should().Be(default(DateTimeOffset));
@@ -99,16 +101,44 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
+        public void FileInfo_Of_not_existing_branch()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo branchesFile = git.GetFileInfo(@"branches\xxx");
+
+            branchesFile.Exists.Should().BeFalse();
+            branchesFile.Length.Should().Be(-1);
+        }
+
+        [Test]
+        public void FileInfo_Of_Not_Existing_File_In_Branch()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo branchesFile = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\appsd.config");
+
+            branchesFile.Exists.Should().BeFalse();
+            branchesFile.Length.Should().Be(-1);
+        }
+
+        [Test]
+        public void FileInfo_Of_A_Directory()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo branchesFile = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider");
+
+            branchesFile.Exists.Should().BeTrue();
+            branchesFile.Length.Should().Be(-1);
+        }
+
+        [Test]
         public void FileInfo_Of_Specific_Branch_Called_By_Name()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo namedBranch = git.GetFileInfo(@"branches\origin/perso_yazman");
 
-            namedBranch.Exists.Should().BeTrue();
-            namedBranch.Name.Should().Be("origin/perso_yazman");
-            namedBranch.PhysicalPath.Should().Be(ProjectRootPath+@"branches\origin/perso_yazman");
+            namedBranch.Exists.Should().BeFalse();
+            namedBranch.Name.Should().Be(INVALID_PATH);
             namedBranch.Length.Should().Be(-1);
-            namedBranch.LastModified.Should().Be(default(DateTimeOffset));
         }
 
         [Test]
@@ -125,35 +155,6 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
-        public void FileInfo_Of_Dir_In_Specific_Branch()
-        {
-
-        }
-        [Test]
-        public void GetDirectoryContents_Root()
-        {
-            
-        }
-
-        [Test]
-        public void GetDirectoryContents_Branch()
-        {
-            GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            var rootDir = git.GetDirectoryContents(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider");
-            foreach (var item in rootDir)
-            {
-                item.Exists.Should().BeTrue();
-                if (item.IsDirectory)
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
-
-                }
-                else
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
-            }
-        }
-
-        [Test]
         public void FileInfo_Read_Commits()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
@@ -166,7 +167,7 @@ namespace GoM.GitFileProvider.Tests
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"commits\WrongHash");
-            fileInfo.Name.Should().Be("InvalidSha");
+            fileInfo.Name.Should().Be(INVALID_COMMIT);
         }
 
         [Test]
@@ -174,8 +175,8 @@ namespace GoM.GitFileProvider.Tests
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\");
-            fileInfo.Name.Should().NotBe("InvalidSha");
-            fileInfo.Name.Should().NotBe("Invalid");
+            fileInfo.Name.Should().NotBe(INVALID_COMMIT);
+            fileInfo.Name.Should().NotBe(INVALID_COMMAND);
         }
 
         [Test]
@@ -183,6 +184,15 @@ namespace GoM.GitFileProvider.Tests
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider\app.config");
+            fileInfo.Name.Should().Be("app.config");
+            fileInfo.Length.Should().BeGreaterOrEqualTo(0);
+        }
+
+        [Test]
+        public void FileInfo_Read_Tags_With_Specific_Tag_Name_And_Relative_Path_From_Tag()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo(@"tags\GitWatcher\GoM.GitFileProvider\app.config");
             fileInfo.Name.Should().Be("app.config");
             fileInfo.Length.Should().BeGreaterOrEqualTo(0);
         }
