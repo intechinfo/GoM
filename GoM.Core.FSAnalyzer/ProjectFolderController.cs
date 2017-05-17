@@ -31,7 +31,6 @@ namespace GoM.Core.FSAnalyzer
                             // If true, add in collection
                             // Return IProject collection
                             IProject project = projectHandler.Read();
-                            // Gotta initialize the targets
                             projects.Add(project);
                         }
                     }
