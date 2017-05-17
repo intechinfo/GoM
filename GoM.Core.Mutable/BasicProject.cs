@@ -18,10 +18,12 @@ namespace GoM.Core.Mutable
             Path = project.Path;
             Details = (Project)project.Details;
         }
+
         public string Path { get; set; }
 
         public Project Details { get; set; }
 
         IProject IBasicProject.Details => Details;
+        
     }
 }

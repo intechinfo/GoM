@@ -16,12 +16,12 @@ namespace GoM.Core.Mutable
         /// <param name="branch"></param>
         public GitBranch(IGitBranch branch)
         {
-            Projects = (List<Project>)branch.Projects;
+            Projects = (List<BasicProject>)branch.Projects;
             Version = (BranchVersionInfo)branch.Version;
             Name = branch.Name;
         }
 
-        public List<Project> Projects { get; } = new List<Project>();
+        public List<BasicProject> Projects { get; } = new List<BasicProject>();
 
         public BranchVersionInfo Version { get; set; }
 
