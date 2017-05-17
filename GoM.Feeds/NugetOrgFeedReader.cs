@@ -1,30 +1,41 @@
-﻿using GoM.Feeds.Abstractions;
+﻿using GoM.Core;
+using GoM.Core.Mutable;
+using GoM.Feeds.Abstractions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Semver;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GoM.Core;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using GoM.Core.Mutable;
-using System.Linq;
-using Semver;
 
 namespace GoM.Feeds
 {
-    internal class NugetOrgFeedReader : NugetFeedReader
+    public class NugetOrgFeedReader : NugetFeedReader
     {
         HttpClient _client;
         string _baseUrl = "https://api.nuget.org/v3/registration1/";
-        internal NugetOrgFeedReader()
+        public NugetOrgFeedReader()
         {
             _client = new HttpClient();
         }
 
         public override async Task<bool> FeedMatch(Uri adress)
         {
+            if (String.IsNullOrWhiteSpace(adress.OriginalString))
+                throw new ArgumentNullException("adress must be not null");
+
             string resp = await _client.GetStringAsync(adress);
-            JObject o = JObject.Parse(resp);
+            JObject o;
+            try
+            {
+                o = JObject.Parse(resp);
+            }
+            catch(JsonReaderException e)
+            {
+                return false;
+            }
             if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
 
             return o.TryGetValue("version", out JToken j1) 
