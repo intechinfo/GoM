@@ -33,11 +33,11 @@ namespace GoM.Core.FSAnalyzer.Utils
                         from x in dependencies
                         let vIdx = x.IndexOfAny(new[] {'<', '>', '='})
 
-                        let name = x.Substring(0, vIdx == -1 ? x.Length : vIdx)
+                        let name = x.Substring(0, vIdx == -1 ? x.Length : vIdx).Trim('\'')
                         select new TargetDependency()
                         {
                             Name = name,
-                            Version = vIdx == -1 ? "" : x.Substring(vIdx)
+                            Version = vIdx == -1 ? "" : x.Substring(vIdx).Trim('\'')
                         };
                     var target = new Target();
                     target.Dependencies.AddRange(targets);
