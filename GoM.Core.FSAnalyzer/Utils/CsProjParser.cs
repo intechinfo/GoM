@@ -49,7 +49,7 @@ namespace GoM.Core.FSAnalyzer.Utils
                         for (int j = 0; j < words.Length; j++)
                         {
                             string[] v = words[j].Split('=');
-                            if (v[0].ToLower() == "version")
+                            if (v[0].ToLower().Trim() == "version")
                                 versinIfExists = v[1];
                         }
                         
