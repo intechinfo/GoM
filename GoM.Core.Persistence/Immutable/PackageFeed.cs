@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace GoM.Core.Persistence
 {
@@ -13,6 +14,7 @@ namespace GoM.Core.Persistence
         {
             this.Url = new Uri(e.Attribute(nameof(Url)).Value);
             this.Packages = new List<PackageInstance>();
+       //     this.Packages = e.Elements(nameof(IPackageInstance)).Select(t => new PackageInstance(t)).ToList();
             foreach (var t in e.Elements(nameof(IPackageInstance)))
             {
                 this.Packages.Add(new PackageInstance(t));
@@ -21,7 +23,7 @@ namespace GoM.Core.Persistence
 
 
 
-        public List<PackageInstance> Packages { get; } 
+        public List<PackageInstance> Packages { get; }
 
         IReadOnlyCollection<IPackageInstance> IPackageFeed.Packages => Packages;
 
