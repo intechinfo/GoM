@@ -28,6 +28,11 @@ namespace GoM.Core.Extract
             return Repository.IsValid(this.Uri);
         }
 
+        public bool isRepository()
+        {
+            return this.repo != null;
+        }
+
         private Branch getBranch(String name)
         {
             return this.repo.Branches[name];
