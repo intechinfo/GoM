@@ -57,10 +57,13 @@ namespace GoM.Feeds
             var versions = new JObject( new JObject(o["info"]).Property("releases"));
             foreach (var item in versions)
             {
-                string packageName = o["info"].Value<string>("name");
-                string packageVersion = item.Key ;
 
-                list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                if (SemVersion.TryParse(item.Key, out SemVersion item_v))
+                {
+                    string packageVersion = item.Key;
+                    string packageName = o["info"].Value<string>("name");
+                    list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                }
             }
             return list;
         }
@@ -103,7 +106,7 @@ namespace GoM.Feeds
         public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => x.Version > SemVersion.Parse(version));
+            return res.Where(x => SemVersion.Parse(x.Version) > SemVersion.Parse(version));
         }
     }
 }

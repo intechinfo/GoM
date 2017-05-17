@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds.Abstractions
 {
-    abstract class NugetFeedReader : IFeedReader
+    public abstract class NugetFeedReader : IFeedReader
     {
         public abstract Task<bool> FeedMatch(Uri adress);
         public abstract Task<IEnumerable<IPackageInstance>> GetAllVersions(string name);
