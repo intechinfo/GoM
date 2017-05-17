@@ -22,6 +22,5 @@ namespace GoM.Core.Immutable
 
         IGitBranch IBasicGitBranch.Details => Details;
 
-
     }
 }

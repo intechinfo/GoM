@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text;
 
-namespace GoM.Core.Immutable
+namespace GoM.Core.Immutable.Visitors
 {
     public class Visitor
     {

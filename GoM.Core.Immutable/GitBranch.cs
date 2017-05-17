@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace GoM.Core.Immutable
 {
     public class GitBranch : IGitBranch
     {
-        public IReadOnlyCollection<IBasicProject> Projects => throw new NotImplementedException();
+        public ImmutableList<BasicProject> Projects { get; } = ImmutableList.Create<BasicProject>();
 
         public BranchVersionInfo Version { get; }
 
@@ -21,5 +22,7 @@ namespace GoM.Core.Immutable
         IBranchVersionInfo IGitBranch.Version => Version;
 
         IGitBranch IBasicGitBranch.Details => Details;
+
+        IReadOnlyCollection<IBasicProject> IGitBranch.Projects => Projects;
     }
 }
