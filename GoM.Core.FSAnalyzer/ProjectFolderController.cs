@@ -26,11 +26,12 @@ namespace GoM.Core.FSAnalyzer
                     {
                         // On each project call specialize handler with PhysicalFileProvider
                         ProjectFolderHandler projectHandler = new ProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
-                        if(projectHandler.Sniff() != null)
+                        IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
+                        if (specializedProjectHandler != null)
                         {
                             // If true, add in collection
                             // Return IProject collection
-                            IProject project = projectHandler.Read();
+                            IProject project = specializedProjectHandler.Read();
                             projects.Add(project);
                         }
                     }
