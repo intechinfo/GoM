@@ -141,7 +141,8 @@ namespace GoM.GitFileProvider
                     TreeEntry node = b[pathToFileFromBranch];
                     if (node == null)
                         return new NotFoundFileInfo("Invalid");
-                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], rw.Repo.Lookup<Commit>(node.Target.Id).Committer.When, (Blob)node.Target, rw);
+                    
+                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], b.Tip.Committer.When, (Blob)node.Target, rw);
                     return f;
                 }
             }
@@ -295,6 +296,7 @@ namespace GoM.GitFileProvider
         {
             if (!IsValidFilter(filter))
                 return NullChangeToken.Singleton;
+            
             IChangeToken  token = _rootWatcher.MonitorFile(filter);
             return token;
         }
