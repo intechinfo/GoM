@@ -45,11 +45,18 @@ namespace GoM.Core.FSAnalyzer.Utils
                     {
                         string include = referenceList[i] != null ? referenceList[i].Attribute("Include").Value : string.Empty;
                         string[] words = include.Split(',');
+                        string versinIfExists = string.Empty;
+                        for (int j = 0; j < words.Length; j++)
+                        {
+                            string[] v = words[j].Split('=');
+                            if (v[0].ToLower() == "version")
+                                versinIfExists = v[1];
+                        }
                         
                         ta.Dependencies.Add(new TargetDependency()
                         {
                             Name = words[0],
-                            Version = words.Length > 1 ? words[1]: ""
+                            Version = versinIfExists
                         });
                     }
                 }
