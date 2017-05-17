@@ -3,12 +3,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using LibGit2Sharp;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.FileProviders.Physical;
 
 enum TYPE { Unhandled = -1, Root = 0, Branches, Tags, Commits, Head };
 namespace GoM.GitFileProvider
@@ -357,7 +354,7 @@ namespace GoM.GitFileProvider
             TreeEntry node = branch[pathToFileFromBranch];
             if (node == null)
                 return new NotFoundFileInfo("Invalid");
-            FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], rw.Repo.Lookup<Commit>(node.Target.Id).Committer.When, (Blob)node.Target, rw);
+            FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], branch.Tip.Committer.When, (Blob)node.Target, rw);
             return f;
         }
 
