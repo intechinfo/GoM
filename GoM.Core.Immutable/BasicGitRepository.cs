@@ -43,13 +43,14 @@ namespace GoM.Core.Immutable
 
         public static BasicGitRepository Create(string path, Uri url)
         {
-            return new BasicGitRepository(path, url );
+            return new BasicGitRepository(path, url);
         }
 
-        //public static BasicGitRepository Create( IGitRepository details )
-        //{
-        //    return new BasicGitRepository(details.Path, details.Url, details);
-        //}
+        public static BasicGitRepository Create(IGitRepository details)
+        {
+            return new BasicGitRepository(details.Path, details.Url, details);
+        }
+
         public static BasicGitRepository Create(IBasicGitRepository basicGitRepository) => basicGitRepository as BasicGitRepository ?? new BasicGitRepository(basicGitRepository);
 
     }
