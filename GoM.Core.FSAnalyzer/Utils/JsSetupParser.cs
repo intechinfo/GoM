@@ -1,5 +1,4 @@
-﻿using GoM.Core.FSAnalyzer.Utils.JS;
-using GoM.Core.Mutable;
+﻿using GoM.Core.Mutable;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
