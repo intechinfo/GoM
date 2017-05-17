@@ -1,132 +1,185 @@
-﻿using Microsoft.Extensions.CommandLineUtils;
+﻿using GoM.Core.Mutable;
+using Microsoft.Extensions.CommandLineUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
 namespace GoM.Core.CommandLine
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(params string[] args)
         {
-<<<<<<< HEAD
-            if(args == null || args.Length == 0)
-            {
-                Console.WriteLine("No arguments");
-=======
-            /*if(args == null || args.Length == 0)
-            {
-                Array.Resize(ref args, args.Length + 1);
-                args[args.Length - 1] = Console.ReadLine();
->>>>>>> b0d6c26eaf940e82dbeb74f07557fca3dcf38a1d
-            }
-
             var app = new CommandLineApplication(throwOnUnexpectedArg: false);
-            app.Name = "gom";
-            app.HelpOption("-?,|-h|--help");
+            app.Name = "GoM";
+                
 
-            app.OnExecute(() => {
-                Console.WriteLine("Bienvenue sur GoM");
+            app.HelpOption("-h|--help");
+
+            app.OnExecute(() =>
+            {
+                app.ShowHelp("gom");
                 return 0;
             });
 
-            app.Command("Hello", (cmd) =>
+            app.Command("add", (command) =>
             {
-                cmd.Description = "Simple Hello World";
+                command.Description = "This command allow to the user to add repository and projects to his GoM";
+                command.HelpOption("-h|--help");
 
-                cmd.OnExecute(() => 
+                CommandOption repositoryOption = command.Option("-r|--repository",
+                    "Repository to add to GoM"
+                    ,CommandOptionType.MultipleValue);
+
+                CommandOption projectOption = command.Option("-p|--project",
+                    "Project to add to the repository",
+                    CommandOptionType.MultipleValue);
+
+                CommandOption allProjectOption = command.Option("-p -all|--project -all",
+                   "Add all the projects to the repository",
+                   CommandOptionType.MultipleValue);
+
+                CommandOption branchOption = command.Option("-b|--branch",
+                    "Add a branch to GoM",
+                    CommandOptionType.MultipleValue);
+
+                CommandArgument projectLocationArgument = command.Argument("[location]","Where the projects should be located");
+
+                command.OnExecute(() =>
                 {
-                    Console.WriteLine("Hello World!");
+                    // To immplement 
                     return 0;
                 });
-
-            }, false);
-
-            app.Command("GoodBye", (cmd) =>
-            {
-                cmd.Description = "Simple GoodBye";
-
-                cmd.OnExecute(() =>
-                {
-                    Console.WriteLine("Goodbye!");
-                    return 0;
-                });
-
-            }, false);
-
-<<<<<<< HEAD
-            app.Execute(args);
-            
-
-            var count = app.Commands.Count;
-            Console.ReadLine();
-=======
-            //Help implementation
-            cmdLineApplication.Command("h", (cmd) =>
-            {
-                cmd.Description = "Simple GoodBye";
-                cmd.HelpOption("-h");
-
-                cmd.OnExecute(() =>
-                {
-                    var cmds = cmdLineApplication.Commands;
-                    foreach(var command in cmds)
-                    {
-                        Console.WriteLine(command.Name);
-                    }
-                   
-                    return 0;
-                });
-
-            }, false);
-            foreach (var cnt in args)
-            {
-                cmdLineApplication.Execute(cnt);
-            }
-            
-            Console.ReadLine();*/
-            var app = new CommandLineApplication(throwOnUnexpectedArg: false);
-            app.Name = "gom";
-            app.HelpOption("-?,|-h|--help");
-
-            app.OnExecute(() => {
-                Console.WriteLine("Hello World!");
-                return 0;
             });
 
-            app.Command("hide", (command) =>
+            /// This command allow to exclude from GoM the repo/branch/project
+            app.Command("remove", (command) =>
              {
-                 command.Description = "Ceci est une description.";
-                 command.HelpOption("-?,|-h|--help");
+                 command.Description = "Exclude repository/branch/project";
+                 command.HelpOption("-h|--help");
+
+                 var excludeRepoOPtion = command.Option("-r|--repository",
+                     "Exclude a repository from GoM",
+                     CommandOptionType.MultipleValue);
+
+                 var excludeBranchOPtion = command.Option("-b|--branch",
+                    "Exclude one branch from GoM",
+                    CommandOptionType.MultipleValue);
+
+                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
+                   "Exclude all branches from GoM",
+                   CommandOptionType.MultipleValue);
+
+                 var excludeProjectOPtion = command.Option("-p|--project",
+                   "Exclude one project from GoM",
+                   CommandOptionType.MultipleValue);
+
+                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
+                   "Exclude all projects from GoM",
+                   CommandOptionType.MultipleValue);
 
                  command.OnExecute(() =>
                  {
-                     Console.WriteLine("Bene Bene Bene");
+                     // To immplement 
                      return 0;
                  });
              });
 
-            app.Command("add", (command) =>
+            /// This command allow to show the directory and the file inside a path
+            app.Command("files", c =>
             {
-                command.Description = "Ceci est une description.";
-                command.HelpOption("-?,|-h|--help");
 
-                var locationArgument = command.Argument("[location]",
-                                    "Where the ninja should hide.");
+                c.Description = "Get files";
+                var locationArgument = c.Argument("[location]",
+                                   "Where the files should be located .");
 
-                command.OnExecute(() =>
-                {
-                    var location = locationArgument.Values.Count() > 0 ? locationArgument.Value : "under a turtle";
-                    Console.WriteLine("Ninja is hidden " + location);
-                    return 0;
+                    c.HelpOption("-?,|-h|--help");
+
+                    c.OnExecute(() =>
+                    {
+                        var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
+                        List<string> fileList = new List<string>();
+                        if (File.Exists(projectPath))
+                        {
+                            ProcessFile(projectPath, fileList);
+                        }
+                        else if (Directory.Exists(projectPath))
+                        {
+                            FileTree ft = new FileTree();
+                            ft.Nodes = new List<FileTree>();
+                            GetNodes(projectPath, ft);
+                            string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
+                            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(),"fileList.json"), json);
+                            ProcessDirectory(projectPath, fileList);
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} is not a valid file or directory.", projectPath);
+                        }
+
+                        
+        
+                        Console.ReadLine();
+                        return 0;
+                    });
                 });
-            });
 
-            app.Execute(args);
->>>>>>> b0d6c26eaf940e82dbeb74f07557fca3dcf38a1d
-           
+                app.Execute(args);
+            }
+
+        public static void GetNodes(string path, FileTree ft)
+        {
+            if (File.Exists(path))
+            {
+                ft = new FileTree(path);
+            }
+            else if (Directory.Exists(path))
+            {               
+                GetFiles(path, ft);
+                ft.Data = "\\";
+                foreach (string item in Directory.GetDirectories(path))
+                {
+                    
+                    FileTree n = new FileTree();                   
+                    n.Data = item;
+                    n.Nodes = new List<FileTree>();
+                    GetFiles(item, n);
+                    ft.Nodes.Add(n);
+                    GetNodes(item, ft);
+                }
+            }
         }
+
+        public static void GetFiles(string path, FileTree ft)
+        {
+            foreach (string item in Directory.GetFiles(path))
+            {              
+                ft.Nodes.Add(new FileTree(item));
+            }
         }
-}   
+        public static void ProcessDirectory(string targetDirectory, List<string> fileList)
+        {
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                ProcessFile(fileName,fileList);
+
+            string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+            
+            foreach (string subdirectory in subdirectoryEntries)      
+                ProcessDirectory(subdirectory,fileList);
+        }
+        public static List<string> ProcessFile(string path,List<string> fileList)
+        {
+            Console.WriteLine(Path.GetFileName(path));
+            fileList.Add(Path.GetFileName(path));
+            return fileList;
+        }
+    }
+       
+    }
+
+

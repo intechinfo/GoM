@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace GoM.Core
 {
-    public interface IProject
+    public interface IProject : IBasicProject
     {
-        string Path { get; }
-
         IReadOnlyCollection<ITarget> Targets { get; }
     }
 }

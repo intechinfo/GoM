@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Collections.Generic;
 
 namespace GoM.Core
 {
-    public interface IGomContext
+    public interface IGoMContext
     {
         string RootPath { get; }
 
