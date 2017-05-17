@@ -107,9 +107,10 @@ namespace GoM.GitFileProvider
                 case TYPE.Tags:
                     return GetDirectoryTags(splitPath, subpath, flag);
                 case TYPE.Commits:
-                    return GetDirectoryTags(splitPath, subpath, flag);
+                    return GetDirectoryCommit(splitPath, subpath, flag);
                 case TYPE.Head:
-                    return GetDirectoryTags(splitPath, subpath, flag);
+                    return GetDirectoryHead(splitPath, subpath);
+
                 default:
                     return NotFoundDirectoryContents.Singleton;
             }
@@ -282,7 +283,7 @@ namespace GoM.GitFileProvider
                     List<IFileInfo> files = new List<IFileInfo>();
                     foreach (var b in rw.Repo.Tags)
                     {
-                        IFileInfo file = new FileInfoDirectory(true, "commits" + Path.DirectorySeparatorChar + b.FriendlyName, b.FriendlyName);
+                        IFileInfo file = new FileInfoDirectory(true, "tags" + Path.DirectorySeparatorChar + b.FriendlyName, b.FriendlyName);
                         files.Add(file);
                     }
                     return new DirectoryInfo(files);
