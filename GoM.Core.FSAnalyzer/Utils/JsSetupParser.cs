@@ -15,7 +15,7 @@ namespace GoM.Core.FSAnalyzer.Utils
         {
         }
 
-        public override IEnumerable<ITarget> Read()
+        public override IEnumerable<Target> Read()
         {
             string jsonFileString = File.ReadAllText(this.Source.PhysicalPath);
             JObject jObj = JObject.Parse(jsonFileString);

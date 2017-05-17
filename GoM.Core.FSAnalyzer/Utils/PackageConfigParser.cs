@@ -15,7 +15,7 @@ namespace GoM.Core.FSAnalyzer.Utils
         {
         }
 
-        public override IEnumerable<ITarget> Read()
+        public override IEnumerable<Target> Read()
         {
             List<ITarget> target = null;
             var physicalPath = Source.PhysicalPath;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using GoM.Core.Mutable;
 using Microsoft.Extensions.FileProviders;
 
 namespace GoM.Core.FSAnalyzer.Utils
@@ -22,7 +23,7 @@ namespace GoM.Core.FSAnalyzer.Utils
             return reader.ReadToEnd();
         }
 
-        public virtual IEnumerable<ITarget> Read()
+        public virtual IEnumerable<Target> Read()
         {
             throw new NotImplementedException();
         }

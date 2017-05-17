@@ -17,7 +17,7 @@ namespace GoM.Core.FSAnalyzer.Utils
             _file = file;
         }
 
-        public override IEnumerable<ITarget> Read()
+        public override IEnumerable<Target> Read()
         {
             List<TargetDependency> targets = new List<TargetDependency>();
             string fileContent = ReadFileContent();
