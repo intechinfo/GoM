@@ -9,15 +9,15 @@ namespace GoM.Core.Persistence
     public class GitBranch : IGitBranch
     {
         private XElement xElement;
-        public List<Project> Projects { get; }
+        public List<BasicProject> Projects { get; }
 
         public GitBranch ( XElement xElement )
         {
             this.xElement = xElement;
-            Projects = new List<Project>();
+            Projects = new List<BasicProject>();
             foreach(var t in xElement.Elements(typeof(IProject).Name))
             {
-                Projects.Add( new Project( t ) );
+                Projects.Add( new BasicProject( t ) );
             }
 
             Version = new BranchVersionInfo( xElement.Element( typeof( IBranchVersionInfo ).Name ) );
@@ -33,7 +33,7 @@ namespace GoM.Core.Persistence
 
         public GitBranch Details { get; }
 
-        IReadOnlyCollection<IProject> IGitBranch.Projects => Projects;
+        IReadOnlyCollection<IBasicProject> IGitBranch.Projects => Projects;
 
         IBranchVersionInfo IGitBranch.Version => Version;
 
@@ -42,7 +42,7 @@ namespace GoM.Core.Persistence
 
         public GitBranch(BranchVersionInfo version, string name, GitBranch details )
         {
-            Projects = new List<Project>();
+            Projects = new List<BasicProject>();
             Version = version;
             Name    = name;
             Details = details;
