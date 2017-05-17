@@ -62,8 +62,9 @@ namespace GoM.Feeds
             {
                 string depName = item.Key;
                 string depVersion = item.Value.ToString();
-                target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+                target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });                
             }
+            list.Add(target);
             return list;
         }
     }
