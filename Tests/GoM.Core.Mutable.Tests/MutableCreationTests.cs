@@ -24,7 +24,6 @@ namespace GoM.Core.Mutable.Tests
             var newGitRepository = new GitRepository();
             newGitRepository.Path = "my/branch/path";
             newGitRepository.Url = new Uri("http://my/branch/uri");
-            newGitRepository.Details = null;
 
             #region basicGitBranch
             // BasicGitBranch
@@ -35,7 +34,6 @@ namespace GoM.Core.Mutable.Tests
             // GitBranch
             var newGitBranch = new GitBranch();
             newGitBranch.Name = "myGitBranch";
-            newGitBranch.Details = null;
             #region branchVersionInfo
             // BranchVersionInfo
             var newBranchVersionInfo = new BranchVersionInfo();
@@ -52,9 +50,15 @@ namespace GoM.Core.Mutable.Tests
 
             newGitBranch.Version = newBranchVersionInfo;
             #endregion
+
             // Project
             var newProject = new Project();
-            newProject.Path = "my/project/path";
+
+            // BasicProject
+            var newBasicProject = new BasicProject();
+            newBasicProject.Path = "my/project/path";
+            newBasicProject.Details = newProject;
+
             #region target
             // Target
             var newTarget = new Target();
@@ -70,7 +74,7 @@ namespace GoM.Core.Mutable.Tests
 
             newTarget.Dependencies.Add(newDependency);
             #endregion
-            newGitBranch.Projects.Add(newProject);
+            newGitBranch.Projects.Add(newBasicProject);
 
             newBasicGitBranch.Details = newGitBranch;
             #endregion
@@ -309,8 +313,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets.Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets.Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.Should().NotBeNull();
         }
 
         [Fact]
@@ -319,8 +323,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Should().NotBeNull();
         }
 
         [Fact]
@@ -329,8 +333,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Name.Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Name.Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Name.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Name.Should().NotBeNull();
         }
 
         [Fact]
@@ -339,8 +343,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies.Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies.Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies.Should().NotBeNull();
         }
 
         [Fact]
@@ -348,8 +352,8 @@ namespace GoM.Core.Mutable.Tests
         {
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Should().NotBeNull();
         }
 
         [Fact]
@@ -358,8 +362,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name.Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name.Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Name.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Name.Should().NotBeNull();
         }
 
         [Fact]
@@ -368,8 +372,8 @@ namespace GoM.Core.Mutable.Tests
             var testGoM = CreateTestGoMContext();
             var otherCtx = new GoMContext(testGoM);
 
-            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version.Should().NotBeNull();
-            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version.Should().NotBeNull();
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Version.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Version.Should().NotBeNull();
         }
 
         [Fact]
