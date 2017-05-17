@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -219,6 +220,18 @@ namespace GoM.GitFileProvider.Tests
             stream2.Dispose();
             buffer1 = null;
             buffer2 = null;
+        }
+
+        [Test]
+        public async Task Get_Change()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IChangeToken token = git.Watch("test");
+            var tcs = new TaskCompletionSource<object>();
+            token.RegisterChangeCallback(state =>
+                ((TaskCompletionSource<object>)state).TrySetResult(null), tcs);
+            await tcs.Task.ConfigureAwait(false);
+            Console.WriteLine("quotes.txt changed");
         }
     }
 }

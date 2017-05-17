@@ -25,9 +25,7 @@ namespace GoM.GitFileProvider
             _exist = IsCorrectGitDirectory();
             if (_exist)
             {
-                _rootWatcher = new GitFilesWatcher(GetPathToGit(), new System.IO.FileSystemWatcher(GetPathToGit()), false);
-               
-                WatchGitDirectory().GetAwaiter().GetResult();
+                _rootWatcher = new GitFilesWatcher(rootPath, new System.IO.FileSystemWatcher(rootPath), false, this);
             }
         }
         
@@ -37,7 +35,7 @@ namespace GoM.GitFileProvider
             string fullpath = _rootPath;
             if (!Regex.IsMatch(_rootPath, @".git\\?$"))
             {
-                fullpath = fullpath + @"\.git\";
+                fullpath = fullpath + @"\.git";
             }
             return fullpath;
         }
@@ -259,7 +257,8 @@ namespace GoM.GitFileProvider
         {
             if (!IsValidFilter(filter))
                 return NullChangeToken.Singleton;
-            return null;
+            IChangeToken  token = _rootWatcher.MonitorFile(filter);
+            return token;
         }
 
     }
