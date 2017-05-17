@@ -24,7 +24,7 @@ namespace GoM.Core.Immutable
 
         IReadOnlyCollection<IBasicGitBranch> IGitRepository.Branches => Branches;
 
-       public string Path { get; }
+        public string Path { get; }
 
         public Uri Url { get; }
 

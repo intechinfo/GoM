@@ -6,7 +6,22 @@ namespace GoM.Core.Mutable
 {
     public class GitBranch : IGitBranch
     {
-        public List<BasicProject> Projects { get; } = new List<BasicProject>();
+        public GitBranch()
+        {
+        }
+
+        /// <summary>
+        /// Creates a Mutable GitBranch from an existing IGitBranch, ie from an Immutable GitBranch
+        /// </summary>
+        /// <param name="branch"></param>
+        public GitBranch(IGitBranch branch)
+        {
+            Projects = (List<Project>)branch.Projects;
+            Version = (BranchVersionInfo)branch.Version;
+            Name = branch.Name;
+        }
+
+        public List<Project> Projects { get; } = new List<Project>();
 
         public BranchVersionInfo Version { get; set; }
 
