@@ -135,16 +135,16 @@ namespace GoM.Core.Persistence.Tests
 
             #region Projet 1
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Path == "./fakeproject1/");
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Name == "target1");
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Name == "dependency1");
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[0].Dependencies[0].Version == "1.0.0");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Name == "target1");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Name == "dependency1");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Version == "1.0.0");
 
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Targets[1].Name == "target2");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[1].Name == "target2");
             #endregion
 
             #region Projet 2
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Path == "./fakeproject2/");
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Targets[0].Name == "target3");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Details.Targets.ToList()[0].Name == "target3");
             #endregion
 
             #region Projet 3
@@ -251,6 +251,24 @@ namespace GoM.Core.Persistence.Tests
             project.Path = "./fakeprojet2/";
             project.Targets.Add(target3);
 
+
+            // OK
+            var basicproject1 = new Mutable.BasicProject();
+            basicproject1.Path = "fakebasicproject1";
+            basicproject1.Details = project;
+
+            var basicproject2 = new Mutable.BasicProject();
+            basicproject1.Path = "fakebasicproject2";
+            basicproject1.Details = project;
+
+            var basicproject3 = new Mutable.BasicProject();
+            basicproject1.Path = "fakebasicproject3";
+            basicproject1.Details = project;
+
+            var basicproject4 = new Mutable.BasicProject();
+            basicproject1.Path = "fakebasicproject4";
+            basicproject1.Details = null;
+
             // OK
             var project3 = new Mutable.Project();
             project.Path = "./fakeproject3/";
@@ -266,14 +284,15 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             var realGitbranch = new Mutable.GitBranch();
-            realGitbranch.Details = realGitbranch;
+            //realGitbranch.Details = realGitbranch;
             realGitbranch.Name = "BiteOfTheDead";
 
             realGitbranch.Version = branchVersion;
 
-            realGitbranch.Projects.Add(project);
-            realGitbranch.Projects.Add(project2);
-            realGitbranch.Projects.Add(project3);
+            realGitbranch.Projects.Add(basicproject1);
+            realGitbranch.Projects.Add( basicproject2 );
+            realGitbranch.Projects.Add( basicproject3 );
+            realGitbranch.Projects.Add( basicproject4 );
 
             // OK
             var basicbranch = new Mutable.BasicGitBranch();
@@ -289,7 +308,7 @@ namespace GoM.Core.Persistence.Tests
             var realgitrepo = new Mutable.GitRepository();
             realgitrepo.Url = new Uri("http://www.google.fr");
             realgitrepo.Path = "/usr/developpement/GoM/";
-            realgitrepo.Details = realgitrepo;
+            //realgitrepo.Details = realgitrepo;
             realgitrepo.Branches.Add(basicbranch);
             realgitrepo.Branches.Add(basicbranch2);
 

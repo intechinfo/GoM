@@ -154,6 +154,17 @@ namespace GoM.Core.Persistence
             return element;
         }
 
+        public static XElement ToXML(this IBasicProject _this)
+        {
+            if ( _this == null ) return null;
+
+            XElement element = new XElement(typeof(IBasicProject).Name);
+            element.SetAttributeValue( nameof( _this.Path ), _this.Path );
+
+            element.Add( _this.Details.ToXML() );
+            return element;
+        }
+
         public static XElement ToXML(this IGitBranch _this)
         {
             if (_this == null) return null;
