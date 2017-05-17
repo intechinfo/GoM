@@ -5,7 +5,6 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
-using System.Xml;
 
 namespace GoM
 {
@@ -88,6 +87,24 @@ namespace GoM
                 });
             });
 
+            app.Command("init", (command) =>
+            {
+                command.Description = "Initialize a new GoM repository in the current directory";
+                var myCurrentDirectory = Directory.GetCurrentDirectory();
+                command.HelpOption("-h|--help");
+
+                command.OnExecute(() =>
+                {
+                    string pathFound;
+                    //var succes = TryInit(myCurrentDirectory, pathFound);
+
+                    //if (succes) Console.WriteLine("GoM repository has been correctly initialized");
+                    //else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}",pathFound);
+
+                    return 0;
+                });
+            });
+
             /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
@@ -120,8 +137,6 @@ namespace GoM
                     {
                         Console.WriteLine("{0} is not a valid file or directory.", projectPath);
                     }
-
-
 
                     Console.ReadLine();
                     return 0;
