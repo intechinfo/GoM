@@ -6,7 +6,7 @@ namespace GoM.Core.Mutable
 {
     public class GitBranch : IGitBranch
     {
-        public List<Project> Projects { get; } = new List<Project>();
+        public List<BasicProject> Projects { get; } = new List<BasicProject>();
 
         public BranchVersionInfo Version { get; set; }
 
@@ -14,7 +14,7 @@ namespace GoM.Core.Mutable
 
         public GitBranch Details => this;
 
-        IReadOnlyCollection<IProject> IGitBranch.Projects => Projects;
+        IReadOnlyCollection<IBasicProject> IGitBranch.Projects => Projects;
 
         IBranchVersionInfo IGitBranch.Version => Version;
 

@@ -46,6 +46,11 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
+        public static GoMContext Create(IGoMContext context)
+        {
+            return new GoMContext(context);
+        }
+
         public GoMContext WithAll(
             string path = null, 
             ImmutableList<BasicGitRepository> repositories = null, 

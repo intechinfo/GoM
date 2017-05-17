@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace GoM.Core.Immutable
 {
@@ -6,9 +7,17 @@ namespace GoM.Core.Immutable
     {
         private BasicGitRepository(string path, Uri url, IGitRepository details = null)
         {
-            Path = path ?? throw new ArgumentException("path must not be null");
-            Url = url ?? throw new ArgumentException("url must not be null");
+            Path = path ?? throw new ArgumentException(nameof(path));
+            Url = url ?? throw new ArgumentException(nameof(url));
             Details = details != null ? GitRepository.Create(details) : null;
+        }
+
+        private BasicGitRepository(IBasicGitRepository basicGitRepository)
+        {
+            Debug.Assert(basicGitRepository is BasicGitRepository);
+            Path = basicGitRepository.Path ?? throw new ArgumentException(nameof(basicGitRepository.Path));
+            Url = basicGitRepository.Url ?? throw new ArgumentException(nameof(basicGitRepository.Url));
+            Details = basicGitRepository.Details != null ? GitRepository.Create(basicGitRepository.Details) : null;
         }
 
         public string Path { get; }
@@ -37,9 +46,11 @@ namespace GoM.Core.Immutable
             return new BasicGitRepository(path, url );
         }
 
-        public static BasicGitRepository Create( IGitRepository details )
-        {
-            return new BasicGitRepository(details.Path, details.Url, details);
-        }
+        //public static BasicGitRepository Create( IGitRepository details )
+        //{
+        //    return new BasicGitRepository(details.Path, details.Url, details);
+        //}
+        public static BasicGitRepository Create(IBasicGitRepository basicGitRepository) => basicGitRepository as BasicGitRepository ?? new BasicGitRepository(basicGitRepository);
+
     }
 }
