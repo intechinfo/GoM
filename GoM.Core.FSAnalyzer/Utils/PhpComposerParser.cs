@@ -34,7 +34,10 @@ namespace GoM.Core.FSAnalyzer.Utils
                     }
                 );
             }
-            Target t = new Target();
+            Target t = new Target
+            {
+                Name = String.Empty,                
+            };
             t.Dependencies.AddRange(targets);
             yield return t;
         }
