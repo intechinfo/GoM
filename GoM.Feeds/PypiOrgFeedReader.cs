@@ -1,16 +1,17 @@
 using GoM.Core;
 using GoM.Core.Mutable;
 using GoM.Feeds.Abstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Semver;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using System.Linq;
-using Semver;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace GoM.Feeds 
+namespace GoM.Feeds
 {
     public class PypiOrgFeedReader : PypiFeedReader
     {
@@ -24,7 +25,16 @@ namespace GoM.Feeds
         public async override Task<bool> FeedMatch(Uri adress)
         {
             string resp = await _client.GetStringAsync(adress);
-            JObject o = JObject.Parse(resp);
+
+            JObject o;
+            try
+            {
+                o = JObject.Parse(resp);
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
             if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
             bool isPypi = o.TryGetValue("info", out JToken value);
             if (isPypi)
