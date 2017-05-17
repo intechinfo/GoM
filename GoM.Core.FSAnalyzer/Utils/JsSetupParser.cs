@@ -1,4 +1,5 @@
-﻿using GoM.Core.Mutable;
+﻿using GoM.Core.FSAnalyzer.Utils.JS;
+using GoM.Core.Mutable;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,35 +23,38 @@ namespace GoM.Core.FSAnalyzer.Utils
 
             string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
 
-            dynamic jsConfigFileContent = JsonConvert.DeserializeObject(jsonFileString);
-            dynamic dependencies = jsConfigFileContent["dependencies"];
-            dynamic devDependencies = jsConfigFileContent["devDependencies"];
+            JObject jsConfigFileContent = JObject.Parse(jsonFileString);
+            JObject dependencies = new JObject(jsConfigFileContent.Property("dependencies"));
+            JObject devDependencies = new JObject(jsConfigFileContent.Property("devDependencies"));
 
-            foreach (var d in dependencies)
+            foreach (KeyValuePair<string, JToken> d in dependencies)
             {
                 targetDependencies.Add(
                     new TargetDependency
                     {
-                        Name = d.Name,
-                        Version = d.Value
+                        Name = d.Key,
+                        Version = d.Value.ToString()
                     }
                 );
             }
-            foreach (var d in devDependencies)
+            foreach (KeyValuePair<string, JToken> d in devDependencies)
             {
                 targetDependencies.Add(
                     new TargetDependency
                     {
-                        Name = d.Name,
-                        Version = d.Value
+                        Name = d.Key,
+                        Version = d.Value.ToString()
                     }
                 );
             }
+
             Target target = new Target();
             target.Dependencies.AddRange(targetDependencies);
-            IEnumerable<Target> targs = new List<Target>();
-            targs.ToList().Add(target);
-            return targs;
+
+            List<Target> targets = new List<Target>();
+            targets.Add(target);
+
+            return targets;
         }
     }
 }
