@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using LibGit2Sharp;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.FileProviders.Physical;
 
 enum TYPE {Unhandled = -1, Root = 0, Branches, Tags, Commits};
 namespace GoM.GitFileProvider
@@ -16,14 +17,28 @@ namespace GoM.GitFileProvider
     {
         readonly string _rootPath;
         readonly bool _exist;
-
+        readonly GitFilesWatcher _rootWatcher;
 
         public GitFileProvider(string rootPath)
         {
             _rootPath = rootPath;
             _exist = IsCorrectGitDirectory();
+            if (_exist)
+            {
+                _rootWatcher = new GitFilesWatcher(rootPath, new System.IO.FileSystemWatcher(rootPath), false, this);
+            }
         }
+        
 
+        private string GetPathToGit()
+        {
+            string fullpath = _rootPath;
+            if (!Regex.IsMatch(_rootPath, @".git\\?$"))
+            {
+                fullpath = fullpath + @"\.git";
+            }
+            return fullpath;
+        }
         private bool IsCorrectGitDirectory()
         {
             string fullpath = _rootPath;
@@ -135,14 +150,35 @@ namespace GoM.GitFileProvider
         private IFileInfo GetFileCommit(string[] splitPath, string subpath, char flag)
         {
             if (flag == '*')
-                return new FileInfoRefType(_rootPath + @"\branches", "branches");
+                return new FileInfoRefType(_rootPath + @"\commits", "commits");
             else
             {
                 using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
                     rw.Create(_rootPath);
-                    Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
-                            
+                    string commitHash = splitPath[1];
+                    Commit commit = rw.Repo.Lookup<Commit>(commitHash);
+                    if (commit == null)
+                        return new NotFoundFileInfo("InvalidSha");
+                    string relativePath = GetRelativePath(splitPath, 3);
+                    if (String.IsNullOrEmpty(relativePath))
+                    {
+                        TreeEntry entry = commit.Tree.FirstOrDefault();
+                        if (entry == null)
+                        {
+                            return new NotFoundFileInfo("NoFile");
+                        }
+                        else
+                        {
+                            if (entry.TargetType == TreeEntryTargetType.Blob)
+                                return new FileInfoFile(true, null, null, default(DateTimeOffset), entry.Target as Blob, rw);
+                        }
+                    }
+                    TreeEntry node = commit.Tree[relativePath];
+                    if (node == null)
+                        return new NotFoundFileInfo("InvalidPath");
+                    if (node.TargetType == TreeEntryTargetType.Blob)
+                        return new FileInfoFile(true, relativePath, splitPath[splitPath.Length - 1], default(DateTimeOffset), node.Target as Blob, rw);
                 }
             }
             return null;
@@ -249,9 +285,18 @@ namespace GoM.GitFileProvider
             }
         }
 
+        public bool IsValidFilter(string filter)
+        {
+            // TODO
+            return true;
+        }
+
         public IChangeToken Watch(string filter)
         {
-            throw new NotImplementedException();
+            if (!IsValidFilter(filter))
+                return NullChangeToken.Singleton;
+            IChangeToken  token = _rootWatcher.MonitorFile(filter);
+            return token;
         }
 
     }

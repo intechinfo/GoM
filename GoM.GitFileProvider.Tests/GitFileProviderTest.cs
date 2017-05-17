@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -153,6 +154,40 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
+        public void FileInfo_Read_Commits()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo("commits");
+            fileInfo.Name.Should().Be("commits");
+        }
+
+        [Test]
+        public void FileInfo_Read_Commits_With_Specific_Commit_Hash_Wrong_Hash()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo(@"commits\WrongHash");
+            fileInfo.Name.Should().Be("InvalidSha");
+        }
+
+        [Test]
+        public void FileInfo_Read_Commits_With_Specific_Commit_Hash_Right_Hash()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\");
+            fileInfo.Name.Should().NotBe("InvalidSha");
+            fileInfo.Name.Should().NotBe("Invalid");
+        }
+
+        [Test]
+        public void FileInfo_Read_Commits_With_Specific_Hash_And_Relative_Path_From_Hash()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider\app.config");
+            fileInfo.Name.Should().Be("app.config");
+            fileInfo.Length.Should().BeGreaterOrEqualTo(0);
+        }
+
+        [Test]
         public void FileInfo_Read_Same_File_In_Two_Different_Branches_Should_Not_Be_Equal()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
@@ -172,6 +207,18 @@ namespace GoM.GitFileProvider.Tests
             stream2.Dispose();
             buffer1 = null;
             buffer2 = null;
+        }
+
+        [Test]
+        public async Task Get_Change()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IChangeToken token = git.Watch("test");
+            var tcs = new TaskCompletionSource<object>();
+            token.RegisterChangeCallback(state =>
+                ((TaskCompletionSource<object>)state).TrySetResult(null), tcs);
+            await tcs.Task.ConfigureAwait(false);
+            Console.WriteLine("quotes.txt changed");
         }
     }
 }
