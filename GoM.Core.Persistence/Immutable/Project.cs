@@ -26,7 +26,7 @@ namespace GoM.Core.Persistence
 
         IReadOnlyCollection<ITarget> IProject.Targets => Targets;
 
-        public IProject Details => throw new NotImplementedException();
+        public IProject Details => this;
 
         public Project(string path)
         {

@@ -15,6 +15,7 @@ namespace GoM.Core.Persistence
         {
             this.xElement = xElement;
             Projects = new List<BasicProject>();
+
             foreach(var t in xElement.Elements(GoMAttributeNamesV1.PROJECT))
             {
                 Projects.Add( new BasicProject( t ) );
@@ -22,16 +23,14 @@ namespace GoM.Core.Persistence
 
             Version = new BranchVersionInfo( xElement.Element( GoMAttributeNamesV1.BRANCH_VERSION_INFO ));
             Name = xElement.Attribute( GoMAttributeNamesV1.GIT_BRANCH ).Value;
-            Details = new GitBranch( xElement.Element( GoMAttributeNamesV1.GIT_BRANCH) );
 
-        }
 
 
         public BranchVersionInfo Version { get; }
 
         public string Name { get; }
 
-        public GitBranch Details { get; }
+        public GitBranch Details => this;
 
         IReadOnlyCollection<IBasicProject> IGitBranch.Projects => Projects;
 
@@ -45,7 +44,6 @@ namespace GoM.Core.Persistence
             Projects = new List<BasicProject>();
             Version = version;
             Name    = name;
-            Details = details;
         }
     }
 }
