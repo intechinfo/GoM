@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace GoM.Core.FSAnalyzer.Utils
 {
-    class PackageConfigParser : BaseConfigParser
+    public class PackageConfigParser : BaseConfigParser
     {
         public PackageConfigParser(IFileInfo file) : base(file)
         {
