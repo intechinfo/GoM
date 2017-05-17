@@ -15,16 +15,19 @@ namespace GoM.Core.FSAnalyzer
 
         public override IProjectFolderHandler Sniff()
         {
-            if (FileExtensions.Contains(".csproj"))
+            if( FileExtensions.Contains( ".csproj" ) )
             {
-                return new CsharpProjectHandler(FileProvider).Sniff();
-            } else if (HasFile("package.json"))
-            {
-                return new JsProjectHandler(FileProvider).Sniff();
-            } else if (HasFile("setup.py"))
-            {
-                return new PythonProjectHandler(FileProvider).Sniff();
+                return new CsharpProjectHandler( FileProvider ).Sniff();
             }
+            else if( HasFile( "package.json" ) )
+            {
+                return new JsProjectHandler( FileProvider ).Sniff();
+            }
+            else if( HasFile( "setup.py" ) )
+            {
+                return new PythonProjectHandler( FileProvider ).Sniff();
+            }
+            else if( HasFile( "composer.json" ) ) return new PhpProjectHandler( FileProvider ).Sniff();
             return null;
         }
 
