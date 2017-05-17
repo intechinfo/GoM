@@ -49,7 +49,7 @@ namespace GoM.GitFileProvider
                     try
                     {
                         IFileInfo fileInfo = _gitFileProvider.GetFileInfo(wrap.Path);
-                        if (fileInfo.LastModified == wrap.LastModificationTime)
+                        if (fileInfo.LastModified != wrap.LastModificationTime)
                             wrap.ChangeToken.TokenSource.Cancel();
                     }
                     catch
