@@ -17,7 +17,7 @@ namespace GoM.Feeds
     {
         HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
-        internal PypiOrgFeedReader()
+        public PypiOrgFeedReader()
         {
             _client = new HttpClient();
         }

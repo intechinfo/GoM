@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using GoM.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,9 +22,7 @@ namespace GoM.Feeds.Tests
         {
             var testReader = CreateReader();
             testReader.FeedMatch(new Uri("http://api.nuget.org/v3/index.json")).Result.Should().Be(true);
-            //Action a1 = () => { bool b = testReader.FeedMatch(new Uri("aaaa")).Result; };
-            //Action a2 = () => { bool b = testReader.FeedMatch(new Uri("")).Result; };
-            testReader.FeedMatch(new Uri("http://google.com/")).Result.Should().Be(false);
+             testReader.FeedMatch(new Uri("http://google.com/")).Result.Should().Be(false);
         }
 
         [Fact]
@@ -33,10 +32,10 @@ namespace GoM.Feeds.Tests
 
             testReader.GetNewestVersions("NUnit", "3.4.0").Result.Should().NotBeNullOrEmpty();
             testReader.GetNewestVersions("NUnit", "3.6.1").Result.Should().BeNullOrEmpty();
-            Action a2 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetNewestVersions("NUnit", "blabla").Result; };
+            Action a2 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("NUnit", "blabla").Result; };
             a2.ShouldThrow<ArgumentException>();
 
-            Action a1 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetNewestVersions("", "3.6.1").Result; };
+            Action a1 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("", "3.6.1").Result; };
             a1.ShouldThrow<ArgumentException>();
         }
 
