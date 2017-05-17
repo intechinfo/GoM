@@ -121,7 +121,7 @@ namespace GoM.GitFileProvider.Tests
             fileInBranch.Name.Should().Be("app.config");
             fileInBranch.PhysicalPath.Should().Be(ProjectRootPath + @"\branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config");
             fileInBranch.Length.Should().BeGreaterThan(-1);
-            fileInBranch.LastModified.Should().Be(default(DateTimeOffset));
+            fileInBranch.LastModified.Should().BeAfter(default(DateTimeOffset));
         }
 
         [Test]
@@ -210,15 +210,25 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
-        public async Task Get_Change()
+        public async Task Watch_With_Valid_File()
         {
+            
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            IChangeToken token = git.Watch("test");
+            IChangeToken token = git.Watch(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GitFileProvider.cs");
             var tcs = new TaskCompletionSource<object>();
             token.RegisterChangeCallback(state =>
                 ((TaskCompletionSource<object>)state).TrySetResult(null), tcs);
             await tcs.Task.ConfigureAwait(false);
             Console.WriteLine("quotes.txt changed");
+            
+        }
+
+        [Test]
+        public void Watch_With_Invalid_File()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IChangeToken token = git.Watch("test");
+            token.Should().Be(NullChangeToken.Singleton);
         }
     }
 }

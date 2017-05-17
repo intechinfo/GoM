@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.FileProviders.Physical;
+﻿using LibGit2Sharp;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders.Physical;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -40,16 +42,19 @@ namespace GoM.GitFileProvider
         /// <param name="e"></param>
         private void MyOnChanged(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("Inside onchanged");
             foreach (ChangeTokenWrapper wrap in _fileMonitoredPool)
             {
                 Task.Run(() =>
                 {
+                
                     try
                     {
-                        wrap.ChangeToken.TokenSource.Cancel();
+                        IFileInfo fileInfo = _gitFileProvider.GetFileInfo(wrap.Path);
+                        FileInfoFile fileInfoFile = fileInfo as FileInfoFile;
+                        if (fileInfoFile.File.Sha != wrap.FileBlob.Sha)
+                            wrap.ChangeToken.TokenSource.Cancel();
                     }
-                    catch
+                    catch 
                     {
                     }
                 });
@@ -58,19 +63,27 @@ namespace GoM.GitFileProvider
 
         private ChangeTokenWrapper MyCreateFileChangeToken(string filter)
         {
+            IFileInfo fileInfo = _gitFileProvider.GetFileInfo(filter);
+            if (!fileInfo.Exists)
+                return new ChangeTokenWrapper(new ChangeTokenInfo(null, null), null, default(DateTimeOffset), null); 
+
             ChangeTokenInfo tokenInfo;
            
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationChangeToken = new CancellationChangeToken(cancellationTokenSource.Token);
             tokenInfo = new ChangeTokenInfo(cancellationTokenSource, cancellationChangeToken);
 
-            ChangeTokenWrapper changeTokenWrap = new ChangeTokenWrapper(tokenInfo, filter);
+            FileInfoFile fileInfoFile = fileInfo as FileInfoFile;
+            ChangeTokenWrapper changeTokenWrap = new ChangeTokenWrapper(tokenInfo, filter, fileInfo.LastModified, fileInfoFile.File);
             return changeTokenWrap;
         }
 
         public IChangeToken MonitorFile(string filter)
         {
             ChangeTokenWrapper tokenWrap = MyCreateFileChangeToken(filter);
+            if (tokenWrap.Path == null)
+                return NullChangeToken.Singleton;
+
             _fileMonitoredPool.Add(tokenWrap);
             return tokenWrap.ChangeToken.ChangeToken;
         }
@@ -79,11 +92,14 @@ namespace GoM.GitFileProvider
             {
                 public ChangeTokenInfo ChangeToken { get; }
                 public string Path { get; }
-
-                public ChangeTokenWrapper(ChangeTokenInfo changeToken, string path)  
+                public DateTimeOffset LastModificationTime { get; }
+                public Blob FileBlob;
+                public ChangeTokenWrapper(ChangeTokenInfo changeToken, string path, DateTimeOffset lastModificationTime, Blob fileBlob)  
                 {
-                ChangeToken = changeToken;
-                Path = path;
+                    ChangeToken = changeToken;
+                    Path = path;
+                    LastModificationTime = lastModificationTime;
+                    FileBlob = fileBlob;
                 }
             }
 

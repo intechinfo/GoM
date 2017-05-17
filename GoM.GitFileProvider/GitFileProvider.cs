@@ -167,8 +167,11 @@ namespace GoM.GitFileProvider
                 using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
                     rw.Create(_rootPath);
+                   
                     Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                     return BranchFileManager(rw, b, splitPath, subpath);
+                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], b.Tip.Committer.When, (Blob)node.Target, rw);
+                    
                 }
             }
         }
@@ -373,8 +376,11 @@ namespace GoM.GitFileProvider
 
         public IChangeToken Watch(string filter)
         {
+            return NullChangeToken.Singleton;
+
             if (!IsValidFilter(filter))
                 return NullChangeToken.Singleton;
+            
             IChangeToken token = _rootWatcher.MonitorFile(filter);
             return token;
         }
