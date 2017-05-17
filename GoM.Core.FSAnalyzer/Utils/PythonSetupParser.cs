@@ -21,7 +21,6 @@ namespace GoM.Core.FSAnalyzer.Utils
 
             int idx = content.IndexOf("install_requires", StringComparison.Ordinal);
             if (idx == -1) yield break;
-
             var start = content.IndexOf('[', idx);
             for (int i = start; i <= content.Length; i++)
             {
@@ -32,7 +31,6 @@ namespace GoM.Core.FSAnalyzer.Utils
                     var targets = 
                         from x in dependencies
                         let vIdx = x.IndexOfAny(new[] {'<', '>', '='})
-
                         let name = x.Substring(0, vIdx == -1 ? x.Length : vIdx).Trim('\'')
                         select new TargetDependency()
                         {

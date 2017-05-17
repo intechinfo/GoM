@@ -54,7 +54,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         [Fact]
         public void Test_project_handler_return_javascript_handler_on_javascript_project()
         {
-            var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Javascript/"));
+            var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Javascript/good_package"));
             var handler = new ProjectFolderHandler(provider);
             var result = handler.Sniff();
 
