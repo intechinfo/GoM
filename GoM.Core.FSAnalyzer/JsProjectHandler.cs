@@ -26,7 +26,7 @@ namespace GoM.Core.FSAnalyzer
         {
             string path = this.FileProvider.GetFileInfo("./").PhysicalPath + @"\package.json";
 
-            JsSetupParser parser = new JsSetupParser(this.FileProvider.GetFileInfo("./"));
+            JsPackageParser parser = new JsPackageParser(this.FileProvider.GetFileInfo("./"));
             var targets = parser.Read();
 
             Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath };

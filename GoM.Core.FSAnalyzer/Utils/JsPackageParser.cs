@@ -10,9 +10,9 @@ using System.Text;
 
 namespace GoM.Core.FSAnalyzer.Utils
 {
-    public class JsSetupParser : BaseConfigParser
+    public class JsPackageParser : BaseConfigParser
     {
-        public JsSetupParser(IFileInfo file) : base(file)
+        public JsPackageParser(IFileInfo file) : base(file)
         {
         }
 
@@ -27,34 +27,27 @@ namespace GoM.Core.FSAnalyzer.Utils
             dynamic jsConfigFileContent = JObject.Parse(jsonFileString);
 
             // Checking if there are dependencies
-            dynamic dependencies = jsConfigFileContent["dependencies"] != null ? jsConfigFileContent["dependencies"] : null;
+            JObject dependencies = jsConfigFileContent["dependencies"] != null ? jsConfigFileContent["dependencies"] : null;
 
-            if(dependencies != null)
+            if (dependencies != null)
             {
                 targetDependencies.AddRange(CreateDependencies(dependencies));
             }
 
             // Checking if there are devDependencies and
-            dynamic devDependencies = jsConfigFileContent["devDependencies"] != null ? jsConfigFileContent["devDependencies"] : null;
+            JObject devDependencies = jsConfigFileContent["devDependencies"] != null ? jsConfigFileContent["devDependencies"] : null;
 
-            if(devDependencies != null)
+            if (devDependencies != null)
             {
                 targetDependencies.AddRange(CreateDependencies(devDependencies));
             }
 
             Target target = new Target();
 
-            if(targetDependencies.Count() > 0)
-            {
+            if (targetDependencies.Any())
                 target.Dependencies.AddRange(targetDependencies);
-            } else
-            {
-                List<TargetDependency> emptyTargetDependency = new List<TargetDependency>();
-                target.Dependencies.AddRange(emptyTargetDependency);
-            }
 
-            List<Target> targets = new List<Target>();
-            targets.Add(target);
+            List<Target> targets = new List<Target> { target };
 
             return targets;
         }
@@ -63,7 +56,8 @@ namespace GoM.Core.FSAnalyzer.Utils
         {
             List<TargetDependency> targetDependenciesList = new List<TargetDependency>();
 
-            foreach (var d in dependencies)
+            if (dependencies.Count <= 0) return targetDependenciesList;
+            foreach (KeyValuePair<string, JToken> d in dependencies)
             {
                 targetDependenciesList.Add(new TargetDependency
                 {
@@ -71,7 +65,6 @@ namespace GoM.Core.FSAnalyzer.Utils
                     Version = d.Value.ToString()
                 });
             }
-
             return targetDependenciesList;
         }
     }

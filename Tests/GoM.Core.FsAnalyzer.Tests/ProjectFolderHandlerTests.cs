@@ -50,5 +50,15 @@ namespace GoM.Core.FsAnalyzer.Tests
 
             result.Should().BeOfType(typeof(PhpProjectHandler));
         }
+
+        [Fact]
+        public void Test_project_handler_return_javascript_handler_on_javascript_project()
+        {
+            var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Javascript/"));
+            var handler = new ProjectFolderHandler(provider);
+            var result = handler.Sniff();
+
+            result.Should().BeOfType(typeof(JsProjectHandler));
+        }
     }
 }
