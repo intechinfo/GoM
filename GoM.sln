@@ -14,6 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.FsAnalyzer.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable.Tests", "Tests\GoM.Core.Mutable.Tests\GoM.Core.Mutable.Tests.csproj", "{49120F26-CFF1-489A-9552-1049A62DC659}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A4FBDFC-9F07-419E-AE9C-7E9ED024D705}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\samplePhpComposer.json = Samples\samplePhpComposer.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

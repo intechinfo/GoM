@@ -4,9 +4,7 @@ using System.Text;
 
 namespace GoM.Core.FSAnalyzer
 {
-
-    public class PhpComposerModel
+    class PhpProjectHandler
     {
-        public string Package { get; set; }
     }
 }
