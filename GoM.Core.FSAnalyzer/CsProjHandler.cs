@@ -27,10 +27,13 @@ namespace GoM.Core.FSAnalyzer
             CsProjParser parser = new CsProjParser(proj);
 
             var targets = parser.Read();
-            return new Project()
+            var project = new Project()
             {
                 Path = Path.GetDirectoryName(proj.PhysicalPath),
             };
+
+            project.Targets.AddRange(targets);
+            return project;
         }
     }
 }
