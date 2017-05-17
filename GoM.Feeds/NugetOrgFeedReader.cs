@@ -1,30 +1,41 @@
-﻿using GoM.Feeds.Abstractions;
+﻿using GoM.Core;
+using GoM.Core.Mutable;
+using GoM.Feeds.Abstractions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Semver;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GoM.Core;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using GoM.Core.Mutable;
-using System.Linq;
-using Semver;
 
 namespace GoM.Feeds
 {
-    internal class NugetOrgFeedReader : NugetFeedReader
+    public class NugetOrgFeedReader : NugetFeedReader
     {
         HttpClient _client;
         string _baseUrl = "https://api.nuget.org/v3/registration1/";
-        internal NugetOrgFeedReader()
+        public NugetOrgFeedReader()
         {
             _client = new HttpClient();
         }
 
         public override async Task<bool> FeedMatch(Uri adress)
         {
+            if (String.IsNullOrWhiteSpace(adress.OriginalString))
+                throw new ArgumentNullException("adress must be not null");
+
             string resp = await _client.GetStringAsync(adress);
-            JObject o = JObject.Parse(resp);
+            JObject o;
+            try
+            {
+                o = JObject.Parse(resp);
+            }
+            catch(JsonReaderException)
+            {
+                return false;
+            }
             if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
 
             return o.TryGetValue("version", out JToken j1) 
@@ -41,12 +52,15 @@ namespace GoM.Feeds
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
 
             var list = new List<IPackageInstance>();
-            JObject versions = new JObject(o.Property("versions"));
+            JArray versions = o["versions"] as JArray;
             //iterate on eah version of the json
             foreach (var item in versions)
             {
-                string packageVersion = item.Key;
-                list.Add(new PackageInstance { Name = name, Version = packageVersion });
+                if (SemVersion.TryParse(item.ToString(), out SemVersion item_v))
+                {
+                    string packageVersion = item.ToString();
+                    list.Add(new PackageInstance { Name = name, Version = packageVersion });
+                }
             }
             return list;
         }
@@ -94,7 +108,8 @@ namespace GoM.Feeds
         public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => x.Version > SemVersion.Parse(version));
+            var ver = SemVersion.Parse(version);
+            return res.Where(x => SemVersion.Parse(x.Version) > ver);
         }
     }
 }

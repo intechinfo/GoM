@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoM.Feeds\GoM.Feeds.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+    <ProjectReference Include="..\..\GoM.Feeds\GoM.Feeds.csproj" />
   </ItemGroup>
 
   <ItemGroup>

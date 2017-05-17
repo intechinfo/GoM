@@ -9,7 +9,7 @@ namespace GoM.Feeds
 {
     public class FeedManager : IFeedManager
     {
-        public IFeedFactory _factory;
+        IFeedFactory _factory;
 
         public FeedManager()
         {

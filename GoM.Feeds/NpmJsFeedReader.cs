@@ -56,9 +56,13 @@ namespace GoM.Feeds
             //iterate on eah version of the json
             foreach (var item in versions)
             {
-                string packageVersion = item.Key;
-                string packageName = item.Value["name"].ToString();
-                list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                if (SemVersion.TryParse(item.Key, out SemVersion item_v))
+                {
+                    string packageVersion = item.Key;
+                    string packageName = item.Value["name"].ToString();
+                    list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                }
+                
             }
             return list;
         }
@@ -90,7 +94,7 @@ namespace GoM.Feeds
         public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => x.Version > SemVersion.Parse(version));
+            return res.Where(x => SemVersion.Parse(x.Version) > SemVersion.Parse(version));
         }
     }
 }
