@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Semver;
+
 namespace GoM.Feeds 
 {
     internal class PypiOrgFeedReader : PypiFeedReader
@@ -74,9 +76,10 @@ namespace GoM.Feeds
             return list;
         }
 
-        public override Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
-            throw new NotImplementedException();
+            var res = await GetAllVersions(name);
+            return res.Where(x => x.Version > SemVersion.Parse(version));
         }
     }
 }
