@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GoM.Core;
 
 namespace GoM.Feeds
 {
@@ -12,7 +13,12 @@ namespace GoM.Feeds
             throw new NotImplementedException();
         }
 
-        public IFeedFactory Snif()
+        public IEnumerable<IFeedReader> Snif(List<Uri> links)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeedReader Snif(Uri link)
         {
             throw new NotImplementedException();
         }

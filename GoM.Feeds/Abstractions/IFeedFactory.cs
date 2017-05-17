@@ -7,7 +7,7 @@ namespace GoM.Feeds.Abstractions
     public interface IFeedFactory
     {
         IFeedReader GetFeedReader();
-        IEnumerable<IFeedReader> Snif(List<IPackageFeed> packages);
-        IFeedReader Snif(IPackageFeed package);
+        IEnumerable<IFeedReader> Snif(List<Uri> links);
+        IFeedReader Snif(Uri link);
     }
 }

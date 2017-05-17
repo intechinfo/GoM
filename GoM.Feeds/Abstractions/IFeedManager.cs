@@ -1,11 +1,11 @@
 using GoM.Core;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GoM.Feeds.Abstractions
 {
     public interface IFeedManager
     {
-       Task<IDictionary<IPackageInstance,List<IPackageInstance>>> GetNewestVersions(List<IPackageFeed> packageFeeds, List<IPackageInstance> packages);
+       IDictionary<IPackageInstance,IEnumerable<IPackageInstance>> GetNewestVersions(List<Uri> packageFeeds, List<IPackageInstance> packages);
     }
 }
