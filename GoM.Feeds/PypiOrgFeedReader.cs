@@ -21,9 +21,18 @@ namespace GoM.Feeds
             _client = new HttpClient();
         }
 
-        public override Task<bool> FeedMatch(Uri adress)
+        public async override Task<bool> FeedMatch(Uri adress)
         {
-            throw new NotImplementedException();
+            string resp = await _client.GetStringAsync(adress);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+            bool isPypi = o.TryGetValue("info", out JToken value);
+            if (isPypi)
+            {
+                var datas = new JObject(o.Property("info"));
+                return datas["name"].Value<string>() == "Python";
+            }
+            return false;
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
