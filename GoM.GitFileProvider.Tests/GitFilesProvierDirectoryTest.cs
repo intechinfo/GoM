@@ -13,8 +13,9 @@ namespace GoM.GitFileProvider.Tests
         public void Get_directory_with_no_parameters()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            var rootDir = git.GetDirectoryContents(@"commits\57792d71d0fa5b8da36c5b8b5b2bdcd78c6c1d2b\GoM.GitFileProvider\app.config");
+            var rootDir = git.GetDirectoryContents("");
 
+            rootDir.Exists.Should().BeTrue();
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
