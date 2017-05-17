@@ -18,13 +18,13 @@ namespace GoM.Core.FSAnalyzer.Utils
             List<Target> target = new List<Target>();
             var physicalPath = Source.PhysicalPath;
             XDocument xmldoc = XDocument.Load(physicalPath);
+            var ta = new Target();
             if (xmldoc.Root != null)
             {
                 XNamespace msbuild = xmldoc.Root.GetDefaultNamespace().NamespaceName;
                 var referenceList = xmldoc.Descendants(msbuild + "Reference").ToArray();
                 var referenceListOld = xmldoc.Descendants(msbuild + "PackageReference").ToArray();
-                var ta = new Target();
-
+                
                 var targetFrameworkVersionList = xmldoc.Descendants(msbuild + "TargetFrameworkVersion").ToArray();
 
                 for (int i = 0; i < targetFrameworkVersionList.Length; i++)
@@ -35,8 +35,6 @@ namespace GoM.Core.FSAnalyzer.Utils
                     {
                         Name = targetFrameworkVersion,
                     };
-
-                    target.Add(ta);
                 }
 
                 if (referenceList.Length > 0)
@@ -65,7 +63,7 @@ namespace GoM.Core.FSAnalyzer.Utils
                     for (int i = 0; i < referenceListOld.Length; i++)
                     {
                         string include = referenceListOld[i] != null ? referenceListOld[i].Attribute("Include").Value : string.Empty;
-                        string version = referenceListOld[i] != null ? referenceListOld[i].Element("Version").Value : string.Empty;
+                        string version = referenceListOld[i] != null ? referenceListOld[i].Attribute("Version").Value : string.Empty;
                         ta.Dependencies.Add(new TargetDependency()
                         {
                             Name = include,
@@ -74,7 +72,7 @@ namespace GoM.Core.FSAnalyzer.Utils
                     }
                 }
             }
-
+            target.Add(ta);
             return target;
         }
     }
