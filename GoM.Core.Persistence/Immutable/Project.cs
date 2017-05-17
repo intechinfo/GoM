@@ -22,15 +22,19 @@ namespace GoM.Core.Persistence
             }
         }
 
-
         public List<Target> Targets { get; } 
 
         IReadOnlyCollection<ITarget> IProject.Targets => Targets;
+
+        public IProject Details => throw new NotImplementedException();
 
         public Project(string path)
         {
             Path    = path;
             Targets = new List<Target>();
         }
+
+
+
     }
 }
