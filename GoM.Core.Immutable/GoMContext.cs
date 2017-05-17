@@ -21,9 +21,16 @@ namespace GoM.Core.Immutable
             if (Repositories.Any(rep => rep != null)) throw new ArgumentException($"A repository in {nameof(repositories)} is null");
             if (Feeds.Any(feed => feed != null)) throw new ArgumentException($"A feed in {nameof(feeds)} is null");
 
-            // Check duplicates on repositories(path && url) and feeds (url)
+            // Check duplicates on repositories(path) and feeds (url)
             bool isDuplicates = false;
-            //isDuplicates = repositories.Distinct()
+            isDuplicates = repositories.Distinct(
+                EqualityComparerGenerator.CreateEqualityComparer<BasicGitRepository>((x, y) => x.Path == y.Path, x => x.Path.GetHashCode())
+            ).Count() < repositories.Count;
+            isDuplicates = isDuplicates ? true : feeds.Distinct(
+                EqualityComparerGenerator.CreateEqualityComparer<PackageFeed>((x, y) => x.Url.OriginalString == y.Url.OriginalString, x => x.Url.OriginalString.GetHashCode())
+            ).Count() < feeds.Count;
+
+            if (isDuplicates) throw new ArgumentException("Duplicate package feeds or repositories found");
         }
 
         private GoMContext(IGoMContext context)
@@ -57,8 +64,8 @@ namespace GoM.Core.Immutable
         }
 
         public GoMContext WithAll(
-            string path = null, 
-            ImmutableList<BasicGitRepository> repositories = null, 
+            string path = null,
+            ImmutableList<BasicGitRepository> repositories = null,
             ImmutableList<PackageFeed> feeds = null)
         {
             if (RootPath == path && Repositories == repositories && Feeds == feeds)
