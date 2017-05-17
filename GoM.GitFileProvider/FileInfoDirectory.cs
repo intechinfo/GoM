@@ -18,7 +18,7 @@ namespace GoM.GitFileProvider
         public FileInfoDirectory(bool exists, string physicalPath, string name)
         {
             _exists = exists;
-            _physicalPath = physicalPath + Path.DirectorySeparatorChar;
+            _physicalPath = physicalPath;
             _name = name;
         }
 
