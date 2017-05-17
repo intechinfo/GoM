@@ -6,11 +6,16 @@ namespace GoM.Core.Persistence
 {
     public class PackageInstance : IPackageInstance
     {
+
+        public const string PACKAGE_INSTANCE = "packageInstance";
+        public const string PACKAGE_INSTANCE_VERSION = "version";
+        public const string PACKAGE_INSTANCE_NAME = "name";
+
         public string Name { get; }
         public PackageInstance(XElement e)
         {
-            this.Name = e.Attribute(GoMAttributeNamesV1.PACKAGE_INSTANCE_NAME).Value;
-            this.Version = e.Attribute(GoMAttributeNamesV1.PACKAGE_INSTANCE_VERSION).Value;
+            this.Name = e.Attribute(PACKAGE_INSTANCE_NAME).Value;
+            this.Version = e.Attribute(PACKAGE_INSTANCE_VERSION).Value;
         }
 
 

@@ -8,11 +8,14 @@ namespace GoM.Core.Persistence
     public class BasicProject : IBasicProject
     {
 
+        public const string BASIC_PROJECT_PATH = "path";
+        public const string BASIC_PROJECT_DETAILS = "details";
+
         public BasicProject ( XElement t )
         {
-            Path = t.Attribute( GoMAttributeNamesV1.PROJECT_PATH ).Value;
+            Path = t.Attribute( BASIC_PROJECT_PATH ).Value;
 
-            var node = t.Element( GoMAttributeNamesV1.PROJECT );
+            var node = t.Element( Project.PROJECT );
             Details = node != null ? new Project( node ) : null;
         }
 

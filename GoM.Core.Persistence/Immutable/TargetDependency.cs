@@ -6,14 +6,20 @@ namespace GoM.Core.Persistence
 {
     public class TargetDependency : ITargetDependency
     {
+
+        public const string TARGET_DEPENDENCY = "targetDependency";
+        public const string TARGET_DEPENDENCY_NAME = "name";
+        public const string TARGET_DEPENDENCY_VERSION = "version";
+
         private XElement t;
         public string Name { get; }
+
 
         public TargetDependency ( XElement t )
         {
             this.t = t;
-            Name = t.Attribute( GoMAttributeNamesV1.TARGET_DEPENDENCY_NAME ).Value;
-            Version = t.Attribute( GoMAttributeNamesV1.TARGET_DEPENDENCY_VERSION ).Value;
+            Name = t.Attribute( TARGET_DEPENDENCY_NAME ).Value;
+            Version = t.Attribute( TARGET_DEPENDENCY_VERSION ).Value;
         }
 
        

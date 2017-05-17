@@ -8,6 +8,10 @@ namespace GoM.Core.Persistence
 {
     public class GitBranch : IGitBranch
     {
+        public const string GIT_BRANCH = "gitBranch";
+        public const string GIT_BRANCH_NAME = "name";
+
+
         private XElement xElement;
         public List<BasicProject> Projects { get; }
 
@@ -16,13 +20,13 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
             Projects = new List<BasicProject>();
 
-            foreach ( var t in xElement.Elements( GoMAttributeNamesV1.PROJECT ) )
+            foreach ( var t in xElement.Elements( Project.PROJECT ) )
             {
                 Projects.Add( new BasicProject( t ) );
             }
 
-            Version = new BranchVersionInfo( xElement.Element( GoMAttributeNamesV1.BRANCH_VERSION_INFO ) );
-            Name = xElement.Attribute( GoMAttributeNamesV1.GIT_BRANCH ).Value;
+            Version = new BranchVersionInfo( xElement.Element( BranchVersionInfo.BRANCH_VERSION_INFO ) );
+            Name = xElement.Attribute( GIT_BRANCH ).Value;
 
         }
 

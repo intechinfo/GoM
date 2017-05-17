@@ -7,13 +7,17 @@ namespace GoM.Core.Persistence
 {
     public class PackageFeed : IPackageFeed
     {
+
+        public const string PACKAGE_FEED = "packageFeed";
+        public const string PACKAGE_FEED_URL = "url";
+
         public Uri Url { get; }
 
         public PackageFeed(XElement e)
         {
-            this.Url = new Uri(e.Attribute(GoMAttributeNamesV1.PACKAGE_FEED_URL).Value);
+            this.Url = new Uri(e.Attribute(PACKAGE_FEED_URL).Value);
             this.Packages = new List<PackageInstance>();
-            foreach (var t in e.Elements(GoMAttributeNamesV1.PACKAGE_INSTANCE))
+            foreach (var t in e.Elements(PackageInstance.PACKAGE_INSTANCE))
             {
                 this.Packages.Add(new PackageInstance(t));
             }
