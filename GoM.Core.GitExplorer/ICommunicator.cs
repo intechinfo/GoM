@@ -30,6 +30,8 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         Uri Url { get; }
 
+        VersionTag MostRecentVersion { get; }
+
         /// <summary>
         /// Check if source was a git repository
         /// </summary>

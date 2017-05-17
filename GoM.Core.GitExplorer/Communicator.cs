@@ -42,6 +42,8 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         public Uri Url { get; }
 
+        public VersionTag MostRecentVersion => getMostRecentVersion();
+
         public Communicator(string source)
         {
 
@@ -78,7 +80,7 @@ namespace GoM.Core.GitExplorer
                 bool RepoExist = Directory.Exists(path);
 
                 this.Path = path;
-                
+
                 //Return repository if already stored
                 if (RepoExist)
                 {
@@ -111,15 +113,15 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         /// <param name="searchPattern">Model of search</param>
         /// <returns>All files</returns>
-        public List<string> getFiles(string searchPattern ="*") { return Helpers.getAllFilesInDirectory(this.Path, searchPattern);  }
-        
+        public List<string> getFiles(string searchPattern = "*") { return Helpers.getAllFilesInDirectory(this.Path, searchPattern); }
+
         /// <summary>
         /// Get all Folders in repository.
         /// </summary>
         /// <param name="searchPattern">Model of search</param>
         /// <returns>All folders</returns>
         public List<string> getFolders(string searchPattern = "*") { return Helpers.getAllFoldersInDirectory(this.Path, searchPattern); }
-        
+
         /// <summary>
         /// Get BasicGitRepository instance of repository
         /// </summary>
@@ -162,14 +164,13 @@ namespace GoM.Core.GitExplorer
             return basicGitBranch;
         }
 
-        
+
         private BranchVersionInfo getBranchVersionInfo(Branch branch)
         {
             Mutable.VersionTag versionTag = new VersionTag();
             BranchVersionInfo branchVersionInfo = new BranchVersionInfo();
             int depth = branch.Commits.Count();
 
-            // good ?
             foreach (var commit in branch.Commits)
             {
                 foreach (var tag in Repository.Tags)
@@ -186,6 +187,16 @@ namespace GoM.Core.GitExplorer
             }
 
             return branchVersionInfo;
+        }
+
+        private VersionTag getMostRecentVersion()
+        {
+            List<string> versions = getAllBranches().Select(branch => branch.Details.Version.LastTag)
+                                        .ToList().Select(version => version.FullName.StartsWith("v") ? version.FullName.Substring(1)
+                                                                                                     : version.FullName)
+                                                                                                     .ToList();
+            versions.Sort((v1, v2) => SemVersion.Compare(SemVersion.Parse(v1), SemVersion.Parse(v2)));
+            return new VersionTag() { FullName = versions.Last() };
         }
 
         public List<Commit> getCommitAncestor(Commit commit)
