@@ -16,15 +16,15 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
             Projects = new List<BasicProject>();
 
-            foreach(var t in xElement.Elements(GoMAttributeNamesV1.PROJECT))
+            foreach ( var t in xElement.Elements( GoMAttributeNamesV1.PROJECT ) )
             {
                 Projects.Add( new BasicProject( t ) );
             }
 
-            Version = new BranchVersionInfo( xElement.Element( GoMAttributeNamesV1.BRANCH_VERSION_INFO ));
+            Version = new BranchVersionInfo( xElement.Element( GoMAttributeNamesV1.BRANCH_VERSION_INFO ) );
             Name = xElement.Attribute( GoMAttributeNamesV1.GIT_BRANCH ).Value;
 
-
+        }
 
         public BranchVersionInfo Version { get; }
 
