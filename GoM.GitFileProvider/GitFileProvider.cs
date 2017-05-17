@@ -132,6 +132,7 @@ namespace GoM.GitFileProvider
                 using (RepositoryWrapper rw = new RepositoryWrapper())
                 {
                     rw.Create(_rootPath);
+                    // Test
                     Branch b = rw.Repo.Branches.ToList().Where(c => c.FriendlyName == splitPath[1]).FirstOrDefault();
                     if (b == null)
                         return new NotFoundFileInfo("Invalid"); ; // TODO

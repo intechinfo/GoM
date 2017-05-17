@@ -45,6 +45,7 @@ namespace GoM.GitFileProvider
             {
                 Task.Run(() =>
                 {
+                
                     try
                     {
                         IFileInfo fileInfo = _gitFileProvider.GetFileInfo(wrap.Path);

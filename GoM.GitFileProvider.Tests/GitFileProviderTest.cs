@@ -213,7 +213,7 @@ namespace GoM.GitFileProvider.Tests
         public async Task Watch_With_Valid_File()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            IChangeToken token = git.Watch(@"branches\origin/perso-KKTMPT\GoM.GitFileProvider\GitFileProvider.cs");
+            IChangeToken token = git.Watch(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GitFileProvider.cs");
             var tcs = new TaskCompletionSource<object>();
             token.RegisterChangeCallback(state =>
                 ((TaskCompletionSource<object>)state).TrySetResult(null), tcs);
