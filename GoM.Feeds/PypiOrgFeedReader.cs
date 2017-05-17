@@ -8,9 +8,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Semver;
+
 namespace GoM.Feeds 
 {
-    internal class PypiOrgFeedReader : PypiFeedReader
+    public class PypiOrgFeedReader : PypiFeedReader
     {
         HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
@@ -19,9 +21,18 @@ namespace GoM.Feeds
             _client = new HttpClient();
         }
 
-        public override string BaseUrl
+        public async override Task<bool> FeedMatch(Uri adress)
         {
-            get { return _baseUrl; }
+            string resp = await _client.GetStringAsync(adress);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+            bool isPypi = o.TryGetValue("info", out JToken value);
+            if (isPypi)
+            {
+                var datas = new JObject(o.Property("info"));
+                return datas["name"].Value<string>() == "Python";
+            }
+            return false;
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
@@ -77,6 +88,12 @@ namespace GoM.Feeds
                 }
             }
             return list;
+        }
+
+        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        {
+            var res = await GetAllVersions(name);
+            return res.Where(x => x.Version > SemVersion.Parse(version));
         }
     }
 }
