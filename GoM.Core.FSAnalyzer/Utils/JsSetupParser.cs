@@ -20,40 +20,59 @@ namespace GoM.Core.FSAnalyzer.Utils
         {
             List<TargetDependency> targetDependencies = new List<TargetDependency>();
 
+            // Converts a file a a string
             string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
 
-            JObject jsConfigFileContent = JObject.Parse(jsonFileString);
-            JObject dependencies = new JObject(jsConfigFileContent.Property("dependencies"));
-            JObject devDependencies = new JObject(jsConfigFileContent.Property("devDependencies"));
+            // Converts the string (JSon) to a JObject
+            dynamic jsConfigFileContent = JObject.Parse(jsonFileString);
 
-            foreach (KeyValuePair<string, JToken> d in dependencies)
+            // Checking if there are dependencies
+            dynamic dependencies = jsConfigFileContent["dependencies"] != null ? jsConfigFileContent["dependencies"] : null;
+
+            if(dependencies != null)
             {
-                targetDependencies.Add(
-                    new TargetDependency
-                    {
-                        Name = d.Key,
-                        Version = d.Value.ToString()
-                    }
-                );
+                targetDependencies.AddRange(CreateDependencies(dependencies));
             }
-            foreach (KeyValuePair<string, JToken> d in devDependencies)
+
+            // Checking if there are devDependencies and
+            dynamic devDependencies = jsConfigFileContent["devDependencies"] != null ? jsConfigFileContent["devDependencies"] : null;
+
+            if(devDependencies != null)
             {
-                targetDependencies.Add(
-                    new TargetDependency
-                    {
-                        Name = d.Key,
-                        Version = d.Value.ToString()
-                    }
-                );
+                targetDependencies.AddRange(CreateDependencies(devDependencies));
             }
 
             Target target = new Target();
-            target.Dependencies.AddRange(targetDependencies);
+
+            if(targetDependencies.Count() > 0)
+            {
+                target.Dependencies.AddRange(targetDependencies);
+            } else
+            {
+                List<TargetDependency> emptyTargetDependency = new List<TargetDependency>();
+                target.Dependencies.AddRange(emptyTargetDependency);
+            }
 
             List<Target> targets = new List<Target>();
             targets.Add(target);
 
             return targets;
+        }
+
+        List<TargetDependency> CreateDependencies(JObject dependencies)
+        {
+            List<TargetDependency> targetDependenciesList = new List<TargetDependency>();
+
+            foreach (var d in dependencies)
+            {
+                targetDependenciesList.Add(new TargetDependency
+                {
+                    Name = d.Key,
+                    Version = d.Value.ToString()
+                });
+            }
+
+            return targetDependenciesList;
         }
     }
 }
