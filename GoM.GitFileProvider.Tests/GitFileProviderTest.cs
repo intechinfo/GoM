@@ -111,6 +111,18 @@ namespace GoM.GitFileProvider.Tests
         }
 
         [Test]
+        public void FileInfo_Of_Head_File()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInBranch = git.GetFileInfo(@"head\GoM.GitFileProvider\GoM.GitFileProvider.csproj");
+
+            fileInBranch.Exists.Should().BeTrue();
+            fileInBranch.Name.Should().Be("GoM.GitFileProvider.csproj");
+            fileInBranch.Length.Should().BeGreaterThan(-1);
+            fileInBranch.LastModified.Should().BeAfter(default(DateTimeOffset));
+        }
+
+        [Test]
         public void FileInfo_Of_Not_Existing_File_In_Branch()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
@@ -145,11 +157,11 @@ namespace GoM.GitFileProvider.Tests
         public void FileInfo_Of_File_In_Specific_Branch()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            IFileInfo fileInBranch = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config");
+            IFileInfo fileInBranch = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GoM.GitFileProvider.csproj");
 
             fileInBranch.Exists.Should().BeTrue();
-            fileInBranch.Name.Should().Be("app.config");
-            fileInBranch.PhysicalPath.Should().Be(ProjectRootPath + @"\branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config");
+            fileInBranch.Name.Should().Be("GoM.GitFileProvider.csproj");
+            fileInBranch.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\GoM.GitFileProvider.csproj");
             fileInBranch.Length.Should().BeGreaterThan(-1);
             fileInBranch.LastModified.Should().BeAfter(default(DateTimeOffset));
         }
@@ -175,8 +187,7 @@ namespace GoM.GitFileProvider.Tests
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\");
-            fileInfo.Name.Should().NotBe(INVALID_COMMIT);
-            fileInfo.Name.Should().NotBe(INVALID_COMMAND);
+            fileInfo.Name.Should().Be(INVALID_PATH);
         }
 
         [Test]
@@ -185,6 +196,7 @@ namespace GoM.GitFileProvider.Tests
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider\app.config");
             fileInfo.Name.Should().Be("app.config");
+            fileInfo.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\app.config");
             fileInfo.Length.Should().BeGreaterOrEqualTo(0);
         }
 
@@ -193,8 +205,17 @@ namespace GoM.GitFileProvider.Tests
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
             IFileInfo fileInfo = git.GetFileInfo(@"tags\GitWatcher\GoM.GitFileProvider\app.config");
+            fileInfo.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\app.config");
             fileInfo.Name.Should().Be("app.config");
             fileInfo.Length.Should().BeGreaterOrEqualTo(0);
+        }
+
+        [Test]
+        public void FileInfo_Read_Tags_With_Specific_Tag_Name_And_Relative_Path_From_Tag_With_Wrong_Tag()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            IFileInfo fileInfo = git.GetFileInfo(@"tags\GitWatchers\");
+            fileInfo.Name.Should().Be(INVALID_TAG);
         }
 
         [Test]

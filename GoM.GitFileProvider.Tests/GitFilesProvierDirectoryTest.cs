@@ -19,13 +19,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                if (item.IsDirectory)
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
-
-                }
-                else
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
+                item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
             }
         }
         [Test]
@@ -38,13 +32,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                if (item.IsDirectory)
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
-
-                }
-                else
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
+                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.Core.Abstractions\" + item.Name);
             }
         }
         [Test]
@@ -58,14 +46,40 @@ namespace GoM.GitFileProvider.Tests
                 item.Exists.Should().BeTrue();
                 if (item.IsDirectory)
                 {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
+                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
 
                 }
                 else
                 {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
+                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + "GoM.GitFileProvider" + Path.DirectorySeparatorChar +item.Name);
                     item.Length.Should().BeGreaterThan(0);
                 }
+            }
+        }
+        [Test]
+        public void Get_directory_with_commit_parram()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            var rootDir = git.GetDirectoryContents(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider");
+            rootDir.Exists.Should().BeTrue();
+            foreach (var item in rootDir)
+            {
+                item.Exists.Should().BeTrue();
+                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\" + item.Name);
+
+            }
+        }
+        [Test]
+        public void Get_directory_with_tag_parram()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            var rootDir = git.GetDirectoryContents(@"tags\GitWatcher\GoM.GitFileProvider");
+            rootDir.Exists.Should().BeTrue();
+            foreach (var item in rootDir)
+            {
+                item.Exists.Should().BeTrue();
+                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\" + item.Name);
+
             }
         }
         [Test]

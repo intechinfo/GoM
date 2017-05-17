@@ -18,10 +18,14 @@ namespace GoM.GitFileProvider
         DateTimeOffset _lastModified;
         ReadStreamDecorator _readStreamDeco;
         Blob _file;
-        public FileInfoFile(bool exists, string physicalPath, string name, DateTimeOffset lastModified, Blob file = null, RepositoryWrapper rw = null)
+        public FileInfoFile(bool exists, string physicalPath, string name, DateTimeOffset lastModified, Blob file = null, RepositoryWrapper rw = null, bool createByDir = false)
         {
             _exists = exists;
             _physicalPath = physicalPath;
+            if (createByDir)
+            {
+                _physicalPath = physicalPath + name;
+            }
             _name = name;
             _lastModified = lastModified;
             _file = file;
