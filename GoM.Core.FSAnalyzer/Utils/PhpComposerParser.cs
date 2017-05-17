@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using GoM.Core.Mutable;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace GoM.Core.FSAnalyzer.Utils
 {
@@ -23,22 +24,17 @@ namespace GoM.Core.FSAnalyzer.Utils
             string fileContent = ReadFileContent();
             dynamic phpConfigFileContent = JsonConvert.DeserializeObject(fileContent);
             dynamic dependencies = phpConfigFileContent["require"];
+            dynamic devDependencies = phpConfigFileContent[ "require-dev" ];
+            List<object> projDependencies = new List<object>();
 
-            foreach( var d in dependencies )
-            {
-                targets.Add(
-                    new TargetDependency
-                    {
-                        Name = d.Name,
-                        Version = d.Value
-                    }
-                );
-            }
-            Target t = new Target
-            {
-                Name = String.Empty,                
-            };
-            t.Dependencies.AddRange(targets);
+            projDependencies.AddRange( dependencies );
+            projDependencies.AddRange( devDependencies );
+
+            List<TargetDependency> allDependencies = projDependencies
+                .Select( d => new TargetDependency { Name = d.ToString().Replace("\"","").Split( ':' )[ 0 ].Trim(), Version = d.ToString().Replace( "\"", "" ).Split( ':' )[ 1 ].Trim() } )
+                .ToList();
+            Target t = new Target{ Name = String.Empty };
+            t.Dependencies.AddRange( allDependencies );
             yield return t;
         }
     }
