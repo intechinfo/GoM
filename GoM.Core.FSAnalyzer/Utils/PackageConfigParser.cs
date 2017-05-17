@@ -17,7 +17,7 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<ITarget> target = new List<ITarget>();
+            List<Target> target = new List<Target>();
             var physicalPath = Source.PhysicalPath;
             XDocument xml = new XDocument();
             FileStream xmlStream = new FileStream(physicalPath, FileMode.Open);
