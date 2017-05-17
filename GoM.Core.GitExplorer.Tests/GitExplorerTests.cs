@@ -9,7 +9,7 @@ namespace GoM.Core.GitExplorer.Tests
     [TestClass]
     public class GitExplorerTests
     {
-        public string url = "https://github.com/bmgm/Simple.git";
+        public string url = "https://github.com/SimpleGitVersion/SGV-Net.git";
 
         [TestMethod]
         public void Check_repository_is_loaded()

@@ -20,12 +20,21 @@ namespace GoM.Core.GitExplorer
         /// <summary>
         /// Repository instance of source.
         /// </summary>
-        Repository Repository { get; set; }
+        Repository Repository { get; }
         /// <summary>
         /// Path to the repository location.
         /// </summary>
         string Path { get; set; }
-         Uri Url { get; }
+        /// <summary>
+        /// Uri instance of source if repository is founded on internet.
+        /// </summary>
+        Uri Url { get; }
+
+        /// <summary>
+        /// Check if source was a git repository
+        /// </summary>
+        /// <returns></returns>
+        bool isRepository();
 
         /// <summary>
         /// Load Repository instance of source.

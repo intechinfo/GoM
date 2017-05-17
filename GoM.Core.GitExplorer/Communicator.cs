@@ -32,7 +32,7 @@ namespace GoM.Core.GitExplorer
         /// <summary>
         /// Repository instance of source.
         /// </summary>
-        public Repository Repository { get; set; }
+        public Repository Repository { get; }
         /// <summary>
         /// Path to the repository downloaded.
         /// </summary>
@@ -44,10 +44,20 @@ namespace GoM.Core.GitExplorer
 
         public Communicator(string source)
         {
+
             ReposPath = REPOS_DIRECTORY;
             Source = source;
             Url = new Uri(source);
-            loadRepository();
+            Repository = loadRepository();
+        }
+
+        /// <summary>
+        /// Check if source was a git repository
+        /// </summary>
+        /// <returns></returns>
+        public bool isRepository()
+        {
+            return Repository != null;
         }
 
         /// <summary>
@@ -73,14 +83,12 @@ namespace GoM.Core.GitExplorer
                 if (RepoExist)
                 {
                     repo = new Repository(path);
-                    this.Repository = repo;
                     return repo;
                 }
 
                 //Clone and return repository if not stored
                 Repository.Clone(Source, path);
                 repo = new Repository(path);
-                this.Repository = repo;
                 return repo;
             }
             else
@@ -93,7 +101,7 @@ namespace GoM.Core.GitExplorer
 
                 //Return if exist
                 repo = new Repository(Source);
-                this.Repository = repo;
+
                 return repo;
             }
         }
@@ -134,7 +142,7 @@ namespace GoM.Core.GitExplorer
             List<BasicGitBranch> branches = new List<BasicGitBranch>();
             using (Repository)
             {
-                foreach (var branch in Repository.Branches)
+                foreach (var branch in Repository.Branches.ToList())
                 {
                     branches.Add(convertBranchToGitBranch(branch));
                 }
@@ -159,7 +167,7 @@ namespace GoM.Core.GitExplorer
         {
             Mutable.VersionTag versionTag = new VersionTag();
             BranchVersionInfo branchVersionInfo = new BranchVersionInfo();
-            int depth = 0;
+            int depth = branch.Commits.Count();
 
             // good ?
             foreach (var commit in branch.Commits)
@@ -171,12 +179,23 @@ namespace GoM.Core.GitExplorer
                         versionTag.FullName = tag.FriendlyName;
                         branchVersionInfo.LastTagDepth = depth;
                         branchVersionInfo.LastTag = versionTag;
+                        return branchVersionInfo;
                     }
                 }
-                depth++;
+                depth--;
             }
 
             return branchVersionInfo;
+        }
+
+        public List<Commit> getCommitAncestor(Commit commit)
+        {
+            List<Commit> result = new List<Commit>();
+            foreach (var p in commit.Parents)
+            {
+                result.AddRange(getCommitAncestor(p));
+            }
+            return result;
         }
 
         private Project getProject()
