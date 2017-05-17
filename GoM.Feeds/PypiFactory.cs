@@ -2,16 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GoM.Core;
 
 namespace GoM.Feeds
 {
     internal class PypiFactory : IFeedFactory
     {
-        public string SniffingKeyword => "pypi.python.org";
-
-        public IFeedReader GetInstance()
+        public IFeedReader GetFeedReader()
         {
-            return new PypiOrgFeedReader();
+            throw new NotImplementedException();
+        }
+        public IEnumerable<IFeedReader> Snif(List<Uri> links)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFeedReader Snif(Uri link)
+        {
+            throw new NotImplementedException();
         }
     }
 }

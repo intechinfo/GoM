@@ -6,13 +6,12 @@ using GoM.Core;
 
 namespace GoM.Feeds
 {
-    internal class NpmJsFactory : IFeedFactory
+    public sealed class DefaultFeedFactory : IFeedFactory
     {
         public IFeedReader GetFeedReader()
         {
             throw new NotImplementedException();
         }
-
         public IEnumerable<IFeedReader> Snif(List<Uri> links)
         {
             throw new NotImplementedException();

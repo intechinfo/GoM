@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using GoM.Core.Mutable;
 using System.Linq;
+using Semver;
 namespace GoM.Feeds
 {
     internal class NpmJsFeedReader : NpmFeedReader
@@ -17,11 +18,6 @@ namespace GoM.Feeds
         internal NpmJsFeedReader()
         {
             _client = new HttpClient();
-        }
-
-        public override string BaseUrl
-        {
-            get { return _baseUrl; }
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
@@ -66,6 +62,12 @@ namespace GoM.Feeds
             }
             list.Add(target);
             return list;
+        }
+
+        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        {
+            var res = await GetAllVersions(name);
+            return res.Where(x => x.Version > SemVersion.Parse(version));
         }
     }
 }
