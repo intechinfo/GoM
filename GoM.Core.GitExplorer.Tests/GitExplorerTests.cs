@@ -4,13 +4,11 @@ using LibGit2Sharp;
 using GoM.Core.Mutable;
 using System.Linq;
 
-
 namespace GoM.Core.GitExplorer.Tests
 {
     [TestClass]
     public class GitExplorerTests
     {
-
         public string url = "https://github.com/bmgm/Simple.git";
 
         [TestMethod]
@@ -19,8 +17,6 @@ namespace GoM.Core.GitExplorer.Tests
             Communicator communicator = new Communicator(url);
 
             Assert.IsInstanceOfType(communicator.loadRepository(), typeof(Repository));
-            // Delete repos direct
-            Helpers.DeleteDirectory(communicator.ReposPath);
         }
 
         [TestMethod]
@@ -28,8 +24,6 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
             Assert.IsInstanceOfType(communicator.getBasicGitRepository(), typeof(BasicGitRepository));
-
-            Helpers.DeleteDirectory(communicator.ReposPath);
         }
 
         [TestMethod]
@@ -37,8 +31,6 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getAllBranches().Count);
-
-            Helpers.DeleteDirectory(communicator.ReposPath);
         }
 
         [TestMethod]
@@ -46,8 +38,6 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getFiles().Count);
-
-            Helpers.DeleteDirectory(communicator.ReposPath);
         }
 
         [TestMethod]
@@ -55,8 +45,12 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getFolders().Count);
+        }
 
-            Helpers.DeleteDirectory(communicator.ReposPath);
+        [TestCleanup]
+        public void CleanTests()
+        {
+            Helpers.DeleteDirectory("repos");
         }
     }
 }

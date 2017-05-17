@@ -17,23 +17,43 @@ using GoM.Core.Mutable;
 
 namespace GoM.Core.GitExplorer
 {
-    public class Communicator
+    public class Communicator : ICommunicator
     {
         const string REPOS_DIRECTORY = "repos";
 
-        public string Source { get; set; }
-        public string ReposPath { get; set; }
+        /// <summary>
+        /// origin Url or Local path of repository.
+        /// </summary>
+        public string Source { get; }
+        /// <summary>
+        /// Folder where repositories are stored by GoM.
+        /// </summary>
+        public string ReposPath { get; }
+        /// <summary>
+        /// Repository instance of source.
+        /// </summary>
         public Repository Repository { get; set; }
+        /// <summary>
+        /// Path to the repository downloaded.
+        /// </summary>
         public string Path { get; set; }
-        public Uri Url { get; set; }
+        /// <summary>
+        /// Uri instance of source if repository is founded on internet.
+        /// </summary>
+        public Uri Url { get; }
 
         public Communicator(string source)
         {
             ReposPath = REPOS_DIRECTORY;
             Source = source;
+            Url = new Uri(source);
             loadRepository();
         }
 
+        /// <summary>
+        /// Load Repository instance of source.
+        /// </summary>
+        /// <returns>Repository</returns>
         public Repository loadRepository()
         {
             Repository repo = null;
@@ -48,9 +68,7 @@ namespace GoM.Core.GitExplorer
                 bool RepoExist = Directory.Exists(path);
 
                 this.Path = path;
-
-                this.Url = new Uri(this.Source);
-
+                
                 //Return repository if already stored
                 if (RepoExist)
                 {
@@ -80,10 +98,24 @@ namespace GoM.Core.GitExplorer
             }
         }
 
+        /// <summary>
+        /// Get all files in repository.
+        /// </summary>
+        /// <param name="searchPattern">Model of search</param>
+        /// <returns>All files</returns>
         public List<string> getFiles(string searchPattern ="*") { return Helpers.getAllFilesInDirectory(this.Path, searchPattern);  }
-
+        
+        /// <summary>
+        /// Get all Folders in repository.
+        /// </summary>
+        /// <param name="searchPattern">Model of search</param>
+        /// <returns>All folders</returns>
         public List<string> getFolders(string searchPattern = "*") { return Helpers.getAllFoldersInDirectory(this.Path, searchPattern); }
-
+        
+        /// <summary>
+        /// Get BasicGitRepository instance of repository
+        /// </summary>
+        /// <returns>BasicGitRepository</returns>
         public BasicGitRepository getBasicGitRepository()
         {
             BasicGitRepository BasicGitRepo = new BasicGitRepository() { Url = Url, Path = Path };
@@ -93,6 +125,10 @@ namespace GoM.Core.GitExplorer
             return BasicGitRepo;
         }
 
+        /// <summary>
+        /// Get All Branches of repository
+        /// </summary>
+        /// <returns>List<BasicGitBranch></returns>
         public List<BasicGitBranch> getAllBranches()
         {
             List<BasicGitBranch> branches = new List<BasicGitBranch>();
