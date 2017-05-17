@@ -7,39 +7,33 @@ namespace GoM.Core.Immutable
 {
     public class GoMContext : IGoMContext
     {
-        private readonly string _rootPath;
-
-        private readonly ImmutableList<BasicGitRepository> _repositories = ImmutableList.Create<BasicGitRepository>();
-
-        private readonly ImmutableList<PackageFeed> _feeds = ImmutableList.Create<PackageFeed>();
-
         private GoMContext(string path, ImmutableList<BasicGitRepository> repositories, ImmutableList<PackageFeed> feeds)
         {
-            _rootPath = path ?? throw new ArgumentException("path must not be null");
-            _repositories = repositories ?? throw new ArgumentException("repositories must not be null");
-            _feeds = feeds ?? throw new ArgumentException("feeds must not be null");
+            RootPath = path ?? throw new ArgumentException("path must not be null");
+            Repositories = repositories ?? throw new ArgumentException("repositories must not be null");
+            Feeds = feeds ?? throw new ArgumentException("feeds must not be null");
         }
 
         private GoMContext(string path)
         {
-            _rootPath = path;
+            RootPath = path;
         }
 
         private GoMContext(IGoMContext context)
         {
-            _rootPath = context.RootPath;
-            _repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
-            _feeds = (ImmutableList<PackageFeed>)context.Feeds;
+            RootPath = context.RootPath;
+            Repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
+            Feeds = (ImmutableList<PackageFeed>)context.Feeds;
         }
 
-        public string RootPath => _rootPath;
+        public string RootPath { get; }
 
-        public ImmutableList<BasicGitRepository> Repositories => _repositories;
+        public ImmutableList<BasicGitRepository> Repositories { get; }
 
-        public ImmutableList<PackageFeed> Feeds => _feeds;
+        public ImmutableList<PackageFeed> Feeds { get; }
 
-        IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => _repositories;
-        IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => _feeds;
+        IReadOnlyCollection<IBasicGitRepository> IGoMContext.Repositories => Repositories;
+        IReadOnlyCollection<IPackageFeed> IGoMContext.Feeds => Feeds;
 
         public static GoMContext Create(string path, ImmutableList<BasicGitRepository> repositories, ImmutableList<PackageFeed> feeds)
         {
@@ -51,13 +45,13 @@ namespace GoM.Core.Immutable
             ImmutableList<BasicGitRepository> repositories = null, 
             ImmutableList<PackageFeed> feeds = null)
         {
-            if (_rootPath == path && _repositories == repositories && _feeds == feeds)
+            if (RootPath == path && Repositories == repositories && Feeds == feeds)
             {
                 return this;
             }
-            path = path == null ? _rootPath : path;
-            repositories = repositories == null ? _repositories : repositories;
-            feeds = feeds == null ? _feeds : feeds;
+            path = path == null ? RootPath : path;
+            repositories = repositories == null ? Repositories : repositories;
+            feeds = feeds == null ? Feeds : feeds;
 
             return new GoMContext(path, repositories, feeds);
         }
@@ -65,20 +59,20 @@ namespace GoM.Core.Immutable
         public GoMContext UpdateRepository(BasicGitRepository repoToUpdate, string path = null, Uri url = null, GitRepository details = null)
         {
             var tmpRepository = repoToUpdate.WithAll(path, url, details);
-            var tmpRepositories = _repositories.SetItem(this.Repositories.IndexOf(repoToUpdate), tmpRepository);
-            return new GoMContext(_rootPath, tmpRepositories, _feeds);
+            var tmpRepositories = Repositories.SetItem(this.Repositories.IndexOf(repoToUpdate), tmpRepository);
+            return new GoMContext(RootPath, tmpRepositories, Feeds);
         }
 
         public GoMContext AddRepository(BasicGitRepository repoToAdd)
         {
-            var tmpRepositories = _repositories.Add(repoToAdd);
-            return new GoMContext(_rootPath, tmpRepositories, _feeds);
+            var tmpRepositories = Repositories.Add(repoToAdd);
+            return new GoMContext(RootPath, tmpRepositories, Feeds);
         }
 
         public GoMContext RemoveRepository(BasicGitRepository repoToRemove)
         {
-            var tmpRepositories = _repositories.Remove(repoToRemove);
-            return new GoMContext(_rootPath, tmpRepositories, _feeds);
+            var tmpRepositories = Repositories.Remove(repoToRemove);
+            return new GoMContext(RootPath, tmpRepositories, Feeds);
         }
 
         public GoMContext AddOrSetGitRepositoryDetails(IGitRepository detailed)
