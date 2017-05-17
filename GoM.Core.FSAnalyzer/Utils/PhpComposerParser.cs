@@ -10,19 +10,19 @@ namespace GoM.Core.FSAnalyzer.Utils
 {
     public class PhpComposerParser: BaseConfigParser
     {
-        private string _path;
-        public PhpComposerParser(string path) 
-            : base( path )
+        IFileInfo _file;
+        public PhpComposerParser(IFileInfo file) 
+            : base( file )
         {
-            _path = path;
+            _file = file;
         }
 
         public override IEnumerable<ITarget> Read()
         {
             List<TargetDependency> targets = new List<TargetDependency>();
-            PhysicalFileProvider pfp = new PhysicalFileProvider( _path );
-            Stream phpConfigFile = pfp.GetFileInfo( "./samplePhpComposer.json" ).CreateReadStream();
-            StreamReader sr = new StreamReader( phpConfigFile );
+            //PhysicalFileProvider pfp = new PhysicalFileProvider( _file );
+            //Stream phpConfigFile = pfp.GetFileInfo( "./samplePhpComposer.json" ).CreateReadStream();
+            //StreamReader sr = new StreamReader( phpConfigFile );
             string fileContent = sr.ReadToEnd();
             dynamic phpConfigFileContent = JsonConvert.DeserializeObject(fileContent);
             dynamic dependencies = phpConfigFileContent["require"];
