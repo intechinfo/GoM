@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using GoM.Core.Mutable;
+using System.Linq;
+using Semver;
 
 namespace GoM.Feeds
 {
@@ -81,6 +83,12 @@ namespace GoM.Feeds
                 list.Add(target);
             }
             return list;
+        }
+
+        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        {
+            var res = await GetAllVersions(name);
+            return res.Where(x => x.Version > SemVersion.Parse(version));
         }
     }
 }
