@@ -7,16 +7,20 @@ namespace GoM.Core.Persistence
 {
     public class Project : IProject
     {
+        public const string PROJECT = "project";
+        public const string PROJECT_PATH = "path";
+
+
         private XElement t;
         public string Path { get; }
 
         public Project ( XElement node )
         {
             this.t = node;
-            Path = node.Attribute( nameof( Path ) ).Value;
+            Path = node.Attribute( PROJECT_PATH).Value;
 
             Targets = new List<Target>();
-            foreach ( var t in node.Elements(nameof(ITarget)))
+            foreach ( var t in node.Elements( Target.TARGET ))
             {
                 Targets.Add(new Target(t));
             }

@@ -7,15 +7,21 @@ namespace GoM.Core.Persistence
 {
     public class Target : ITarget
     {
+
+
+        public const string TARGET = "target";
+        public const string TARGET_NAME = "name";
+
+
         private XElement t;
         public string Name { get; }
 
         public Target ( XElement node )
         {
             this.t = node;
-            Name = node.Attribute( nameof( Name ) ).Value;
+            Name = node.Attribute( TARGET_NAME ).Value;
             Dependencies = new List<TargetDependency>();
-            foreach(var t in node.Elements(nameof(ITargetDependency)))
+            foreach(var t in node.Elements(TargetDependency.TARGET_DEPENDENCY))
             {
                 Dependencies.Add( new TargetDependency( t ) );
             }

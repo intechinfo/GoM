@@ -8,6 +8,10 @@ namespace GoM.Core.Persistence
 {
     public class GoMContext : IGoMContext
     {
+        public const string GOM_CONTEXT = "gomContext";
+        public const string GOM_CONTEXT_ROOTPATH = "rootPath";
+
+
         private XElement root;
         public string RootPath { get; }
 
@@ -15,13 +19,13 @@ namespace GoM.Core.Persistence
         {
             this.root = root;
             Repositories = new List<BasicGitRepository>();
-            foreach(var el in root.Elements( typeof( IBasicGitRepository ).Name ) )
+            foreach(var el in root.Elements( BasicGitRepository.BASIC_GIT_REPOSITORY ) )
             {
                 Repositories.Add( new BasicGitRepository( el ) );
             }
 
             Feeds = new List<PackageFeed>();
-            foreach ( var el in root.Elements( typeof( IPackageFeed ).Name ) )
+            foreach ( var el in root.Elements( PackageFeed.PACKAGE_FEED) )
             {
                 Feeds.Add( new PackageFeed( el ) );
             }

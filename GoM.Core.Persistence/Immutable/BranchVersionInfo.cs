@@ -6,14 +6,17 @@ namespace GoM.Core.Persistence
 {
     public class BranchVersionInfo : IBranchVersionInfo
     {
+        public const string BRANCH_VERSION_INFO = "branchVersionInfo";
+        public const string BRANCH_VERSION_INFO_LAST_TAG_DEPTH = "LastTagDepth";
+
         private XElement xElement;
         public VersionTag LastTag { get; }
 
         public BranchVersionInfo ( XElement xElement )
         {
             this.xElement = xElement;
-            LastTag = new VersionTag(xElement.Element( typeof( IVersionTag ).Name ));
-            LastTagDepth = int.Parse(xElement.Attribute( nameof( LastTagDepth ) ).Value);
+            LastTag = new VersionTag(xElement.Element( VersionTag.VERSION_TAG ));
+            LastTagDepth = int.Parse(xElement.Attribute( BRANCH_VERSION_INFO_LAST_TAG_DEPTH ).Value);
         }
 
 

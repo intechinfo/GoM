@@ -134,7 +134,7 @@ namespace GoM.Core.Persistence.Tests
             Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "develop");
 
             #region Projet 1
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Path == "./fakeproject1/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Path == "fakebasicproject1" );
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Name == "target1");
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Name == "dependency1");
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Version == "1.0.0");
@@ -143,13 +143,19 @@ namespace GoM.Core.Persistence.Tests
             #endregion
 
             #region Projet 2
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Path == "./fakeproject2/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Path == "fakebasicproject2" );
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Details.Targets.ToList()[0].Name == "target3");
             #endregion
 
             #region Projet 3
-            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[2].Path == "./fakeproject3/");
+            Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[2].Path == "fakebasicproject3");
             #endregion
+
+            #region Projet 4
+            Assert.True( ctx.Repositories [0].Details.Branches [0].Details.Projects [3].Path == "fakebasicproject4" );
+            Assert.True( ctx.Repositories [0].Details.Branches [0].Details.Projects [3].Details == null );
+            #endregion
+
             #endregion
 
             #region Branch 2
@@ -160,7 +166,7 @@ namespace GoM.Core.Persistence.Tests
             #endregion
 
             #region Feed 1
-            Assert.True(ctx.Feeds[0].Url == new Uri("http://google.fr"));
+            Assert.True(ctx.Feeds[0].Url == new Uri("http://www.google.fr"));
 
             // Packages 1, 2 et 3
             Assert.True(ctx.Feeds[0].Packages[0].Version == "1.0.0");
@@ -174,7 +180,7 @@ namespace GoM.Core.Persistence.Tests
             #endregion
 
             #region Feed 2
-            Assert.True(ctx.Feeds[1].Url == new Uri("http://google.com"));
+            Assert.True(ctx.Feeds[1].Url == new Uri("http://www.google.com"));
             #endregion
 
             CleanGoMPersistence();
@@ -189,6 +195,7 @@ namespace GoM.Core.Persistence.Tests
             Console.Write(ctx);
 
         }
+        [Fact]
         public void try_save()
         {
             IGoMContext completeFake = GenerateFakeContextHelper();
@@ -229,18 +236,44 @@ namespace GoM.Core.Persistence.Tests
             targetDependency.Name = "dependency1";
             targetDependency.Version = "1.0.0";
 
+            var targetDependency2 = new Mutable.TargetDependency();
+            targetDependency2.Name = "dependency2";
+            targetDependency2.Version = "2.0.0";
+
+            var targetDependency3 = new Mutable.TargetDependency();
+            targetDependency3.Name = "dependency3";
+            targetDependency3.Version = "3.0.0";
+
+            var targetDependency4 = new Mutable.TargetDependency();
+            targetDependency4.Name = "dependency4";
+            targetDependency4.Version = "4.0.0";
+
+            var targetDependency5 = new Mutable.TargetDependency();
+            targetDependency5.Name = "dependency5";
+            targetDependency5.Version = "5.0.0";
+
             // OK
             var target1 = new Mutable.Target();
             target1.Name = "target1";
             target1.Dependencies.Add(targetDependency);
+            target1.Dependencies.Add( targetDependency2 );
 
             // OK
             var target2 = new Mutable.Target();
             target2.Name = "target2";
+            target2.Dependencies.Add( targetDependency3 );
+
 
             // OK
             var target3 = new Mutable.Target();
-            target2.Name = "target3";
+            target3.Name = "target3";
+            target3.Dependencies.Add( targetDependency4 );
+
+
+            var target4 = new Mutable.Target();
+            target4.Name = "target4";
+            target4.Dependencies.Add( targetDependency5 );
+
 
             // OK
             var project = new Mutable.Project();
@@ -250,9 +283,12 @@ namespace GoM.Core.Persistence.Tests
 
             // OK
             var project2 = new Mutable.Project();
-            project.Path = "./fakeprojet2/";
-            project.Targets.Add(target3);
+            project2.Path = "./fakeprojet2/";
+            project2.Targets.Add(target3);
 
+            var project3 = new Mutable.Project();
+            project3.Path = "./fakeprojet3/";
+            project3.Targets.Add( target4 );
 
             // OK
             var basicproject1 = new Mutable.BasicProject();
@@ -260,20 +296,16 @@ namespace GoM.Core.Persistence.Tests
             basicproject1.Details = project;
 
             var basicproject2 = new Mutable.BasicProject();
-            basicproject1.Path = "fakebasicproject2";
-            basicproject1.Details = project;
+            basicproject2.Path = "fakebasicproject2";
+            basicproject2.Details = project2;
 
             var basicproject3 = new Mutable.BasicProject();
-            basicproject1.Path = "fakebasicproject3";
-            basicproject1.Details = project;
+            basicproject3.Path = "fakebasicproject3";
+            basicproject3.Details = project3;
 
             var basicproject4 = new Mutable.BasicProject();
-            basicproject1.Path = "fakebasicproject4";
-            basicproject1.Details = null;
-
-            // OK
-            var project3 = new Mutable.Project();
-            project.Path = "./fakeproject3/";
+            basicproject4.Path = "fakebasicproject4";
+            basicproject4.Details = null;
 
             // OK
             var versionTag = new Mutable.VersionTag();
