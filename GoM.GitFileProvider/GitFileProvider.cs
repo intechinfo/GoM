@@ -17,16 +17,11 @@ namespace GoM.GitFileProvider
     {
         readonly string _rootPath;
         readonly bool _exist;
-        readonly GitFilesWatcher _rootWatcher;
 
         public GitFileProvider(string rootPath)
         {
             _rootPath = rootPath;
             _exist = IsCorrectGitDirectory();
-            if (_exist)
-            {
-                _rootWatcher = new GitFilesWatcher(rootPath, new System.IO.FileSystemWatcher(rootPath), false, this);
-            }
         }
 
         public IDirectoryContents GetDirectoryContents(string subpath)
@@ -366,21 +361,9 @@ namespace GoM.GitFileProvider
             return f;
         }
 
-        public bool IsValidFilter(string filter)
-        {
-            // TODO
-            return true;
-        }
-
         public IChangeToken Watch(string filter)
         {
             return NullChangeToken.Singleton;
-
-            if (!IsValidFilter(filter))
-                return NullChangeToken.Singleton;
-            
-            IChangeToken token = _rootWatcher.MonitorFile(filter);
-            return token;
         }
 
     }
