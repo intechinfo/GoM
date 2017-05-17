@@ -15,7 +15,7 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<Target> target = null;
+            List<ITarget> target = new List<ITarget>();
             var physicalPath = Source.PhysicalPath;
             XDocument xmldoc = XDocument.Load(physicalPath);
             XNamespace msbuild = xmldoc.Root.GetDefaultNamespace().NamespaceName;
@@ -32,7 +32,6 @@ namespace GoM.Core.FSAnalyzer.Utils
                 ta = new Target()
                 {
                     Name = targetFrameworkVersion,
-
                 };
 
                 target.Add(ta);

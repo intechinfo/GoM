@@ -17,7 +17,7 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<ITarget> target = null;
+            List<ITarget> target = new List<ITarget>();
             var physicalPath = Source.PhysicalPath;
             XDocument xml = new XDocument();
             FileStream xmlStream = new FileStream(physicalPath, FileMode.Open);
@@ -34,18 +34,16 @@ namespace GoM.Core.FSAnalyzer.Utils
 
                 ta = new Target()
                 {
-                    Name = id
+                    Name = targetFramework
                 };
                 ta.Dependencies.Add(new TargetDependency()
                 {
-                    Name = targetFramework,
+                    Name = id,
                     Version = version
                 });
                 target.Add(ta);
-
-
             }
-            return null;
+            return target;
         }
     }
 }
