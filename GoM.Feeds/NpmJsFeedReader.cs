@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using GoM.Core.Mutable;
 using System.Linq;
+using Semver;
 namespace GoM.Feeds
 {
     internal class NpmJsFeedReader : NpmFeedReader
@@ -64,7 +65,8 @@ namespace GoM.Feeds
 
         public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
         {
-            throw new NotImplementedException();
+            var res = await GetAllVersions(name);
+            return res.Where(x => x.Version > SemVersion.Parse(version));
         }
     }
 }

@@ -12,12 +12,12 @@ namespace GoM.Feeds
         {
             throw new NotImplementedException();
         }
-        public IEnumerable<IFeedReader> Snif(List<IPackageFeed> packages)
+        public IEnumerable<IFeedReader> Snif(List<Uri> links)
         {
             throw new NotImplementedException();
         }
 
-        public IFeedReader Snif(IPackageFeed package)
+        public IFeedReader Snif(Uri link)
         {
             throw new NotImplementedException();
         }
