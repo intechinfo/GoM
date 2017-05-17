@@ -2,10 +2,8 @@
 
 namespace GoM.Core
 {
-    public interface IProject
+    public interface IProject : IBasicProject
     {
-        string Path { get; }
-
         IReadOnlyCollection<ITarget> Targets { get; }
     }
 }
