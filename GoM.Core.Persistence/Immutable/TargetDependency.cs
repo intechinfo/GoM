@@ -12,8 +12,8 @@ namespace GoM.Core.Persistence
         public TargetDependency ( XElement t )
         {
             this.t = t;
-            Name = t.Attribute( nameof( Name ) ).Value;
-            Version = t.Attribute( nameof( Version ) ).Value;
+            Name = t.Attribute( GoMAttributeNamesV1.TARGET_DEPENDENCY_NAME ).Value;
+            Version = t.Attribute( GoMAttributeNamesV1.TARGET_DEPENDENCY_VERSION ).Value;
         }
 
        

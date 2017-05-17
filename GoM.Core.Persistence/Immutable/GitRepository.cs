@@ -15,13 +15,13 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
 
             Branches = new List<BasicGitBranch>();
-            foreach(var node in xElement.Elements(typeof(IBasicGitBranch).Name))    
+            foreach(var node in xElement.Elements(GoMAttributeNamesV1.BASIC_GIT_BRANCH))    
             {
                 Branches.Add( new BasicGitBranch( node ) );
             }
 
-            Path = xElement.Attribute( nameof( Path ) ).Value;
-            Url = new Uri(xElement.Attribute(nameof(Url)).Value);
+            Path = xElement.Attribute( GoMAttributeNamesV1.GIT_REPOSITORY_PATH ).Value;
+            Url = new Uri(xElement.Attribute( GoMAttributeNamesV1.GIT_REPOSITORY_URL ).Value);
         }
         public GitRepository ( string path, Uri url )
         {

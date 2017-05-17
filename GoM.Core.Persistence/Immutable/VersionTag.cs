@@ -9,7 +9,7 @@ namespace GoM.Core.Persistence
 
         public VersionTag(XElement e)
         {
-            FullName = e.Attribute( nameof( FullName ) ).Value;
+            FullName = e.Attribute( GoMAttributeNamesV1.VERSION_TAG_FULL_NAME ).Value;
         }
 
         public VersionTag(string fullName)

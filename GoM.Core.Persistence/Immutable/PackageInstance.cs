@@ -9,8 +9,8 @@ namespace GoM.Core.Persistence
         public string Name { get; }
         public PackageInstance(XElement e)
         {
-            this.Name = e.Attribute(nameof(Name)).Value;
-            this.Version = e.Attribute(nameof(Version)).Value;
+            this.Name = e.Attribute(GoMAttributeNamesV1.PACKAGE_INSTANCE_NAME).Value;
+            this.Version = e.Attribute(GoMAttributeNamesV1.PACKAGE_INSTANCE_VERSION).Value;
         }
 
 

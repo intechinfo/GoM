@@ -14,9 +14,9 @@ namespace GoM.Core.Persistence
         public BasicGitBranch ( XElement t )
         {
             this.t = t;
-            Name = t.Attribute( nameof( Name ) ).Value;
+            Name = t.Attribute( GoMAttributeNamesV1.BASIC_GIT_BRANCH_NAME ).Value;
 
-            var node = t.Element( typeof(IGitBranch).Name );
+            var node = t.Element( GoMAttributeNamesV1.BASIC_GIT_BRANCH_NAME );
             Details = node != null ? new GitBranch( node ) : null;
         }
 

@@ -13,10 +13,10 @@ namespace GoM.Core.Persistence
         public Project ( XElement node )
         {
             this.t = node;
-            Path = node.Attribute( nameof( Path ) ).Value;
+            Path = node.Attribute( GoMAttributeNamesV1.PROJECT_PATH).Value;
 
             Targets = new List<Target>();
-            foreach ( var t in node.Elements(nameof(ITarget)))
+            foreach ( var t in node.Elements( GoMAttributeNamesV1.TARGET))
             {
                 Targets.Add(new Target(t));
             }

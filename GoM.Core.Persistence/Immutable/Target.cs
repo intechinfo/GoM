@@ -13,9 +13,9 @@ namespace GoM.Core.Persistence
         public Target ( XElement node )
         {
             this.t = node;
-            Name = node.Attribute( nameof( Name ) ).Value;
+            Name = node.Attribute( GoMAttributeNamesV1.TARGET_NAME ).Value;
             Dependencies = new List<TargetDependency>();
-            foreach(var t in node.Elements(nameof(ITargetDependency)))
+            foreach(var t in node.Elements(GoMAttributeNamesV1.TARGET_DEPENDENCY))
             {
                 Dependencies.Add( new TargetDependency( t ) );
             }
