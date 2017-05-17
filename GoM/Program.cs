@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
+using GoM.Core.Persistence;
 
 namespace GoM
 {
@@ -96,10 +97,10 @@ namespace GoM
                 command.OnExecute(() =>
                 {
                     string pathFound;
-                    //var succes = TryInit(myCurrentDirectory, pathFound);
+                    var succes =  new Persistence().TryInit(myCurrentDirectory,out pathFound);
 
-                    //if (succes) Console.WriteLine("GoM repository has been correctly initialized");
-                    //else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}",pathFound);
+                    if (succes) Console.WriteLine("GoM repository has been correctly initialized");
+                    else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}",pathFound);
 
                     return 0;
                 });
@@ -155,7 +156,7 @@ namespace GoM
             else if (Directory.Exists(path))
             {
                 GetFiles(path, ft);
-                ft.Data = "\\";
+                ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
                 {
 

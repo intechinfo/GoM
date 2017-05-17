@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\GoM.Core.Immutable\GoM.Core.Immutable.csproj" />
     <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
     <ProjectReference Include="..\GoM.Core.Persistence\GoM.Core.Persistence.csproj" />
   </ItemGroup>
