@@ -4,19 +4,19 @@ using Microsoft.Extensions.FileProviders;
 using GoM.Core.FSAnalyzer.Utils;
 using FluentAssertions;
 using System.Collections.Generic;
+using System.IO;
 using GoM.Core.Mutable;
 using System.Linq;
 
 namespace GoM.Core.FsAnalyzer.Tests
 {
-    public class PhpComposerParserTests
+    public class PhpComposerParserTests : BaseFsAnalyzerTest
     {
         [Fact]
         public void test_php_config_file()
         {
-            IFileProvider provider = new PhysicalFileProvider(@"C:\Dev\GoM\Samples\Php");
-            IDirectoryContents contents = provider.GetDirectoryContents( String.Empty );
-            IFileInfo file = provider.GetFileInfo( "samplePhpComposer.json" );
+            IFileProvider provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Php"));
+            IFileInfo file = provider.GetFileInfo( "sampleComposer.json" );
 
             PhpComposerParser pcp = new PhpComposerParser( file );
             var t = pcp.Read();

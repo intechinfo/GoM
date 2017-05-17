@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GoM.Core.FSAnalyzer.Utils
@@ -17,37 +18,42 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath);
-            JObject jObj = JObject.Parse(jsonFileString);
             List<TargetDependency> targetDependencies = new List<TargetDependency>();
 
-            JProperty dependenciesJson = jObj.Property("dependencies");
-            JEnumerable<JToken> dependenciesTokens = dependenciesJson.Children();
+            string jsonFileString = File.ReadAllText(this.Source.PhysicalPath + @"\package.json");
 
-            foreach (JToken item in dependenciesTokens)
+            JObject jsConfigFileContent = JObject.Parse(jsonFileString);
+            JObject dependencies = new JObject(jsConfigFileContent.Property("dependencies"));
+            JObject devDependencies = new JObject(jsConfigFileContent.Property("devDependencies"));
+
+            foreach (KeyValuePair<string, JToken> d in dependencies)
             {
-                TargetDependency tDependendy = new TargetDependency
-                {
-                    Name = dependenciesJson.Name,
-                    Version = (string) dependenciesJson.Value
-                };
-                targetDependencies.Add(tDependendy);
+                targetDependencies.Add(
+                    new TargetDependency
+                    {
+                        Name = d.Key,
+                        Version = d.Value.ToString()
+                    }
+                );
+            }
+            foreach (KeyValuePair<string, JToken> d in devDependencies)
+            {
+                targetDependencies.Add(
+                    new TargetDependency
+                    {
+                        Name = d.Key,
+                        Version = d.Value.ToString()
+                    }
+                );
             }
 
-            JProperty devDependenciesJson = jObj.Property("devDependencies");
-            JEnumerable<JToken> devDependenciesTokens = devDependenciesJson.Children();
+            Target target = new Target();
+            target.Dependencies.AddRange(targetDependencies);
 
-            foreach (JToken item in devDependenciesTokens)
-            {
-                TargetDependency tDependendy = new TargetDependency
-                {
-                    Name = devDependenciesJson.Name,
-                    Version = (string) devDependenciesJson.Value
-                };
-                targetDependencies.Add(tDependendy);
-            }
+            List<Target> targets = new List<Target>();
+            targets.Add(target);
 
-            return null;
+            return targets;
         }
     }
 }

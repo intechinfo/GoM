@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using GoM.Core.Abstractions;
+using GoM.Core.FSAnalyzer.Utils;
+using GoM.Core.Mutable;
 using Microsoft.Extensions.FileProviders;
 
 namespace GoM.Core.FSAnalyzer
@@ -11,11 +14,6 @@ namespace GoM.Core.FSAnalyzer
     {
         public CsharpProjectHandler(IFileProvider provider) : base(provider)
         {
-        }
-
-        public override IProject Read()
-        {
-            return base.Read();
         }
 
         public override IProjectFolderHandler Sniff()

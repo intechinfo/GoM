@@ -13,7 +13,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class JsProjectHandler : BaseProjectFolderHandler
     {
-        public JsProjectHandler(IFileProvider provider) : base(provider)
+        public JsProjectHandler(IFileProvider file) : base(file)
         {
         }
 
@@ -27,9 +27,12 @@ namespace GoM.Core.FSAnalyzer
             string path = this.FileProvider.GetFileInfo("./").PhysicalPath + @"\package.json";
 
             JsSetupParser parser = new JsSetupParser(this.FileProvider.GetFileInfo("./"));
-            IEnumerable<ITarget> targets = parser.Read();
+            var targets = parser.Read();
 
             Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath };
+            List<Target> list = targets.ToList();
+
+            project.Targets.AddRange(list);
             return project;
         }
     }

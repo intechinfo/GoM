@@ -15,56 +15,58 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<Target> target = null;
+            List<Target> target = new List<Target>();
             var physicalPath = Source.PhysicalPath;
             XDocument xmldoc = XDocument.Load(physicalPath);
-            XNamespace msbuild = xmldoc.Root.GetDefaultNamespace().NamespaceName;
-            var ReferenceList = xmldoc.Descendants(msbuild + "Reference").ToArray();
-            var ReferenceListOld = xmldoc.Descendants(msbuild + "PackageReference").ToArray();
-            var ta = new Target();
-
-            var TargetFrameworkVersionList = xmldoc.Descendants(msbuild + "TargetFrameworkVersion").ToArray();
-
-            for (int i = 0; i < TargetFrameworkVersionList.Length; i++)
+            if (xmldoc.Root != null)
             {
-                string targetFrameworkVersion = TargetFrameworkVersionList[i] != null ? TargetFrameworkVersionList[i].Value : string.Empty;
+                XNamespace msbuild = xmldoc.Root.GetDefaultNamespace().NamespaceName;
+                var referenceList = xmldoc.Descendants(msbuild + "Reference").ToArray();
+                var referenceListOld = xmldoc.Descendants(msbuild + "PackageReference").ToArray();
+                var ta = new Target();
 
-                ta = new Target()
+                var targetFrameworkVersionList = xmldoc.Descendants(msbuild + "TargetFrameworkVersion").ToArray();
+
+                for (int i = 0; i < targetFrameworkVersionList.Length; i++)
                 {
-                    Name = targetFrameworkVersion,
+                    string targetFrameworkVersion = targetFrameworkVersionList[i] != null ? targetFrameworkVersionList[i].Value : string.Empty;
 
-                };
-
-                target.Add(ta);
-            }
-
-            if (ReferenceList.Length > 0)
-            {
-                for (int i = 0; i < ReferenceList.Length; i++)
-                {
-                    string include = ReferenceList[i] != null ? ReferenceList[i].Attribute("Include").Value : string.Empty;
-
-                    ta.Dependencies.Add(new TargetDependency()
+                    ta = new Target()
                     {
-                        Name = "",
-                        Version = include
-                    });
+                        Name = targetFrameworkVersion,
+                    };
+
+                    target.Add(ta);
+                }
+
+                if (referenceList.Length > 0)
+                {
+                    for (int i = 0; i < referenceList.Length; i++)
+                    {
+                        string include = referenceList[i] != null ? referenceList[i].Attribute("Include").Value : string.Empty;
+
+                        ta.Dependencies.Add(new TargetDependency()
+                        {
+                            Name = "",
+                            Version = include
+                        });
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < referenceListOld.Length; i++)
+                    {
+                        string include = referenceListOld[i] != null ? referenceListOld[i].Attribute("Include").Value : string.Empty;
+                        string version = referenceListOld[i] != null ? referenceListOld[i].Element("Version").Value : string.Empty;
+                        ta.Dependencies.Add(new TargetDependency()
+                        {
+                            Name = include,
+                            Version = version
+                        });
+                    }
                 }
             }
-            else
-            {
-                for (int i = 0; i < ReferenceListOld.Length; i++)
-                {
-                    string include = ReferenceListOld[i] != null ? ReferenceListOld[i].Attribute("Include").Value : string.Empty;
-                    string version = ReferenceListOld[i] != null ? ReferenceListOld[i].Element("Version").Value : string.Empty;
-                    ta.Dependencies.Add(new TargetDependency()
-                    {
-                        Name = include,
-                        Version = version
-                    });
-                }
-            }
-            
+
             return target;
         }
     }

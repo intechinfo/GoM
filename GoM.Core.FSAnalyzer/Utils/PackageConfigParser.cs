@@ -17,35 +17,36 @@ namespace GoM.Core.FSAnalyzer.Utils
 
         public override IEnumerable<Target> Read()
         {
-            List<ITarget> target = null;
+            List<Target> target = new List<Target>();
             var physicalPath = Source.PhysicalPath;
             XDocument xml = new XDocument();
             FileStream xmlStream = new FileStream(physicalPath, FileMode.Open);
             var result = XDocument.Load(xmlStream);
-            var pac = (from c in result.Root.Elements("package")
-                       select c).ToArray();
-            var ta = new Target();
-
-            for (var i = 0; i < pac.Count(); i++)
+            if (result.Root != null)
             {
-                var id = pac[i].Attribute("id") != null ? pac[i].Attribute("id").Value : "null";
-                var version = pac[i].Attribute("version") != null ? pac[i].Attribute("version").Value : "null";
-                var targetFramework = pac[i].Attribute("targetFramework") != null ? pac[i].Attribute("targetFramework").Value : "null";
+                var pac = (from c in result.Root.Elements("package")
+                    select c).ToArray();
+                var ta = new Target();
 
-                ta = new Target()
+                for (var i = 0; i < pac.Count(); i++)
                 {
-                    Name = id
-                };
-                ta.Dependencies.Add(new TargetDependency()
-                {
-                    Name = targetFramework,
-                    Version = version
-                });
-                target.Add(ta);
+                    var id = pac[i].Attribute("id") != null ? pac[i].Attribute("id").Value : "null";
+                    var version = pac[i].Attribute("version") != null ? pac[i].Attribute("version").Value : "null";
+                    var targetFramework = pac[i].Attribute("targetFramework") != null ? pac[i].Attribute("targetFramework").Value : "null";
 
-
+                    ta = new Target()
+                    {
+                        Name = targetFramework
+                    };
+                    ta.Dependencies.Add(new TargetDependency()
+                    {
+                        Name = id,
+                        Version = version
+                    });
+                    target.Add(ta);
+                }
             }
-            return null;
+            return target;
         }
     }
 }
