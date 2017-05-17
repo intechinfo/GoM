@@ -100,12 +100,12 @@ namespace GoM.Core.Persistence.Tests
             Assert.True(true);
         }
 
-        [Fact]
-        public void try_read_first_node()
+
+        public void CleanGoMPersistence()
         {
-            var data = File.ReadAllText(Path.Combine(".", ".gom", "name"));
-            XDocument doc = XDocument.Parse(data);
-            IGoMContext context = new GoMContext(doc.Root);
+            // Delete .gom folder
+            var path = Path.Combine(TuPath(), ".gom");
+            if (Directory.Exists(path)) Directory.Delete(path, true);
         }
 
         [Fact]
@@ -176,6 +176,8 @@ namespace GoM.Core.Persistence.Tests
             #region Feed 2
             Assert.True(ctx.Feeds[1].Url == new Uri("http://google.com"));
             #endregion
+
+            CleanGoMPersistence();
         }
 
         [Fact]
@@ -290,9 +292,9 @@ namespace GoM.Core.Persistence.Tests
             realGitbranch.Version = branchVersion;
 
             realGitbranch.Projects.Add(basicproject1);
-            realGitbranch.Projects.Add( basicproject2 );
-            realGitbranch.Projects.Add( basicproject3 );
-            realGitbranch.Projects.Add( basicproject4 );
+            realGitbranch.Projects.Add(basicproject2);
+            realGitbranch.Projects.Add(basicproject3);
+            realGitbranch.Projects.Add(basicproject4);
 
             // OK
             var basicbranch = new Mutable.BasicGitBranch();
@@ -338,26 +340,25 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void try_init_works()
         {
-            var path = Path.Combine(TuPath(), ".gom");
-            if (Directory.Exists(path)) Directory.Delete(path, true);
+            CleanGoMPersistence();
             Persistence p = new Persistence();
             string outPath;
 
             Assert.True(p.TryInit(TuPath(), out outPath));
-            Assert.True( outPath == string.Empty );
+            Assert.True(outPath == string.Empty);
 
-            Assert.False( p.TryInit( TuPath(), out outPath ) );
+            Assert.False(p.TryInit(TuPath(), out outPath));
             Assert.True(outPath == TuPath());
 
             Assert.False(p.TryInit(TuPath(), out outPath));
-            Assert.True( outPath == TuPath() );
+            Assert.True(outPath == TuPath());
 
-            Directory.Delete( path, true );
-            Assert.True( p.TryInit( TuPath(), out outPath ) );
-            Assert.True( outPath == string.Empty );
+            CleanGoMPersistence();
+            Assert.True(p.TryInit(TuPath(), out outPath));
+            Assert.True(outPath == string.Empty);
 
-            Assert.False( p.TryInit( TuPath(), out outPath ) );
-            Assert.True( outPath == TuPath() );
+            Assert.False(p.TryInit(TuPath(), out outPath));
+            Assert.True(outPath == TuPath());
 
         }
 
