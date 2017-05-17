@@ -48,7 +48,7 @@ namespace GoM.Core.FSAnalyzer.Utils
             }
             Target target = new Target();
             target.Dependencies.AddRange(targetDependencies);
-            IEnumerable<ITarget> targs = new List<ITarget>();
+            IEnumerable<Target> targs = new List<Target>();
             targs.ToList().Add(target);
             return targs;
         }

@@ -30,7 +30,7 @@ namespace GoM.Core.FSAnalyzer
             var targets = parser.Read();
 
             Project project = new Project { Path = this.FileProvider.GetFileInfo("./").PhysicalPath };
-            List<Target> list = targets.Select(o => o as Target).ToList();
+            List<Target> list = targets.ToList();
 
             project.Targets.AddRange(list);
             return project;
