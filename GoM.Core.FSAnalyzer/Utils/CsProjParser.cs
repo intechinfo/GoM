@@ -44,11 +44,12 @@ namespace GoM.Core.FSAnalyzer.Utils
                     for (int i = 0; i < referenceList.Length; i++)
                     {
                         string include = referenceList[i] != null ? referenceList[i].Attribute("Include").Value : string.Empty;
-
+                        string[] words = include.Split(',');
+                        
                         ta.Dependencies.Add(new TargetDependency()
                         {
-                            Name = "",
-                            Version = include
+                            Name = words[0],
+                            Version = words.Length > 1 ? words[1]: ""
                         });
                     }
                 }
