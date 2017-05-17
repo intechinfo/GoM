@@ -16,7 +16,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         {
             IFileProvider provider = new PhysicalFileProvider(@"C:\Dev\GoM\Samples\Php");
             IDirectoryContents contents = provider.GetDirectoryContents( String.Empty );
-            IFileInfo file = provider.GetFileInfo( "samplePhpComposer.json" );
+            IFileInfo file = provider.GetFileInfo( "sampleComposer.json" );
 
             PhpComposerParser pcp = new PhpComposerParser( file );
             var t = pcp.Read();
