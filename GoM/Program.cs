@@ -110,7 +110,7 @@ namespace GoM
             app.Command("files", c =>
             {
 
-                c.Description = "Get files";
+                c.Description = "Get directories and files relative to a path";
                 var locationArgument = c.Argument("[location]",
                                    "Where the files should be located .");
 
@@ -158,23 +158,37 @@ namespace GoM
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
-                {
-
+                {                   
                     FileTree n = new FileTree();
                     n.Data = item;
                     n.Nodes = new List<FileTree>();
                     GetFiles(item, n);
                     ft.Nodes.Add(n);
-                    GetNodes(item, ft);
+                    GetChildren(item, n);
                 }
             }
         }
-
+        public static void GetChildren(string path, FileTree ft)
+        {
+           if (Directory.Exists(path))
+            {
+               
+                foreach (string item in Directory.GetDirectories(path))
+                {
+                    FileTree n = new FileTree();
+                    n.Data = item;
+                    n.Nodes = new List<FileTree>();
+                    GetFiles(item, n);
+                    ft.Nodes.Add(n);
+                    GetChildren(item, ft);
+                }
+            }
+        }
         public static void GetFiles(string path, FileTree ft)
         {
             foreach (string item in Directory.GetFiles(path))
-            {
-                ft.Nodes.Add(new FileTree(item));
+            {            
+                ft.Nodes.Add(new FileTree(Path.GetFileName(item)));
             }
         }
         public static void ProcessDirectory(string targetDirectory, List<string> fileList)
