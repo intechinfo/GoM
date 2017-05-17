@@ -16,9 +16,9 @@ namespace GoM.Core.Mutable
         /// <param name="context"></param>
         public GoMContext(IGoMContext context)
         {
-            this.RootPath = context.RootPath;
-            this.Repositories = (List<BasicGitRepository>)context.Repositories;
-            this.Feeds = (List<PackageFeed>)context.Feeds;
+            RootPath = context.RootPath;
+            Repositories = (List<BasicGitRepository>)context.Repositories;
+            Feeds = (List<PackageFeed>)context.Feeds;
         }
 
         public string RootPath { get; set; }
