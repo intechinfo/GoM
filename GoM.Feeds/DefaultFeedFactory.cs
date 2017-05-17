@@ -17,7 +17,8 @@ namespace GoM.Feeds
             _factories = new List<IFeedFactory>
             {
                 new NpmJsFactory(),
-                new PypiFactory()
+                new PypiFactory(),
+                new NugetOrgFactory()
             };
         }
         public IEnumerable<IFeedReader> FeedReaders => _factories.SelectMany(x => x.FeedReaders);

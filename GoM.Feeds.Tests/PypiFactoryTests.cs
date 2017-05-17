@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoM.Feeds.Tests
 {
-    public class PypiFeedsReaderTests
+    public class PypiFactoryTests
     {
     }
 }

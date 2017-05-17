@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoM.Feeds.Tests
 {
-    class NpmFeedsReaderTests
+   public class NpmFeedsReaderTests
     {
     }
 }
