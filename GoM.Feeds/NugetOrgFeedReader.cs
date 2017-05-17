@@ -21,9 +21,15 @@ namespace GoM.Feeds
             _client = new HttpClient();
         }
 
-        public override string BaseUrl
+        public override async Task<bool> FeedMatch(Uri adress)
         {
-            get { return _baseUrl; }
+            string resp = await _client.GetStringAsync(adress);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+
+            return o.TryGetValue("version", out JToken j1) 
+                    && o.TryGetValue("resources", out JToken j2) 
+                    && o.TryGetValue("@context", out JToken j3);
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
