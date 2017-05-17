@@ -10,7 +10,7 @@ using FluentAssertions;
 
 namespace GoM.Core.FsAnalyzer.Tests
 {
-    public class PythonParserTests : BaseParserTest
+    public class PythonParserTests : BaseFsAnalyzerTest
     {
         [Fact]
         public void Test_python_parser_valid_file_return_correct_number_of_targets()

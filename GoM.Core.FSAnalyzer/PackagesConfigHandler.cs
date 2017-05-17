@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GoM.Core.Abstractions;
 using Microsoft.Extensions.FileProviders;
 
 namespace GoM.Core.FSAnalyzer
@@ -9,6 +10,11 @@ namespace GoM.Core.FSAnalyzer
     {
         public PackagesConfigHandler(IFileProvider provider) : base(provider)
         {
+        }
+
+        public override IProjectFolderHandler Sniff()
+        {
+            return this;
         }
     }
 }
