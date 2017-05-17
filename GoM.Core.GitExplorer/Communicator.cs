@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -129,6 +129,7 @@ namespace GoM.Core.GitExplorer
             BasicGitRepository BasicGitRepo = new BasicGitRepository() { Url = Url, Path = Path };
 
             GitRepository gitRepo = new GitRepository() { Url = BasicGitRepo.Url, Path = BasicGitRepo.Path };
+            BasicGitRepo.Details = gitRepo;
 
             return BasicGitRepo;
         }

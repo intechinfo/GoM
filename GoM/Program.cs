@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
 using GoM.Core.Persistence;
+using GoM.Core.GitExplorer;
 
 namespace GoM
 {
@@ -50,7 +51,34 @@ namespace GoM
 
                 command.OnExecute(() =>
                 {
-                    // To immplement 
+                    int repos = repositoryOption.Values.Count;
+                    int proj = projectOption.Values.Count;
+                    int allProj = allProjectOption.Values.Count;
+                    int branch = branchOption.Values.Count;
+
+                    // add repository
+                    if (repos > 0)
+                    {
+                        var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+                        Communicator com = new Communicator(projectPath);
+                    }
+                    // add branch
+                    else if (proj > 0)
+                    {
+
+                    }
+                    // add project
+                    else if (allProj > 0)
+                    {
+
+                    }
+                    // add all project
+                    else
+                    {
+
+                    }
+
+                    Console.WriteLine();
                     return 0;
                 });
             });
