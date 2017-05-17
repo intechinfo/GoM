@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using LibGit2Sharp;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Primitives;
@@ -49,10 +50,11 @@ namespace GoM.GitFileProvider
                     try
                     {
                         IFileInfo fileInfo = _gitFileProvider.GetFileInfo(wrap.Path);
-                        if (fileInfo.LastModified != wrap.LastModificationTime)
+                        FileInfoFile fileInfoFile = fileInfo as FileInfoFile;
+                        if (fileInfoFile.File.Sha != wrap.FileBlob.Sha)
                             wrap.ChangeToken.TokenSource.Cancel();
                     }
-                    catch
+                    catch 
                     {
                     }
                 });
@@ -63,7 +65,7 @@ namespace GoM.GitFileProvider
         {
             IFileInfo fileInfo = _gitFileProvider.GetFileInfo(filter);
             if (!fileInfo.Exists)
-                return new ChangeTokenWrapper(new ChangeTokenInfo(null, null), null, default(DateTimeOffset)); 
+                return new ChangeTokenWrapper(new ChangeTokenInfo(null, null), null, default(DateTimeOffset), null); 
 
             ChangeTokenInfo tokenInfo;
            
@@ -71,7 +73,8 @@ namespace GoM.GitFileProvider
             var cancellationChangeToken = new CancellationChangeToken(cancellationTokenSource.Token);
             tokenInfo = new ChangeTokenInfo(cancellationTokenSource, cancellationChangeToken);
 
-            ChangeTokenWrapper changeTokenWrap = new ChangeTokenWrapper(tokenInfo, filter, fileInfo.LastModified);
+            FileInfoFile fileInfoFile = fileInfo as FileInfoFile;
+            ChangeTokenWrapper changeTokenWrap = new ChangeTokenWrapper(tokenInfo, filter, fileInfo.LastModified, fileInfoFile.File);
             return changeTokenWrap;
         }
 
@@ -90,11 +93,13 @@ namespace GoM.GitFileProvider
                 public ChangeTokenInfo ChangeToken { get; }
                 public string Path { get; }
                 public DateTimeOffset LastModificationTime { get; }
-                public ChangeTokenWrapper(ChangeTokenInfo changeToken, string path, DateTimeOffset lastModificationTime)  
+                public Blob FileBlob;
+                public ChangeTokenWrapper(ChangeTokenInfo changeToken, string path, DateTimeOffset lastModificationTime, Blob fileBlob)  
                 {
                     ChangeToken = changeToken;
                     Path = path;
                     LastModificationTime = lastModificationTime;
+                    FileBlob = fileBlob;
                 }
             }
 

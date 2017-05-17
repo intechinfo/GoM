@@ -144,6 +144,7 @@ namespace GoM.GitFileProvider
                         return new NotFoundFileInfo("Invalid");
                     
                     FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], b.Tip.Committer.When, (Blob)node.Target, rw);
+                    
                     return f;
                 }
             }
@@ -162,7 +163,7 @@ namespace GoM.GitFileProvider
                     Commit commit = rw.Repo.Lookup<Commit>(commitHash);
                     if (commit == null)
                         return new NotFoundFileInfo("InvalidSha");
-                    string relativePath = GetRelativePath(splitPath, 3);
+                    string relativePath = GetRelativePath(splitPath, 2);
                     if (String.IsNullOrEmpty(relativePath))
                     {
                         TreeEntry entry = commit.Tree.FirstOrDefault();
@@ -295,6 +296,8 @@ namespace GoM.GitFileProvider
 
         public IChangeToken Watch(string filter)
         {
+            return NullChangeToken.Singleton;
+
             if (!IsValidFilter(filter))
                 return NullChangeToken.Singleton;
             
