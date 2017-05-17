@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Abstractions", "Go
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable", "GoM.Core.Mutable\GoM.Core.Mutable.csproj", "{3D88E13C-2486-424C-835A-77735CA198F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FF6C0DD4-D1BD-4246-A91C-9148014AF673}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Persistence", "GoM.Core.Persistence\GoM.Core.Persistence.csproj", "{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Persistence", "GoM.Core.Persistence\GoM.Core.Persistence.csproj", "{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F22E8EC-8517-4569-B107-F33869C280A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -117,7 +115,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{80A59E82-218C-46E9-8E92-225D1725AC7B} = {FF6C0DD4-D1BD-4246-A91C-9148014AF673}
 		{98F93F56-F621-4C2B-BF36-8A58A371BDD8} = {5F22E8EC-8517-4569-B107-F33869C280A9}
+		{80A59E82-218C-46E9-8E92-225D1725AC7B} = {5F22E8EC-8517-4569-B107-F33869C280A9}
 	EndGlobalSection
 EndGlobal
