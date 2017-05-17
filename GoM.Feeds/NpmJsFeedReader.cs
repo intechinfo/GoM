@@ -1,35 +1,44 @@
 ﻿using GoM.Core;
+using GoM.Core.Mutable;
 using GoM.Feeds.Abstractions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Semver;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using GoM.Core.Mutable;
 using System.Linq;
-using Semver;
+using System.Net.Http;
+using System.Threading.Tasks;
+
 namespace GoM.Feeds
 {
     public class NpmJsFeedReader : NpmFeedReader
     {
         HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
-        internal NpmJsFeedReader()
+        public NpmJsFeedReader()
         {
             _client = new HttpClient();
         }
 
         public override async Task<bool> FeedMatch(Uri adress)
         {
+            if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
             string resp = await _client.GetStringAsync(adress);
-            JObject o = JObject.Parse(resp);
+            JObject o;
+            try
+            {
+                o = JObject.Parse(resp);
+            }
+            catch(JsonReaderException)
+            {
+                return false;
+            }
             if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() +" .");
             bool isNpm = o.TryGetValue("db_name", out JToken value);
             if (isNpm)
             {
-                string dbName = o.Property("db_name").Value<string>();
-                return dbName == "registry";
+                return o.Property("db_name").Value.ToString() == "registry";
             }
             return false;
         }
