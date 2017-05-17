@@ -131,20 +131,7 @@ namespace GoM.GitFileProvider.Tests
         [Test]
         public void GetDirectoryContents_Root()
         {
-            GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            var rootDir = git.GetDirectoryContents("");
-
-            foreach (var item in rootDir)
-            {
-                item.Exists.Should().BeTrue();
-                if (item.IsDirectory)
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name + Path.DirectorySeparatorChar);
-
-                }
-                else
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
-            }
+            
         }
 
         [Test]

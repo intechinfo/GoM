@@ -126,7 +126,7 @@ namespace GoM.GitFileProvider
                     TreeEntry node = b[pathToFileFromBranch];
                     if (node == null)
                         return new NotFoundFileInfo("Invalid");
-                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], default(DateTimeOffset), (Blob)node.Target, rw);
+                    FileInfoFile f = new FileInfoFile(true, _rootPath + @"\" + subpath, splitPath[splitPath.Length - 1], rw.Repo.Lookup<Commit>(node.Target.Id).Committer.When, (Blob)node.Target, rw);
                     return f;
                 }
             }
@@ -148,11 +148,21 @@ namespace GoM.GitFileProvider
             return null;
         }
 
-        private IDirectoryContents GetDirectoryBranch(string[] splitPath, string subpath, char flag)
+        private IDirectoryContents GetDirectoryBranch(string[] splitPath, string subPath, char flag)
         {
             using (RepositoryWrapper rw = new RepositoryWrapper())
             {
                 rw.Create(_rootPath);
+                if (flag == '*')
+                {
+                    List<IFileInfo> files = new List<IFileInfo>();
+                    foreach (var b in rw.Repo.Branches)
+                    {
+                        IFileInfo file = new FileInfoDirectory(true, "branches"+ Path.DirectorySeparatorChar + b.FriendlyName, b.FriendlyName);
+                        files.Add(file);
+                    }
+                    return new DirectoryInfo(files);
+                }
                 Branch branch = rw.Repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
                 if (branch == null)
                     return NotFoundDirectoryContents.Singleton;
@@ -176,10 +186,38 @@ namespace GoM.GitFileProvider
             }
         }
 
-        private string GetRelativePath(string[] splitPath)
+        private IDirectoryContents GetDirectoryCommit(string[] splitPath, string subPath)
+        {
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                Commit commit = rw.Repo.Lookup<Commit>(splitPath[1]);
+                if (commit == null) return NotFoundDirectoryContents.Singleton;
+                string relativePath = GetRelativePath(splitPath, 3);
+                TreeEntry node = commit.Tree[relativePath];
+                if (node?.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
+                return CreateDirectoryInfo(node.Target as Tree, rw);
+            }
+        }
+
+        private IDirectoryContents GetDirectoryTags(string[] splitPath, string subPath)
+        {
+            using (RepositoryWrapper rw = new RepositoryWrapper())
+            {
+                rw.Create(_rootPath);
+                Tag tag = rw.Repo.Tags.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
+                if (tag == null) return NotFoundDirectoryContents.Singleton;
+                string relativePath = GetRelativePath(splitPath, 3);
+                TreeEntry node = rw.Repo.Lookup<Commit>(tag.Target.Id)?.Tree[relativePath];
+                if (node?.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
+                return CreateDirectoryInfo(node.Target as Tree, rw);
+            }
+        }
+
+        private string GetRelativePath(string[] splitPath, int index = 2)
         {
             string RelativePath = "";
-            for (int i = 2; i < splitPath.Length; i++)
+            for (int i = index; i < splitPath.Length; i++)
                 RelativePath += splitPath[i] + ((i < splitPath.Length - 1) ? @"\" : "");
             return RelativePath.Trim();
         }
