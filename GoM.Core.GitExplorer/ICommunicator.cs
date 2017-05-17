@@ -52,10 +52,17 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         /// <returns>BasicGitRepository</returns>
         BasicGitRepository getBasicGitRepository();
+
         /// <summary>
         /// Get All Branches of repository
         /// </summary>
         /// <returns>List<BasicGitBranch></returns>
         List<BasicGitBranch> getAllBranches();
+
+        /// <summary>
+        /// Get a ExtensionStatictic Dictionary.
+        /// </summary>
+        /// <returns>Dictionary<String, ExtensionStatistic></returns>
+        Dictionary<String, ExtensionFileStatistic> getExtensionDictionary();
     }
 }

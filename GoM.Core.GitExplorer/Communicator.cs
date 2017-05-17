@@ -8,7 +8,6 @@ using GoM.Core.Mutable;
 
 /*
  *  A faire : 
- *  + Statistiques sur les extensions de fichiers ( nombre de fichiers par extension)
  *  + Déterminer le type de projet (application c# windows, android, ios, web, etc...)
  *  + Déterminer les dépendances utilisées
  *  ...
@@ -17,8 +16,17 @@ using GoM.Core.Mutable;
 
 namespace GoM.Core.GitExplorer
 {
+
+    public struct ExtensionFileStatistic
+    {
+        public String extension;
+        public int count;
+        public List<String> listPath;
+    }
+
     public class Communicator : ICommunicator
     {
+
         const string REPOS_DIRECTORY = "repos";
 
         /// <summary>
@@ -63,6 +71,8 @@ namespace GoM.Core.GitExplorer
                 string repoFullName = Helpers.ParseUrl(Source, Helpers.UrlShape.Fullname);
                 string repoName = Helpers.ParseUrl(Source, Helpers.UrlShape.Name);
 
+                string tmp_downloading_file_indicator = this.ReposPath + "/downloading_" + repoFullName + "_repository";
+
                 string path = ReposPath + "/" + repoName;
 
                 bool RepoExist = Directory.Exists(path);
@@ -70,17 +80,20 @@ namespace GoM.Core.GitExplorer
                 this.Path = path;
                 
                 //Return repository if already stored
-                if (RepoExist)
+                if (RepoExist && !File.Exists(tmp_downloading_file_indicator))
                 {
                     repo = new Repository(path);
                     this.Repository = repo;
                     return repo;
                 }
 
+
+                File.CreateText(tmp_downloading_file_indicator).Close();
                 //Clone and return repository if not stored
                 Repository.Clone(Source, path);
                 repo = new Repository(path);
                 this.Repository = repo;
+                File.Delete(tmp_downloading_file_indicator);
                 return repo;
             }
             else
@@ -203,6 +216,53 @@ namespace GoM.Core.GitExplorer
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Get a ExtensionStatictic Dictionary.
+        /// </summary>
+        /// <returns>Dictionary<String, ExtensionStatistic></returns>
+        public Dictionary<String, ExtensionFileStatistic> getExtensionDictionary()
+        {
+
+            List<String> allFiles = getFiles();
+            Dictionary<String, ExtensionFileStatistic> extensionDictionary = new Dictionary<string, ExtensionFileStatistic>();
+            foreach (var file in allFiles)
+            {
+                String[] splitFolder = file.Split('\\');
+                String[] splitExtension = splitFolder[splitFolder.Length - 1].Split('.');
+                String ext;
+                if (splitExtension.Length > 1)
+                {
+                    ext = splitExtension[splitExtension.Length - 1];
+                    if (!extensionDictionary.ContainsKey(ext))
+                    {
+                        List<String> allExtensionsFile = getFiles("*." + ext);
+                        ExtensionFileStatistic extStat = new ExtensionFileStatistic();
+                        extStat.extension = ext;
+                        extStat.count = allExtensionsFile.Count;
+                        extStat.listPath = allExtensionsFile;
+                        extensionDictionary.Add(ext, extStat);
+                    }
+                }
+                else
+                {
+                    ext = "";
+                    if (!extensionDictionary.ContainsKey(ext))
+                    {
+                        ExtensionFileStatistic extStat = new ExtensionFileStatistic();
+                        extStat.extension = ext;
+                        extStat.count = 0;
+                        extStat.listPath = new List<string>();
+                        extensionDictionary.Add(ext, extStat);
+                    }
+                    ExtensionFileStatistic stat = extensionDictionary[ext];
+                    stat.count++;
+                    stat.listPath.Add(file);
+                }
+            }
+            return extensionDictionary;
+        }
+
 
         //Implement others methods..
 

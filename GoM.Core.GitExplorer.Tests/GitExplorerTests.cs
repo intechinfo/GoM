@@ -52,5 +52,15 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Helpers.DeleteDirectory("repos");
         }
+
+        [TestMethod]
+        public void Check_getExtensionDictionary_load_all_files()
+        {
+            Communicator communicator = new Communicator(url);
+            var dictionaryExtensionFile = communicator.getExtensionDictionary();
+            int countAllFile = communicator.getFiles().Count;
+            int countDictionaryFile = dictionaryExtensionFile.Sum(x => x.Value.listPath.Count);
+            Assert.AreEqual(countAllFile, countDictionaryFile);
+        }
     }
 }

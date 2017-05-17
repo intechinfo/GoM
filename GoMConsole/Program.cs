@@ -10,7 +10,7 @@ namespace GoMConsole
     {
         static void Main(string[] args)
         {
-            Communicator communicator = new Communicator("https://github.com/bmgm/Simple.git");
+            Communicator communicator = new Communicator("https://github.com/intechinfo/GoM.git");
 
             var branches = communicator.getAllBranches();
             int count = branches.Count;
