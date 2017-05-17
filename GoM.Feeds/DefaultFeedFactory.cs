@@ -4,22 +4,31 @@ using System.Collections.Generic;
 using System.Text;
 using GoM.Core;
 
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace GoM.Feeds
 {
     public sealed class DefaultFeedFactory : IFeedFactory
     {
-        public IFeedReader GetFeedReader()
+        List<IFeedFactory> _factories;
+        public DefaultFeedFactory()
         {
-            throw new NotImplementedException();
+            _factories = new List<IFeedFactory>
+            {
+                new NpmJsFactory(),
+                new PypiFactory()
+            };
         }
+        public IEnumerable<IFeedReader> FeedReaders => _factories.SelectMany(x => x.FeedReaders);
+
         public IEnumerable<IFeedReader> Snif(List<Uri> links)
         {
-            throw new NotImplementedException();
+            return links.SelectMany(l => Snif(l));
         }
-
-        public IFeedReader Snif(Uri link)
+        public IEnumerable<IFeedReader> Snif(Uri link)
         {
-            throw new NotImplementedException();
+           return _factories.SelectMany(f => f.FeedReaders).Where(fr => fr.FeedMatch(link).Result);
         }
     }
 }

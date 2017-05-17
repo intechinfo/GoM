@@ -1,13 +1,15 @@
 using GoM.Core;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GoM.Feeds.Abstractions
 {
     public interface IFeedFactory
     {
-        IFeedReader GetFeedReader();
+        IEnumerable<IFeedReader> FeedReaders { get; }
+
         IEnumerable<IFeedReader> Snif(List<Uri> links);
-        IFeedReader Snif(Uri link);
+        IEnumerable<IFeedReader> Snif(Uri link);
     }
 }

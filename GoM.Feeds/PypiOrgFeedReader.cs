@@ -12,13 +12,18 @@ using Semver;
 
 namespace GoM.Feeds 
 {
-    internal class PypiOrgFeedReader : PypiFeedReader
+    public class PypiOrgFeedReader : PypiFeedReader
     {
         HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
         internal PypiOrgFeedReader()
         {
             _client = new HttpClient();
+        }
+
+        public override Task<bool> FeedMatch(Uri adress)
+        {
+            throw new NotImplementedException();
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)

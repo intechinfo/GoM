@@ -11,13 +11,27 @@ using System.Linq;
 using Semver;
 namespace GoM.Feeds
 {
-    internal class NpmJsFeedReader : NpmFeedReader
+    public class NpmJsFeedReader : NpmFeedReader
     {
         HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
         internal NpmJsFeedReader()
         {
             _client = new HttpClient();
+        }
+
+        public override async Task<bool> FeedMatch(Uri adress)
+        {
+            string resp = await _client.GetStringAsync(adress);
+            JObject o = JObject.Parse(resp);
+            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() +" .");
+            bool isNpm = o.TryGetValue("db_name", out JToken value);
+            if (isNpm)
+            {
+                string dbName = o.Property("db_name").Value<string>();
+                return dbName == "registry";
+            }
+            return false;
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)

@@ -11,5 +11,6 @@ namespace GoM.Feeds.Abstractions
         Task<IEnumerable<IPackageInstance>> GetAllVersions(string name);
         Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name,string version);
         Task<IEnumerable<ITarget>> GetDependencies(string name, string version);
+        Task<bool> FeedMatch(Uri adress);
     }
 }
