@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoM.Core.CommandLine
+namespace GoM
 {
     class FileTree
     {
         public FileTree()
         { }
         public FileTree(string fileName)
-        {  
+        {
             Data = fileName;
             Nodes = new List<FileTree>();
         }
