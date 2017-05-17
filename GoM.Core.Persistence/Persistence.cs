@@ -46,7 +46,7 @@ namespace GoM.Core.Persistence
         public static XElement ToXML ( this IProject _this )
         {
             if ( _this == null ) return null;
-            XElement element = new XElement(typeof(IGoMContext).Name);
+            XElement element = new XElement(typeof(IProject).Name);
             element.SetAttributeValue( nameof( _this.Path ), _this.Path );
             foreach ( var t in _this.Targets ) element.Add( t.ToXML() );
             return element;
@@ -55,7 +55,7 @@ namespace GoM.Core.Persistence
         public static XElement ToXML ( this ITargetDependency _this )
         {
             if ( _this == null ) return null;
-            XElement element = new XElement(typeof(IGoMContext).Name);
+            XElement element = new XElement(typeof(ITargetDependency).Name);
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
             element.SetAttributeValue( nameof( _this.Version ), _this.Version );
             return element;
@@ -64,7 +64,7 @@ namespace GoM.Core.Persistence
         public static XElement ToXML ( this IVersionTag _this )
         {
             if ( _this == null ) return null;
-            XElement element = new XElement(typeof(IGoMContext).Name);
+            XElement element = new XElement(typeof(IVersionTag).Name);
             element.SetAttributeValue( nameof( _this.FullName ), _this.FullName );
             
             return element;
@@ -73,7 +73,7 @@ namespace GoM.Core.Persistence
         public static XElement ToXML ( this ITarget _this )
         {
             if ( _this == null ) return null;
-            XElement element = new XElement(typeof(IGoMContext).Name);
+            XElement element = new XElement(typeof(ITarget).Name);
             element.SetAttributeValue( nameof( _this.Name ), _this.Name );
             foreach ( var t in _this.Dependencies ) element.Add( t.ToXML() );
 
@@ -92,7 +92,7 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IBranchVersionInfo _this)
         {
             if ( _this == null ) return null;
-            XElement element = new XElement(typeof(IBasicGitBranch).Name);
+            XElement element = new XElement(typeof(IBranchVersionInfo).Name);
             element.SetAttributeValue(nameof(_this.LastTagDepth), _this.LastTagDepth);
             element.Add( _this.LastTag.ToXML() );
             return element;
