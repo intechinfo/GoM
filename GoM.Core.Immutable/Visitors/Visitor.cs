@@ -17,7 +17,7 @@ namespace GoM.Core.Immutable.Visitors
             return c;
         }
 
-        protected virtual BasicGitRepository Visit(BasicGitRepository basicRepository)
+        public virtual BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
             var visitedDetails = basicRepository.Details != null ? Visit(basicRepository.Details) : null;
             return visitedDetails != basicRepository.Details
@@ -25,18 +25,18 @@ namespace GoM.Core.Immutable.Visitors
                     : basicRepository;
         }
 
-        protected virtual GitRepository Visit(GitRepository repository)
+        public virtual GitRepository Visit(GitRepository repository)
         {
-            var visitedBanches = repository.Branches != null ? Visit(repository.Branches, Visit) : ImmutableList.Create<BasicGitBranch>();
-            return visitedBanches != repository.Branches ? GitRepository.Create(repository.Path, repository.Url, visitedBanches) : repository;
+            var visitedBranches = repository.Branches != null ? Visit(repository.Branches, Visit) : ImmutableList.Create<BasicGitBranch>();
+            return visitedBranches != repository.Branches ? GitRepository.Create(repository.Path, repository.Url, visitedBranches) : repository;
         }
 
-        protected virtual BasicGitBranch Visit(BasicGitBranch basicBranch)
+        public virtual BasicGitBranch Visit(BasicGitBranch basicBranch)
         {
             return basicBranch;
         }
 
-        protected virtual PackageFeed Visit(PackageFeed p)
+        public virtual PackageFeed Visit(PackageFeed p)
         {
             return p;
         }
