@@ -204,7 +204,7 @@ namespace GoM.Core.Persistence
             {
                 if (di.GetDirectories().FirstOrDefault((el) => { return el.Name == FolderName; }) != null)
                 {
-                    pathFound = currentPath;
+                    pathFound = di.FullName;
                     stop = true;
                     result = false;
                 }
@@ -225,7 +225,7 @@ namespace GoM.Core.Persistence
                 ctx.RootPath = currentPath;
 
                 DirectoryInfo dinfo = new DirectoryInfo(currentPath);
-                var allgitrepo = SearchGitFolder(dinfo);
+                var allgitrepo = SearchFolderRecursive(dinfo);
                 foreach (var path in allgitrepo)
                 {
                     var repo = new Mutable.BasicGitRepository();
@@ -241,18 +241,20 @@ namespace GoM.Core.Persistence
             return result;
         }
 
-        private List<string> SearchGitFolder(DirectoryInfo di)
+        public List<string> SearchFolderRecursive(DirectoryInfo di, string folderName=".git")
         {
             var current = new List<string>();
 
-            if (di.EnumerateDirectories().FirstOrDefault((el) => { return el.FullName == ".git"; }) != null) current.Add(di.FullName);
+            if (di.EnumerateDirectories().FirstOrDefault((el) => { return el.Name == folderName; }) != null)
+                current.Add(di.FullName);
 
             foreach (var directory in di.EnumerateDirectories())
             {
-                current.AddRange(SearchGitFolder(directory));
+                current.AddRange(SearchFolderRecursive(directory, folderName));
             }
             return current;
         }
+
 
     }
 }
