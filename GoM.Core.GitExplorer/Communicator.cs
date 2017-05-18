@@ -238,6 +238,20 @@ namespace GoM.Core.GitExplorer
             throw new NotImplementedException();
         }
 
+        public void Fetch()
+        {
+            string logMessage = "";
+            using (var repo = new Repository(Path))
+            {
+                foreach (Remote remote in repo.Network.Remotes)
+                {
+                    IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                    Commands.Fetch(repo, remote.Name, refSpecs, null, logMessage);
+                }
+            }
+            Console.WriteLine(logMessage);
+        }
+
         //Implement others methods..
 
     }
