@@ -89,7 +89,7 @@ namespace GoM
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine("You must specify a name for your branch");
+                                Console.WriteLine(ex.Message + " : You must specify a name for your branch");
                             }
                         }
                         // add project
@@ -159,13 +159,25 @@ namespace GoM
                 });
             });
 
+            app.Command("refresh", command =>
+            {
+                command.Description = "";
+                command.HelpOption("|-h|--help");
+
+                command.OnExecute(() =>
+                {
+                    Console.WriteLine("Refresh is done");
+                    return 0;
+                });
+            });
+
             /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
                 c.Description = "Get directories and files relative to a path";
                 var locationArgument = c.Argument("[location]",
                                    "Where the files should be located .");
-                c.HelpOption("-?,|-h|--help");
+                c.HelpOption("|-h|--help");
                 c.OnExecute(() =>
                 {
                     var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
