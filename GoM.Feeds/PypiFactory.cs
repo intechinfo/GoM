@@ -1,17 +1,34 @@
 ﻿using GoM.Feeds.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace GoM.Feeds
 {
-    internal class PypiFactory : IFeedFactory
+    public class PypiFactory : IFeedFactory
     {
-        public string SniffingKeyword => "pypi.python.org";
-
-        public IFeedReader GetInstance()
+        PypiOrgFeedReader _feedReader;
+        public PypiFactory()
         {
-            return new PypiFeedReader();
+            _feedReader = new PypiOrgFeedReader();
+        }
+        public void Dispose()
+        {
+            _feedReader.Dispose();
+        }
+        public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
+
+        public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)
+        {
+            return  links.SelectMany(x => Snif(x));
+        }
+
+        public IEnumerable<IFeedReader> Snif(Uri link)
+        {
+            var list = new List<IFeedReader>();
+            var fr = _feedReader.FeedMatch(link).Result ? _feedReader : null;
+            if (fr != null) list.Add(fr);
+            return list;
         }
     }
 }
