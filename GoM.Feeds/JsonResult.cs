@@ -24,7 +24,7 @@ namespace GoM.Feeds
             Result = r;
             NetworkException = nE;
             StatusCode = c;
-            Result = r;
+            JsonException = rE;
         }
 
     }

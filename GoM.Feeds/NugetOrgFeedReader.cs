@@ -13,24 +13,16 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
-    public class NugetOrgFeedReader : NugetFeedReader
+    public class NugetOrgFeedReader : FeedReaderBase
     {
-        HttpClient _client;
         string _baseUrl = "https://api.nuget.org/v3/registration1/";
-        public NugetOrgFeedReader()
-        {
-            _client = new HttpClient();
-        }
-        public override void Dispose()
-        {
-            _client.Dispose();
-        }
+
         public override async Task<bool> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString))
                 throw new ArgumentNullException("adress must be not null");
 
-            HttpResponseMessage response = await _client.GetAsync(adress);
+            HttpResponseMessage response = await HttpClient.GetAsync(adress);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -63,7 +55,7 @@ namespace GoM.Feeds
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             //name = name.ToLowerInvariant();
 
-            HttpResponseMessage response = await _client.GetAsync("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json");
+            HttpResponseMessage response = await HttpClient.GetAsync("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -98,11 +90,11 @@ namespace GoM.Feeds
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await _client.GetStringAsync(_baseUrl + name + '/' + version + ".json");
+            string resp = await HttpClient.GetStringAsync(_baseUrl + name + '/' + version + ".json");
             JObject o = JObject.Parse(resp);
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : " + version + " found.");
 
-            string respDependencies = await _client.GetStringAsync(o.Value<string>("catalogEntry"));
+            string respDependencies = await HttpClient.GetStringAsync(o.Value<string>("catalogEntry"));
 
             o = JObject.Parse(respDependencies);
 

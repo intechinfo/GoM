@@ -14,21 +14,13 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
-    public class PypiOrgFeedReader : PypiFeedReader
+    public class PypiOrgFeedReader : FeedReaderBase
     {
-        HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
-        public PypiOrgFeedReader()
-        {
-            _client = new HttpClient();
-        }
-        public override void Dispose()
-        {
-            _client.Dispose();
-        }
+
         public async override Task<bool> FeedMatch(Uri adress)
         {
-            HttpResponseMessage response = await _client.GetAsync(adress);
+            HttpResponseMessage response = await HttpClient.GetAsync(adress);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -64,7 +56,7 @@ namespace GoM.Feeds
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            HttpResponseMessage response = await _client.GetAsync(_baseUrl + name + "/json");
+            HttpResponseMessage response = await HttpClient.GetAsync(_baseUrl + name + "/json");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -101,7 +93,7 @@ namespace GoM.Feeds
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await _client.GetStringAsync(_baseUrl + name + '/' + version+"/json");
+            string resp = await HttpClient.GetStringAsync(_baseUrl + name + '/' + version+"/json");
             JObject o = JObject.Parse(resp);
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : " + version + " found.");
             o = new JObject(o.Property("info"));

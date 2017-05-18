@@ -13,25 +13,15 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
-    public class NpmJsFeedReader : NpmFeedReader
+    public class NpmJsFeedReader : FeedReaderBase
     {
-        HttpClient _client;
         string _baseUrl = "http://registry.npmjs.org/";
-        public NpmJsFeedReader()
-        {
-            _client = new HttpClient();
-        }
-
-        public override void Dispose()
-        {
-            _client.Dispose();
-        }
 
         public override async Task<bool> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
 
-            HttpResponseMessage response = await _client.GetAsync(adress);
+            HttpResponseMessage response = await HttpClient.GetAsync(adress);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -67,7 +57,7 @@ namespace GoM.Feeds
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            HttpResponseMessage response = await _client.GetAsync(_baseUrl + name);
+            HttpResponseMessage response = await HttpClient.GetAsync(_baseUrl + name);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -104,7 +94,7 @@ namespace GoM.Feeds
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await _client.GetStringAsync(_baseUrl + name+'/'+version);
+            string resp = await HttpClient.GetStringAsync(_baseUrl + name+'/'+version);
             JObject o = JObject.Parse(resp);
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : "+version+" found.");
 
