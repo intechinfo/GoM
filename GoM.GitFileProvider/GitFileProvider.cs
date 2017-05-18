@@ -146,8 +146,9 @@ namespace GoM.GitFileProvider
             return decomposition;
         }
 
-        private DirectoryInfo CreateDirectoryInfo(Tree tree, RepositoryWrapper rw, string relativePath)
+        private IDirectoryContents CreateDirectoryInfo(Tree tree, RepositoryWrapper rw, string relativePath)
         {
+            if (tree == null) return NotFoundDirectoryContents.Singleton;
             List<IFileInfo> files = new List<IFileInfo>();
             if (relativePath != "") relativePath = relativePath + Path.DirectorySeparatorChar;
             foreach (var file in tree)
@@ -175,12 +176,12 @@ namespace GoM.GitFileProvider
                     return new DirectoryInfo(files);
                 }
                 Branch branch = rw.Repo.Branches.FirstOrDefault(c => c.FriendlyName == splitPath[1]);
-                if (branch == null)
+                if (branch == null || branch.Tip == null)
                     return NotFoundDirectoryContents.Singleton;
                 string relativePath = GetRelativePath(splitPath);
                 if (String.IsNullOrEmpty(relativePath))
                     return CreateDirectoryInfo(branch.Tip.Tree, rw, relativePath);
-                var dir = branch.Tip.Tree[relativePath];
+                var dir = branch.Tip?.Tree[relativePath];
                 if (dir?.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
                 return CreateDirectoryInfo(dir.Target as Tree, rw, relativePath);
             }
@@ -191,7 +192,7 @@ namespace GoM.GitFileProvider
             using (RepositoryWrapper rw = new RepositoryWrapper(_rootPath))
             {
                 Branch head = rw.Repo.Head;
-                if (head == null) return NotFoundDirectoryContents.Singleton;
+                if (head == null || head.Tip == null) return NotFoundDirectoryContents.Singleton;
                 return CreateDirectoryInfo(head.Tip.Tree, rw, "");
             }
         }
@@ -247,11 +248,11 @@ namespace GoM.GitFileProvider
             using (RepositoryWrapper rw = new RepositoryWrapper(_rootPath))
             {
                 Branch head = rw.Repo.Head;
-                if (head == null) return NotFoundDirectoryContents.Singleton;
+                if (head == null || head.Tip == null) return NotFoundDirectoryContents.Singleton;
                 string relativePath = GetRelativePath(splitPath,1);
                 if (String.IsNullOrEmpty(relativePath))
                     return GetDirectoryRoot();
-                var dir = head.Tip.Tree[relativePath];
+                var dir = head.Tip?.Tree[relativePath];
                 if (dir?.TargetType != TreeEntryTargetType.Tree) return NotFoundDirectoryContents.Singleton;
                 return CreateDirectoryInfo(dir.Target as Tree, rw, relativePath);
             }
@@ -299,7 +300,7 @@ namespace GoM.GitFileProvider
             using (RepositoryWrapper rw = new RepositoryWrapper(_rootPath))
             {
                 Tag tag = rw.Repo.Tags.FirstOrDefault(t => t.FriendlyName == splitPath[1]);
-                if (tag == null) return new NotFoundFileInfo(INVALID_TAG);
+                if (tag == null || tag.Target == null) return new NotFoundFileInfo(INVALID_TAG);
                 string relativePath = GetRelativePath(splitPath);
                 if (relativePath == null) return new NotFoundFileInfo(INVALID_PATH);
                 var commit = rw.Repo.Lookup<Commit>(tag.Target.Sha);
@@ -324,7 +325,7 @@ namespace GoM.GitFileProvider
 
         private IFileInfo BranchFileManager(RepositoryWrapper rw, Branch branch, string[] splitPath, int index = 2)
         {
-            if (branch == null)
+            if (branch == null || branch.Tip == null)
                 return new NotFoundFileInfo(INVALID_BRANCH);
             string relativePath = GetRelativePath(splitPath, index);
             if (String.IsNullOrEmpty(relativePath))
