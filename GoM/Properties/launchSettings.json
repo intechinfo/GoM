@@ -2,7 +2,7 @@
   "profiles": {
     "GoM": {
       "commandName": "Project",
-      "commandLineArgs": "add -r \"https://github.com/SimpleGitVersion/SGV-Net.git\""
+      "commandLineArgs": "add -b"
     }
   }
 }

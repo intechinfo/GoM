@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
+using LibGit2Sharp;
 
 namespace GoM
 {
@@ -33,11 +34,11 @@ namespace GoM
 
                 CommandOption repositoryOption = command.Option("-r|--repository",
                     "Repository to add to GoM"
-                    , CommandOptionType.MultipleValue);
+                    , CommandOptionType.SingleValue);
 
                 CommandOption projectOption = command.Option("-p|--project",
                     "Project to add to the repository",
-                    CommandOptionType.MultipleValue);
+                    CommandOptionType.SingleValue);
 
                 CommandOption allProjectOption = command.Option("-p -all|--project -all",
                    "Add all the projects to the repository",
@@ -45,7 +46,7 @@ namespace GoM
 
                 CommandOption branchOption = command.Option("-b|--branch",
                     "Add a branch to GoM",
-                    CommandOptionType.MultipleValue);
+                    CommandOptionType.NoValue);
 
                 CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
 
@@ -63,9 +64,32 @@ namespace GoM
                         Communicator com = new Communicator(projectPath);
                     }
                     // add branch
-                    else if (proj > 0)
+                    else if (branch > 0)
                     {
+                        var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
+                        try
+                        {
+                                Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                                var branches = com.getAllBranches();
+                                bool isBranchExist = false;
 
+                                foreach (var b in branches)
+                                {
+                                    if (b.Name == nameBranch)
+                                    {
+                                        isBranchExist = true;
+                                    }
+                                }
+
+                                if (isBranchExist) Console.WriteLine("This branch already exist");
+                                else
+                                {
+                                    // To be implemented
+                                }
+                        } catch (Exception ex)
+                        {
+                            Console.WriteLine("You must specify a name for your branch");
+                        }
                     }
                     // add project
                     else if (allProj > 0)
