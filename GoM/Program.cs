@@ -52,23 +52,23 @@ namespace GoM
 
                 command.OnExecute(() =>
                 {
-                    int repos = repositoryOption.Values.Count;
-                    int proj = projectOption.Values.Count;
-                    int allProj = allProjectOption.Values.Count;
-                    int branch = branchOption.Values.Count;
+                        int repos = repositoryOption.Values.Count;
+                        int proj = projectOption.Values.Count;
+                        int allProj = allProjectOption.Values.Count;
+                        int branch = branchOption.Values.Count;
 
-                    // add repository
-                    if (repos > 0)
-                    {
-                        var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
-                        Communicator com = new Communicator(projectPath);
-                    }
-                    // add branch
-                    else if (branch > 0)
-                    {
-                        var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
-                        try
+                        // add repository
+                        if (repos > 0)
                         {
+                            var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+                            Communicator com = new Communicator(projectPath);
+                        }
+                        // add branch
+                        else if (branch > 0)
+                        {
+                            var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
+                            try
+                            {
                                 Communicator com = new Communicator(Directory.GetCurrentDirectory());
                                 var branches = com.getAllBranches();
                                 bool isBranchExist = false;
@@ -86,23 +86,24 @@ namespace GoM
                                 {
                                     // To be implemented
                                 }
-                        } catch (Exception ex)
-                        {
-                            Console.WriteLine("You must specify a name for your branch");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("You must specify a name for your branch");
+                            }
                         }
-                    }
-                    // add project
-                    else if (allProj > 0)
-                    {
+                        // add project
+                        else if (allProj > 0)
+                        {
 
-                    }
-                    // add all project
-                    else
-                    {
+                        }
+                        // add all project
+                        else
+                        {
 
-                    }
+                        }
 
-                    Console.WriteLine();
+                        Console.WriteLine();
                     return 0;
                 });
             });
@@ -189,8 +190,15 @@ namespace GoM
                     return 0;
                 });
             });
-
-            app.Execute(args);
+            try
+            {
+                app.Execute(args);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+                Console.WriteLine(e.Message + ",you must specify a valid option");
+            }
         }
 
         public static void GetNodes(string path, FileTree ft)

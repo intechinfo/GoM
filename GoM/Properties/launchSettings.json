@@ -2,7 +2,7 @@
   "profiles": {
     "GoM": {
       "commandName": "Project",
-      "commandLineArgs": "add -b"
+      "commandLineArgs": "add -f"
     }
   }
 }
