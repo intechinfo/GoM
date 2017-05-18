@@ -53,7 +53,7 @@ namespace GoM.Feeds
                 {
                     return new GetPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null);
                 }
-                var list = new List<IPackageInstance>();
+                var list = new List<PackageInstanceResult>();
                 var versions = new JObject( new JObject(o["info"]).Property("releases"));
                 foreach (var item in versions)
                 {
@@ -62,13 +62,16 @@ namespace GoM.Feeds
                     {
                         string packageVersion = item.Key;
                         string packageName = o["info"].Value<string>("name");
-                        list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                        var p = new PackageInstance { Name = packageName, Version = packageVersion };
+                        list.Add(new PackageInstanceResult(null,p));
                     }
                 }
                 return new GetPackagesResult(null, list);
-                
             }
-
+            else
+            {
+                return new GetPackagesResult(result.NetworkException ?? result.JsonException, null);
+            }
         }
 
         public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
@@ -78,38 +81,57 @@ namespace GoM.Feeds
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await HttpClient.GetStringAsync(_baseUrl + name + '/' + version+"/json");
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : " + version + " found.");
-            o = new JObject(o.Property("info"));
-            var list = new List<Target>();
-
-            Regex reg = new Regex(@"^Programming Language :: Python :: \d([.]\d([.]\d)?)?$");
-            foreach (var item in o.Property("classifiers"))
+            var result = await GetJson(new Uri(_baseUrl + name + '/' + version + "/json"));
+            if (result.Success)
             {
-                var val = item.Value<string>();
-                if(reg.IsMatch(val)) list.Add(new Target { Name =val  });
-            }
-            bool hasDependencies = o.TryGetValue("requires_dist", out JToken t);
-            if (hasDependencies)
-            {
-                JObject dependencies = new JObject(t);
-               
-                //iterate on eah version of the json
-                foreach (var item in dependencies)
+                JObject o = result.Result;
+                if (!o.HasValues)
                 {
-                    string depName = item.Key;
-                    string depVersion = item.Value.ToString();
-                    list.ForEach((x) => x.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion }));
+                    return new GetDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
                 }
+                o = new JObject(o.Property("info"));
+                var list = new List<TargetResult>();
+
+                Regex reg = new Regex(@"^Programming Language :: Python :: \d([.]\d([.]\d)?)?$");
+                foreach (var item in o.Property("classifiers"))
+                {
+                    var val = item.Value<string>();
+                    if (reg.IsMatch(val))
+                    {
+                        var tar = new Target { Name = val };
+                        list.Add(new TargetResult(null,tar));
+                    }
+                }
+                bool hasDependencies = o.TryGetValue("requires_dist", out JToken t);
+                if (hasDependencies)
+                {
+                    JObject dependencies = new JObject(t);
+
+                    //iterate on eah version of the json
+                    foreach (var item in dependencies)
+                    {
+                        string depName = item.Key;
+                        string depVersion = item.Value.ToString();
+                        list.Where(x=>x.Success).ToList().ForEach(x => ((Target)(x.Result)).Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion }));
+                    }
+                }
+                return new GetDependenciesResult(null,list);
             }
-            return list;
+            else
+            {
+                return new GetDependenciesResult(result.NetworkException ?? result.JsonException, null);
+            }
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => SemVersion.Parse(x.Version) > SemVersion.Parse(version));
+            if (res.Success)
+            {
+                var packages = res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
+                return new GetPackagesResult(null, packages);
+            }
+            return res;
         }
     }
 }
