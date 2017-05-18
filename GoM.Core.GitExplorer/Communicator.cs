@@ -87,7 +87,7 @@ namespace GoM.Core.GitExplorer
                     return repo;
                 }
 
-                Directory.CreateDirectory("repos");
+                Directory.CreateDirectory(REPOS_DIRECTORY);
                 File.CreateText(tmp_downloading_file_indicator).Close();
                 //Clone and return repository if not stored
                 Repository.Clone(Source, path);
@@ -234,38 +234,32 @@ namespace GoM.Core.GitExplorer
                 String[] splitFolder = file.Split('\\');
                 String fileName = splitFolder[splitFolder.Length - 1];
                 String[] splitExtension = fileName.Split('.');
+                if (splitFolder.Contains(".git") // Not the .git Folder
+                    || fileName.StartsWith(".git") // Not the git files
+                    || fileName.Contains('~')) { // Not the temp file
+                    continue;
+                }
                 String ext;
-                if (splitExtension.Length > 1 && !(splitExtension.Length == 2 && splitExtension[0] == ""))
-                {
-                    ext = splitExtension[splitExtension.Length - 1];
-                    if (!ext.Contains('~'))
+                if (splitExtension.Length > 1) // Have a extension
                     {
-                        if (!extensionDictionary.ContainsKey(ext))
-                        {
-                            List<String> allExtensionsFile = getFiles("*." + ext);
-                            ExtensionFileStatistic extStat = new ExtensionFileStatistic();
-                            extStat.extension = ext;
-                            extStat.count = allExtensionsFile.Count;
-                            extStat.listPath = allExtensionsFile;
-                            extensionDictionary.Add(ext, extStat);
-                        }
-                    }
+                    ext = splitExtension[splitExtension.Length - 1];
                 }
                 else
                 {
                     ext = "";
-                    if (!extensionDictionary.ContainsKey(ext))
-                    {
-                        ExtensionFileStatistic extStat = new ExtensionFileStatistic();
-                        extStat.extension = ext;
-                        extStat.count = 0;
-                        extStat.listPath = new List<string>();
-                        extensionDictionary.Add(ext, extStat);
-                    }
-                    ExtensionFileStatistic stat = extensionDictionary[ext];
-                    stat.count++;
-                    stat.listPath.Add(file);
                 }
+                if (!extensionDictionary.ContainsKey(ext))
+                {
+                    ExtensionFileStatistic extStat = new ExtensionFileStatistic();
+                    extStat.extension = ext;
+                    extStat.count = 0;
+                    extStat.listPath = new List<string>();
+                    extensionDictionary.Add(ext, extStat);
+                }
+                ExtensionFileStatistic stat = extensionDictionary[ext];
+                stat.count++;
+                stat.listPath.Add(file);
+                
             }
             return extensionDictionary;
         }
