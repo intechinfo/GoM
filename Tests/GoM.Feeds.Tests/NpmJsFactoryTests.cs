@@ -56,6 +56,19 @@ namespace GoM.Feeds.Tests
                 sut.Count().Should().BeGreaterThan(0);
             }
         }
+        [Fact]
+        public void sniff_js_with_bad_list_should_return_empty()
+        {
+            Uri myUri = new Uri("http://linuxfr.org");
+            List<Uri> myList = new List<Uri>();
+            myList.Add(myUri);
+            using (NpmJsFactory fac = new NpmJsFactory())
+            {
+                IEnumerable<IFeedReader> res = fac.Snif(myList);
+                var sut = res.ToList();
+                sut.Count().Should().Be(0);
+            }
+        }
 
     }
 }

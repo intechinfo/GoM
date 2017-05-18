@@ -59,5 +59,19 @@ namespace GoM.Feeds.Tests
             
         }
 
+        [Fact]
+        public void sniff_python_with_bad_list_should_return_empty()
+        {
+            Uri myUri = new Uri("http://linuxfr.org");
+            List<Uri> myList = new List<Uri>();
+            myList.Add(myUri);
+            using (PypiFactory fac = new PypiFactory())
+            {
+                IEnumerable<IFeedReader> res = fac.Snif(myList);
+                var sut = res.ToList();
+                sut.Count().Should().Be(0);
+            }
+        }
+
     }
 }

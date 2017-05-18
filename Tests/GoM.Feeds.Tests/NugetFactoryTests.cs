@@ -57,8 +57,20 @@ namespace GoM.Feeds.Tests
                 IEnumerable<IFeedReader> res = fac.Snif(myList);
                 var sut = res.ToList();
                 sut.Count().Should().BeGreaterThan(0);
+            }   
+        }
+        [Fact]
+        public void sniff_nuget_with_bad_list_should_return_empty()
+        {
+            Uri myUri = new Uri("http://linuxfr.org");
+            List<Uri> myList = new List<Uri>();
+            myList.Add(myUri);
+            using (NugetOrgFactory fac = new NugetOrgFactory())
+            {
+                IEnumerable<IFeedReader> res = fac.Snif(myList);
+                var sut = res.ToList();
+                sut.Count().Should().Be(0);
             }
-            
         }
     }
 }
