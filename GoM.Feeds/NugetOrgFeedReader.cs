@@ -1,6 +1,7 @@
 ﻿using GoM.Core;
 using GoM.Core.Mutable;
 using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semver;
@@ -17,43 +18,51 @@ namespace GoM.Feeds
     {
         string _baseUrl = "https://api.nuget.org/v3/registration1/";
 
-        public override async Task<bool> FeedMatch(Uri adress)
+        public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString))
                 throw new ArgumentNullException("adress must be not null");
 
-            HttpResponseMessage response = await HttpClient.GetAsync(adress);
+            var json = await GetJson(adress);
 
-            if (!response.IsSuccessStatusCode)
+            if (json.Success)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new ArgumentException("Package could not be found");
-                }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
-            }
-            string resp = await response.Content.ReadAsStringAsync();
+                JObject o = json.Result;
+                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
 
-            JObject o;
-            try
-            {
-                o = JObject.Parse(resp);
-            }
-            catch(JsonReaderException)
-            {
-                return false;
-            }
-            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                if (o.TryGetValue("version", out JToken j1) && o.TryGetValue("resources", out JToken j2) && o.TryGetValue("@context", out JToken j3))
+                    return new FeedMatchResult(null, true);
 
-            return o.TryGetValue("version", out JToken j1) 
-                    && o.TryGetValue("resources", out JToken j2) 
-                    && o.TryGetValue("@context", out JToken j3);
+                return new FeedMatchResult(null, false);
+            }
+            else
+            {
+                return new FeedMatchResult(json.NetworkException == null ? json.JsonException : json.NetworkException, false);
+            }           
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
+        public override async Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             //name = name.ToLowerInvariant();
+
+            var json = await GetJson(new Uri("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json"));
+
+            if (json.Success)
+            {
+                JObject o = json.Result;
+                if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
+
+                if (o.TryGetValue("version", out JToken j1) && o.TryGetValue("resources", out JToken j2) && o.TryGetValue("@context", out JToken j3))
+                    return new FeedMatchResult(null, true);
+
+                return new FeedMatchResult(null, false);
+            }
+            else
+            {
+                return new FeedMatchResult(json.NetworkException == null ? json.JsonException : json.NetworkException, false);
+            }
+
 
             HttpResponseMessage response = await HttpClient.GetAsync("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json");
 
@@ -83,7 +92,7 @@ namespace GoM.Feeds
             }
             return list;
         }
-        public override async Task<IEnumerable<ITarget>> GetDependencies(string name, string version)
+        public override async Task<IEnumerable<TargetResult>> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
@@ -124,7 +133,7 @@ namespace GoM.Feeds
             return list;
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        public override async Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
             var ver = SemVersion.Parse(version);
