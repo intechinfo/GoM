@@ -48,7 +48,10 @@ namespace GoM.Feeds
             if (result.Success)
             {
                 JObject o = result.Result;
-                if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
+                if (!o.HasValues)
+                {
+                   return new GetPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null);
+                }
 
                 var list = new List<PackageInstanceResult>();
                 JObject versions = new JObject(result.Result.Property("versions"));
@@ -63,38 +66,52 @@ namespace GoM.Feeds
                     }
                     else
                     {
-                        list.Add(new PackageInstanceResult(null, null));
-
+                        list.Add(new PackageInstanceResult(new ArgumentException("the version : "+item.Key+"is not Server Compliant"), null));
                     }
-
                 }
-                return list;
+                return new GetPackagesResult(null,list);
             }
-            else return null;
+            else
+            {
+                return new GetPackagesResult(result.NetworkException == null ? result.JsonException : result.NetworkException, null);
+            }
         }
-        public override async Task<IEnumerable<TargetResult>> GetDependencies(string name, string version)
+        public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await HttpClient.GetStringAsync(_baseUrl + name+'/'+version);
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : "+version+" found.");
-
-            JObject dependencies = new JObject( o.Property("dependencies"));
-            var list = new List<TargetResult>();
-            var target = new Target { Name = o.Value<string>("name") };
-            //iterate on eah version of the json
-            foreach (var item in dependencies)
+            var result = await GetJson(new Uri(_baseUrl + name + '/' + version));
+            if (result.Success)
             {
-                string depName = item.Key;
-                string depVersion = item.Value.ToString();
-                target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });                
+                JObject o = result.Result;
+                if (!o.HasValues)
+                {
+                    return new GetPackagesResult(new GetDependenciesResult("No package named : " + name + " found."), null);
+                }
+
+
+
+
+                JObject dependencies = new JObject(o.Property("dependencies"));
+                var list = new List<TargetResult>();
+                var target = new Target { Name = o.Value<string>("name") };
+                //iterate on eah version of the json
+                foreach (var item in dependencies)
+                {
+                    string depName = item.Key;
+                    string depVersion = item.Value.ToString();
+                    target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+                }
+                list.Add(new TargetResult(null, target));
+                return new GetDependenciesResult(null, list);
             }
-            list.Add(new TargetResult(null, target));
-            return list;
+            else
+            {
+                return new GetDependenciesResult(result.NetworkException == null ? result.JsonException : result.NetworkException, null);
+            }
         }
 
         public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
@@ -102,7 +119,6 @@ namespace GoM.Feeds
             var res = await GetAllVersions(name);
             if (res.Success)
             {
-
                 var packages =  res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
                 return new GetPackagesResult(null, packages);
             }
