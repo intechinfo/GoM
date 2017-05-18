@@ -222,15 +222,15 @@ namespace GoM.GitFileProvider.Tests
         public void FileInfo_Read_Same_File_In_Two_Different_Branches_Should_Not_Be_Equal()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
-            IFileInfo fileInBranchGuillaume = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GitFileProvider.cs");
-            Stream stream1 = fileInBranchGuillaume.CreateReadStream();
+            IFileInfo fileInBranchMPT = git.GetFileInfo(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\GitFileProvider.cs");
+            Stream stream1 = fileInBranchMPT.CreateReadStream();
 
             byte[] buffer1 = new byte[1024];
             stream1.Read(buffer1, 0, 1024);
 
 
-            IFileInfo fileInBranchMPT = git.GetFileInfo(@"branches\origin/perso-guillaume\GoM.GitFileProvider\GitFileProvider.cs");
-            Stream stream2 = fileInBranchMPT.CreateReadStream();
+            IFileInfo fileInBranchGuillaume = git.GetFileInfo(@"branches\origin/perso-guillaume\GoM.GitFileProvider\GitFileProvider.cs");
+            Stream stream2 = fileInBranchGuillaume.CreateReadStream();
             byte[] buffer2 = new byte[1024];
             stream2.Read(buffer2, 0, 1024);
             buffer1.Should().NotBeEquivalentTo(buffer2);
