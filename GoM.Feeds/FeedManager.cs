@@ -15,7 +15,10 @@ namespace GoM.Feeds
         {
             _factory = new DefaultFeedFactory();   
         }
-
+        public void Dispose()
+        {
+            _factory.Dispose();
+        }
         public IDictionary<IPackageInstance, IEnumerable<IPackageInstance>> GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             IEnumerable<IFeedReader> feeds = _factory.Snif(packageFeeds);

@@ -21,7 +21,10 @@ namespace GoM.Feeds
         {
             _client = new HttpClient();
         }
-
+        public override void Dispose()
+        {
+            _client.Dispose();
+        }
         public async override Task<bool> FeedMatch(Uri adress)
         {
             string resp = await _client.GetStringAsync(adress);

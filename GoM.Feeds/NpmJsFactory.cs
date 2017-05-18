@@ -15,6 +15,10 @@ namespace GoM.Feeds
         {
             _feedReader = new NpmJsFeedReader();
         }
+        public void Dispose()
+        {
+            _feedReader.Dispose();
+        }
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
         public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)

@@ -29,23 +29,28 @@ namespace GoM.Feeds.Tests
         [Fact]
         public void Check_reader_creation_shouldNotBeNull()
         {
-            var testFactory = GetFactory();
-            testFactory.Should().NotBeNull();
-            testFactory.FeedReaders.Should().NotBeNull();
-            testFactory.FeedReaders.Count().Should().Be(3);
+            using (var testFactory = GetFactory())
+            {
+                testFactory.Should().NotBeNull();
+                testFactory.FeedReaders.Should().NotBeNull();
+                testFactory.FeedReaders.Count().Should().Be(3);
+            }
         }
         [Fact]
         public void Snif_returns_values_from_all_feeds()
         {
-            var testFactory = GetFactory();
-            IEnumerable<IFeedReader> result = testFactory.Snif(new List<Uri>());
-            result.Should().NotBeNull();
-            result.Count().Should().Be(0);
-
-            testFactory = GetFactory();
-            result = testFactory.Snif(GetUriList());
-            result.Should().NotBeNull();
-            result.Count().Should().NotBe(0);
+            using (var testFactory = GetFactory())
+            {
+                IEnumerable<IFeedReader> result = testFactory.Snif(new List<Uri>());
+                result.Should().NotBeNull();
+                result.Count().Should().Be(0);
+            }
+            using (var testFactory = GetFactory())
+            {
+                IEnumerable<IFeedReader> result = testFactory.Snif(GetUriList());
+                result.Should().NotBeNull();
+                result.Count().Should().NotBe(0);
+            }
         }
     }
 }

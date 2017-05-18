@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GoM.Feeds.Abstractions
 {
-    public interface IFeedManager
+    public interface IFeedManager: IDisposable
     {
         /// <summary>
         /// Searches on all given <see cref="Uri"/> the matching <see cref="IFeedReader"/> for <see cref="IPackageInstance"/> new version

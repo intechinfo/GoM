@@ -20,7 +20,10 @@ namespace GoM.Feeds
         {
             _client = new HttpClient();
         }
-
+        public override void Dispose()
+        {
+            _client.Dispose();
+        }
         public override async Task<bool> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString))
