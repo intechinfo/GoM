@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GoM.Feeds
 {
-    internal class NugetOrgFactory : IFeedFactory
+    public class NugetOrgFactory : IFeedFactory
     {
         NugetOrgFeedReader _feedReader;
         public NugetOrgFactory()
