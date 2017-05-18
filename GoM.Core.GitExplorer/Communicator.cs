@@ -22,6 +22,9 @@ namespace GoM.Core.GitExplorer
     {
         const string REPOS_DIRECTORY = "repos";
 
+        private Uri url;
+        private GitFileProvider.GitFileProvider fileProvider;
+
         /// <summary>
         /// origin Url or Local path of repository.
         /// </summary>
@@ -30,10 +33,7 @@ namespace GoM.Core.GitExplorer
         /// Folder where repositories are stored by GoM.
         /// </summary>
         public string ReposPath { get; }
-        /// <summary>
-        /// Repository instance of source.
-        /// </summary>
-        public Repository Repository { get; }
+
         /// <summary>
         /// Path to the repository downloaded.
         /// </summary>
@@ -41,70 +41,71 @@ namespace GoM.Core.GitExplorer
         /// <summary>
         /// Uri instance of source if repository is founded on internet.
         /// </summary>
-        public Uri Url { get; }
+        public Uri Url { get => url; }
 
-        public GitFileProvider.GitFileProvider FileProvider { get; }
+        public RepositoryWrapper RepoWrap { get; }
+
+        public GitFileProvider.GitFileProvider FileProvider { get => fileProvider; }
 
         public Communicator(string source)
         {
+            RepoWrap = new RepositoryWrapper();
             ReposPath = REPOS_DIRECTORY;
             Source = source;
-            Url = new Uri(source);
-            Repository = loadRepository();
-            FileProvider = new GitFileProvider.GitFileProvider(Directory.GetCurrentDirectory()+"\\"+Path);
-
-        }
-
-        /// <summary>
-        /// Check if source was a git repository
-        /// </summary>
-        /// <returns></returns>
-        public bool isRepository()
-        {
-            return Repository != null;
+            loadRepository(source);
         }
 
         /// <summary>
         /// Load Repository instance of source.
         /// </summary>
         /// <returns>Repository</returns>
-        public Repository loadRepository()
+        public Repository loadRepository(string source)
         {
             Repository repo = null;
-            if (Source.Substring(0, 5) == "https")
+            if (source.Substring(0, 5) == "https")
             {
                 //Parse repository name
-                string repoFullName = Helpers.ParseUrl(Source, Helpers.UrlShape.Fullname);
-                string repoName = Helpers.ParseUrl(Source, Helpers.UrlShape.Name);
+                string repoFullName = Helpers.ParseUrl(source, Helpers.UrlShape.Fullname);
+                string repoName = Helpers.ParseUrl(source, Helpers.UrlShape.Name);
 
                 string path = ReposPath + "/" + repoName;
 
+                // return null if Source is invalid
+                if (!Helpers.SourceIsValid(source)) return null;
+
                 bool RepoExist = Directory.Exists(path);
 
-                this.Path = path;
-                
+                Path = path;
+
+                fileProvider = new GitFileProvider.GitFileProvider(Directory.GetCurrentDirectory() + "\\" + Path);
+
                 //Return repository if already stored
                 if (RepoExist)
                 {
-                    repo = new Repository(path);
+                    RepoWrap.Create(path);
                     return repo;
                 }
 
+                url = new Uri(source);
+
                 //Clone and return repository if not stored
-                Repository.Clone(Source, path);
-                repo = new Repository(path);
+                Repository.Clone(source, path);
+                RepoWrap.Create(path);
                 return repo;
             }
             else
             {
+                Path = source;
+
+                fileProvider = new GitFileProvider.GitFileProvider(Path);
+
                 //Check repository exist
-                bool directoryExist = Directory.Exists(Source);
+                bool directoryExist = Directory.Exists(source);
                 if (!directoryExist) return null;
 
-                this.Path = Source;
 
                 //Return if exist
-                repo = new Repository(Source);
+                RepoWrap.Create(source);
 
                 return repo;
             }
@@ -152,28 +153,19 @@ namespace GoM.Core.GitExplorer
            return branches.Select(c => c.Name);
         }
 
-        public List<BasicGitBranch> getAllBranches()
+        public List<BasicGitBranchDecorator> getAllBranches()
         {
-            List<BasicGitBranch> branches = new List<BasicGitBranch>();
-
-            using (Repository)
+            List<BasicGitBranchDecorator> branches = new List<BasicGitBranchDecorator>();
+            
+            using (loadRepository(Path))
             {
-                
-                foreach (var branch in directoryContents().ToList())
-                {
-
-                    Branch br = Repository.Branches.Where(b => b.FriendlyName.Equals(branch.Name))
-                                .First();
-                    branches.Add(convertBranchToGitBranch(br));
-                }
-               
+                foreach (var branch in RepoWrap.Repo.Branches)
+                    branches.Add(convertBranchToGitBranch(branch));
             }
-           
-           
             return branches;
         }
 
-        private BasicGitBranch convertBranchToGitBranch(Branch branch)
+        private BasicGitBranchDecorator convertBranchToGitBranch(Branch branch)
         {
             string branchName = branch.FriendlyName;
 
@@ -181,7 +173,9 @@ namespace GoM.Core.GitExplorer
 
             Mutable.BasicGitBranch basicGitBranch = new BasicGitBranch() { Name = branchName, Details = gitBranch };
 
-            return basicGitBranch;
+            BasicGitBranchDecorator basicGitBranchDeco = new BasicGitBranchDecorator(basicGitBranch, RepoWrap);
+
+            return basicGitBranchDeco;
         }
 
         
@@ -191,26 +185,29 @@ namespace GoM.Core.GitExplorer
             BranchVersionInfo branchVersionInfo = new BranchVersionInfo();
             int depth = branch.Commits.Count();
 
-            // good ?
-            foreach (var commit in branch.Commits)
-            {
-                foreach (var tag in Repository.Tags)
+         //   if (RepoWrap.Repo.Tags.Count() == 0) return branchVersionInfo;
+            
+                foreach (var commit in branch.Commits)
                 {
-                    if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
+                    foreach (var tag in RepoWrap.Repo.Tags)
                     {
-                        versionTag.FullName = tag.FriendlyName;
-                        branchVersionInfo.LastTagDepth = depth;
-                        branchVersionInfo.LastTag = versionTag;
-                        return branchVersionInfo;
+                        if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
+                        {
+                            versionTag.FullName = tag.FriendlyName;
+                            branchVersionInfo.LastTagDepth = depth;
+                            branchVersionInfo.LastTag = versionTag;
+                            return branchVersionInfo;
+                        }
                     }
+                    depth--;
                 }
-                depth--;
-            }
+            
 
             return branchVersionInfo;
         }
 
-        public List<Commit> getCommitAncestor(Commit commit)
+        // Not used yet, in which case can we use it ?
+        private List<Commit> getCommitAncestor(Commit commit)
         {
             List<Commit> result = new List<Commit>();
             foreach (var p in commit.Parents)

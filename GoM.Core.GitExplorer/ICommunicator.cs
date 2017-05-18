@@ -19,10 +19,7 @@ namespace GoM.Core.GitExplorer
         /// Folder where repositories are stored by GoM.
         /// </summary>
         string ReposPath { get; }
-        /// <summary>
-        /// Repository instance of source.
-        /// </summary>
-        Repository Repository { get; }
+
         /// <summary>
         /// Path to the repository location.
         /// </summary>
@@ -33,16 +30,10 @@ namespace GoM.Core.GitExplorer
         Uri Url { get; }
 
         /// <summary>
-        /// Check if source was a git repository
-        /// </summary>
-        /// <returns></returns>
-        bool isRepository();
-
-        /// <summary>
         /// Load Repository instance of source.
         /// </summary>
         /// <returns>Repository</returns>
-        Repository loadRepository();
+        Repository loadRepository(string source);
 
         /// <summary>
         /// Get all files in repository.
@@ -80,6 +71,6 @@ namespace GoM.Core.GitExplorer
         /// Get All Branches of a repository
         /// </summary>
         /// <returns>IEnumerable<string></returns>
-        List<BasicGitBranch> getAllBranches();
+        List<BasicGitBranchDecorator> getAllBranches();
     }
 }

@@ -3,10 +3,10 @@ using System;
 
 namespace GoM.GitFileProvider
 {
-    internal class RepositoryWrapper : IDisposable
+    public class RepositoryWrapper : IDisposable
     {
-        internal Repository Repo { get; private set; }
-        internal int StreamWrapperCount { get; set; }
+        public Repository Repo { get; private set; }
+        public int StreamWrapperCount { get; set; }
 
         public void Dispose()
         {
@@ -17,9 +17,10 @@ namespace GoM.GitFileProvider
             }
         }
 
-        internal void Create(string rootPath)
+        public void Create(string rootPath)
         {
-            Repo = new Repository(rootPath);
+            if (Repo == null)
+              Repo = new Repository(rootPath);
         }
     }
 }

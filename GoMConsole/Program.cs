@@ -10,15 +10,24 @@ namespace GoMConsole
     {
         static void Main(string[] args)
         {
-            Communicator communicator = new Communicator("https://github.com/SimpleGitVersion/SGV-Net.git");
+            test();
+        }
 
-            var branches = communicator.getAllBranches();
+        public static void test()
+        {
+            Communicator communicator = new Communicator(@"C:\Users\Adams\Documents\visual studio 2017\Projects\GoM\GoMConsole\bin\Debug\repos\SGV-Net");
+
+            List<BasicGitBranchDecorator> branches = communicator.getAllBranches();
+          
             int count = branches.Count;
 
-            foreach(var branch in branches)
+            foreach (var branch in branches)
             {
                 Console.WriteLine(branch.Name);
-                Console.WriteLine(branch.Details.Version.LastTag.FullName);
+                if (!branch.Details.Version.LastTag.Equals(null))
+                {
+                    Console.WriteLine(branch.Details.Version.LastTag.FullName);
+                }
             }
 
             Console.WriteLine("Files : " + Environment.NewLine);
@@ -40,8 +49,6 @@ namespace GoMConsole
             Console.WriteLine(count);
 
             Console.ReadLine();
-
-            
         }
     }
 }

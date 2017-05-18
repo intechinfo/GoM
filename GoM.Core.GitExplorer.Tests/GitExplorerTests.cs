@@ -16,7 +16,7 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
 
-            Assert.IsInstanceOfType(communicator.loadRepository(), typeof(Repository));
+            Assert.IsInstanceOfType(communicator.loadRepository(url), typeof(Repository));
         }
 
         [TestMethod]
@@ -53,13 +53,5 @@ namespace GoM.Core.GitExplorer.Tests
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getAllBranchesName());
         }
-
-        [TestCleanup]
-        public void CleanTests()
-        {
-            Helpers.DeleteDirectory("repos");
-        }
-
-
     }
 }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net;
 
 namespace GoM.Core.GitExplorer
 {
-    public class Helpers
+    public static class Helpers
     {
         public enum UrlShape { Fullname, Name };
 
@@ -61,6 +62,35 @@ namespace GoM.Core.GitExplorer
         public static List<string> getAllFoldersInDirectory(string target_dir, string searchPattern = "*")
         {
             return Directory.GetDirectories(target_dir, searchPattern, SearchOption.AllDirectories).ToList();
+        }
+
+        public static bool IsWebSource(string source)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(source);
+            request.Method = WebRequestMethods.Http.Head;
+
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch (WebException webEx)
+            {
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// Check if source is valid
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool SourceIsValid(string source)
+        {
+            if (IsWebSource(source)) return true;
+            else if(Directory.Exists(source)) return true;
+            return false;
         }
     }
 }
