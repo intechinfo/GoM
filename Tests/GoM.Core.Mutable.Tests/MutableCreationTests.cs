@@ -6,7 +6,7 @@ namespace GoM.Core.Mutable.Tests
 {
     public class MutableCreationTests
     {
-        private GoMContext CreateTestGoMContext()
+        public GoMContext CreateTestGoMContext()
         {
             #region context
             // GoMContext
