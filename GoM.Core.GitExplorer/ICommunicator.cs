@@ -72,5 +72,7 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         /// <returns>IEnumerable<string></returns>
         List<BasicGitBranchDecorator> getAllBranches();
+
+        void Fecth();
     }
 }
