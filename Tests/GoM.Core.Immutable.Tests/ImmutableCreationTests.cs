@@ -12,17 +12,17 @@ namespace GoM.Core.Immutable.Tests
 {
     public class CreationTests
     {
-        [Fact]
-        public void Convert_mutable_GoMContext_to_immutable()
-        {
-            var create = new MutableCreationTests();
-            var ImmutableGoMContext = GoMContext.Create(create.CreateTestGoMContext());
-            (ImmutableGoMContext is Immutable.GoMContext).Should().BeTrue();         
-        }
+        //[Fact]
+        //public void Convert_mutable_GoMContext_to_immutable()
+        //{
+        //    var create = new MutableCreationTests();
+        //    var ImmutableGoMContext = GoMContext.Create(create.CreateTestGoMContext());
+        //    (ImmutableGoMContext is Immutable.GoMContext).Should().BeTrue();         
+        //}
 
-        public void test()
-        {
+        //public void test()
+        //{
 
-        }
+        //}
     }
 }

@@ -36,9 +36,9 @@ namespace GoM.Core.Immutable
 
         public string Name { get; }
 
-        public static GitBranch Create(string name, BranchVersionInfo version = null)
+        public static GitBranch Create(string name, BranchVersionInfo version = null, ImmutableList<BasicProject> projects = null)
         {
-            return new GitBranch(name, version);
+            return new GitBranch(name, version, projects);
         }
         bool CheckDuplicates(ImmutableList<BasicProject> projects)
         {
