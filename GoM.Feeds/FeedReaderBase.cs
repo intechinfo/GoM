@@ -33,18 +33,18 @@ namespace GoM.Feeds
         public abstract Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version);
 
 
-        protected async Task<JsonFeedResult> GetJson( Uri url )
+        protected async Task<JsonResult> GetJson( Uri url )
         {
             try
             {
                 HttpResponseMessage response = await _client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new JsonFeedResult(null, response.StatusCode, null, null);
+                    return new JsonResult(null, response.StatusCode, null, null);
                 }
                 if (response.Content.Headers.ContentType.MediaType == "text/html")
                 {
-                    return new JsonFeedResult(null, HttpStatusCode.UnsupportedMediaType, null, null);
+                    return new JsonResult(null, HttpStatusCode.UnsupportedMediaType, null, null);
                 }
                 var cs = response.Content.Headers.ContentType.CharSet;
                 if (cs != null && cs.Length > 2 && cs[0] == '\"' && cs[cs.Length - 1] == '\"')
@@ -56,16 +56,16 @@ namespace GoM.Feeds
 
                 try
                 {
-                    return new JsonFeedResult(null, HttpStatusCode.OK, null, JObject.Parse(resp));
+                    return new JsonResult(null, HttpStatusCode.OK, null, JObject.Parse(resp));
                 }
                 catch (JsonReaderException ex)
                 {
-                    return new JsonFeedResult(null, HttpStatusCode.OK, ex, null);
+                    return new JsonResult(null, HttpStatusCode.OK, ex, null);
                 }
             }
             catch ( Exception ex )
             {
-                return new JsonFeedResult(ex, null, null, null);
+                return new JsonResult(ex, null, null, null);
             }
         }
     }
