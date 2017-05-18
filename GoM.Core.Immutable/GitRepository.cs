@@ -16,7 +16,7 @@ namespace GoM.Core.Immutable
             Branches = branches ?? ImmutableList.Create<BasicGitBranch>();
 
             // Check for branch duplicates
-            if (CheckDuplicates(branches)) throw new ArgumentException("Duplicates found in branches");
+            if (CheckDuplicates(Branches)) throw new ArgumentException("Duplicates found in branches");
         }
 
         GitRepository(IGitRepository repository)

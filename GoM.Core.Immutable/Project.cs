@@ -31,7 +31,7 @@ namespace GoM.Core.Immutable
 
         public string Path { get; }
 
-        public Project Details { get; }
+        public Project Details => this;
 
         bool CheckDuplicates(ImmutableList<Target> targets)
         {

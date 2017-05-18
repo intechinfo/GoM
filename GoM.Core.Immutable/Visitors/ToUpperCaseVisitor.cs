@@ -21,7 +21,7 @@ namespace GoM.Core.Immutable.Visitors
             return base.Visit(c);
         }
 
-        protected override BasicGitRepository Visit(BasicGitRepository r)
+        public override BasicGitRepository Visit(BasicGitRepository r)
         {
             if (!r.Path.All(x => Char.IsUpper(x)) && r.Path.Contains(_pattern))
             {
@@ -30,7 +30,7 @@ namespace GoM.Core.Immutable.Visitors
             return base.Visit(r);
         }
 
-        protected override GitRepository Visit(GitRepository r)
+        public override GitRepository Visit(GitRepository r)
         {
             return base.Visit(r);
         }
