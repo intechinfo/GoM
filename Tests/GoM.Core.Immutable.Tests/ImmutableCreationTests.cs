@@ -10,7 +10,7 @@ using GoM.Core.Mutable;
 
 namespace GoM.Core.Immutable.Tests
 {
-    public class ImmutableCreationTests
+    public class CreationTests
     {
         [Fact]
         public void Convert_mutable_GoMContext_to_immutable()
