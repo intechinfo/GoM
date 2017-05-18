@@ -19,8 +19,9 @@ namespace GoM.Core.Immutable
         PackageFeed(IPackageFeed packageFeed)
         {
             Url = packageFeed.Url ?? throw new ArgumentException(nameof(packageFeed.Url));
-            Packages = packageFeed.Packages == null ? throw new ArgumentException(nameof(packageFeed.Packages))
-                : (ImmutableList<PackageInstance>)packageFeed.Packages;
+            Packages = packageFeed.Packages == null ? throw new ArgumentException(nameof(packageFeed.Packages)) : ImmutableList.Create(packageFeed.Packages.Select(x => PackageInstance.Create(x)).ToArray());
+            //Packages = packageFeed.Packages ?? throw new ArgumentException(nameof(packageFeed.Packages)) : ImmutableList.Create(context.Feeds.Select(x => PackageFeed.Create(x)).ToArray());
+
 
             // Check dulicates
             if (CheckDuplicates(Packages)) throw new ArgumentException($"Duplicates found in {nameof(Packages)}");

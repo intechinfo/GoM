@@ -28,9 +28,8 @@ namespace GoM.Core.Immutable
         private GoMContext(IGoMContext context)
         {
             RootPath = context.RootPath;
-            //Repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
             Repositories = ImmutableList.Create(context.Repositories.Select( x => BasicGitRepository.Create(x)).ToArray());
-            Feeds = (ImmutableList<PackageFeed>)context.Feeds;
+            Feeds = context.Feeds == null ? ImmutableList.Create<PackageFeed>() : ImmutableList.Create(context.Feeds.Select(x => PackageFeed.Create(x)).ToArray());
 
             // Check duplicates on repositories(path) and feeds (url)
             if (CheckDuplicates(Repositories, Feeds)) throw new ArgumentException("Duplicate package feeds or repositories found");
@@ -54,10 +53,7 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        public static GoMContext Create(IGoMContext context)
-        {
-            return new GoMContext(context);
-        }
+        public static GoMContext Create(IGoMContext context) => context as GoMContext ?? new GoMContext(context);
 
         public GoMContext WithAll(
             string path = null,

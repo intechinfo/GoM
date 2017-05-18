@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace GoM.Core.Mutable
 {
@@ -17,8 +18,8 @@ namespace GoM.Core.Mutable
         public GoMContext(IGoMContext context)
         {
             RootPath = context.RootPath;
-            Repositories = (List<BasicGitRepository>)context.Repositories;
-            Feeds = (List<PackageFeed>)context.Feeds;
+            Repositories = context is GoMContext ? (List<BasicGitRepository>)context.Repositories : new List<BasicGitRepository>(context.Repositories.Select(x => new BasicGitRepository(x)));
+            Feeds = context is GoMContext ? (List<PackageFeed>)context.Feeds : new List<PackageFeed>(context.Feeds.Select(x => new PackageFeed(x)));
         }
 
         public string RootPath { get; set; }

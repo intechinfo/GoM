@@ -21,7 +21,7 @@ namespace GoM.Core.Immutable
         GitBranch(IGitBranch branch)
         {
             Debug.Assert(!(branch is GitBranch));
-            Projects = (ImmutableList<BasicProject>)branch.Projects ?? ImmutableList.Create<BasicProject>();
+            Projects = branch.Projects == null ? ImmutableList.Create<BasicProject>() : ImmutableList.Create(branch.Projects.Select(x => BasicProject.Create(x)).ToArray());
             Version = branch.Version != null ? BranchVersionInfo.Create(branch.Version) : null;
 
             // Check duplicates in projects

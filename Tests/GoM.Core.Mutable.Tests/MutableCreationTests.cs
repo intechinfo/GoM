@@ -53,10 +53,11 @@ namespace GoM.Core.Mutable.Tests
 
             // Project
             var newProject = new Project();
+            newProject.Path = "my/project/path";
 
             // BasicProject
             var newBasicProject = new BasicProject();
-            newBasicProject.Path = "my/project/path";
+            newBasicProject.Path = "my/basicProject/path";
             newBasicProject.Details = newProject;
 
             #region target
