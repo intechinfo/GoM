@@ -89,12 +89,8 @@ namespace GoM.Feeds
                 JObject o = result.Result;
                 if (!o.HasValues)
                 {
-                    return new GetPackagesResult(new GetDependenciesResult("No package named : " + name + " found."), null);
+                    return new GetDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
                 }
-
-
-
-
                 JObject dependencies = new JObject(o.Property("dependencies"));
                 var list = new List<TargetResult>();
                 var target = new Target { Name = o.Value<string>("name") };
