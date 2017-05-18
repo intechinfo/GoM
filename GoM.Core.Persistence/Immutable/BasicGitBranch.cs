@@ -20,7 +20,7 @@ namespace GoM.Core.Persistence
             this.t = t;
             Name = t.Attribute( BASIC_GIT_BRANCH_NAME ).Value;
 
-            var node = t.Element( BASIC_GIT_BRANCH_NAME );
+            var node = t.Element( GitBranch.GIT_BRANCH );
             Details = node != null ? new GitBranch( node ) : null;
         }
 

@@ -7,7 +7,7 @@ namespace GoM.Core.Persistence
 {
     public class BasicProject : IBasicProject
     {
-
+        public const string BASIC_PROJECT = "basicproject";
         public const string BASIC_PROJECT_PATH = "path";
         public const string BASIC_PROJECT_DETAILS = "details";
 

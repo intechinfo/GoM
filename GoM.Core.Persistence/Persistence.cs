@@ -115,8 +115,8 @@ namespace GoM.Core.Persistence
         {
             if ( _this == null ) return null;
 
-            XElement element = new XElement(typeof(IBasicProject).Name);
-            element.SetAttributeValue( nameof( _this.Path ), _this.Path );
+            XElement element = new XElement(BasicProject.BASIC_PROJECT);
+            element.SetAttributeValue( BasicProject.BASIC_PROJECT_PATH, _this.Path );
 
             element.Add( _this.Details.ToXML() );
             return element;
