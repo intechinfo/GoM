@@ -23,7 +23,7 @@ namespace GoM
 
             app.OnExecute(() =>
             {
-                app.ShowHelp("gom");
+                app.ShowHelp("GoM");
                 return 0;
             });
 
@@ -34,15 +34,15 @@ namespace GoM
 
                 CommandOption repositoryOption = command.Option("-r|--repository",
                     "Repository to add to GoM"
-                    , CommandOptionType.SingleValue);
+                    , CommandOptionType.NoValue);
 
                 CommandOption projectOption = command.Option("-p|--project",
                     "Project to add to the repository",
-                    CommandOptionType.SingleValue);
+                    CommandOptionType.NoValue);
 
                 CommandOption allProjectOption = command.Option("-p -all|--project -all",
                    "Add all the projects to the repository",
-                   CommandOptionType.MultipleValue);
+                   CommandOptionType.NoValue);
 
                 CommandOption branchOption = command.Option("-b|--branch",
                     "Add a branch to GoM",
@@ -62,6 +62,7 @@ namespace GoM
                         {
                             var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
                             Communicator com = new Communicator(projectPath);
+                            Console.WriteLine("The repository was added");
                         }
                         // add branch
                         else if (branch > 0)
@@ -100,7 +101,7 @@ namespace GoM
                         // add all project
                         else
                         {
-
+                            
                         }
 
                         Console.WriteLine();

@@ -1,8 +1,7 @@
 {
   "profiles": {
     "GoM": {
-      "commandName": "Project",
-      "commandLineArgs": "add -f"
+      "commandName": "Project"
     }
   }
 }
