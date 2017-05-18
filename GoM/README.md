@@ -34,7 +34,7 @@ Options :
 Description :   Add repository, branch and/or project in GoM context.<br/>
 Exceptions :    If no [path] is specified, an error is displayed with the command help.
 
-## add Command
+## remove Command
 
 Syntax :        gom remove [option] [path]<br/>
 Help option :   -h<br/>

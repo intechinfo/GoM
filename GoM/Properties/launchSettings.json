@@ -1,7 +1,8 @@
 {
   "profiles": {
     "GoM": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "remove -r \"C:\\Users\\Loïc\\Desktop\\Cours INTECH Alternance\\gom\\GoM\\GoM\\GoM\\bin\\Debug\\net462\\repos\\SGV-Net\""
     }
   }
 }

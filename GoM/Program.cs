@@ -52,59 +52,59 @@ namespace GoM
 
                 command.OnExecute(() =>
                 {
-                        int repos = repositoryOption.Values.Count;
-                        int proj = projectOption.Values.Count;
-                        int allProj = allProjectOption.Values.Count;
-                        int branch = branchOption.Values.Count;
+                    int repos = repositoryOption.Values.Count;
+                    int proj = projectOption.Values.Count;
+                    int allProj = allProjectOption.Values.Count;
+                    int branch = branchOption.Values.Count;
 
-                        // add repository
-                        if (repos > 0)
+                    // add repository
+                    if (repos > 0)
+                    {
+                        var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+                        Communicator com = new Communicator(projectPath);
+                        Console.WriteLine("The repository was added");
+                    }
+                    // add branch
+                    else if (branch > 0)
+                    {
+                        var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
+                        try
                         {
-                            var projectPath = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
-                            Communicator com = new Communicator(projectPath);
-                            Console.WriteLine("The repository was added");
-                        }
-                        // add branch
-                        else if (branch > 0)
-                        {
-                            var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
-                            try
+                            Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                            var branches = com.getAllBranches();
+                            bool isBranchExist = false;
+
+                            foreach (var b in branches)
                             {
-                                Communicator com = new Communicator(Directory.GetCurrentDirectory());
-                                var branches = com.getAllBranches();
-                                bool isBranchExist = false;
-
-                                foreach (var b in branches)
+                                if (b.Name == nameBranch)
                                 {
-                                    if (b.Name == nameBranch)
-                                    {
-                                        isBranchExist = true;
-                                    }
-                                }
-
-                                if (isBranchExist) Console.WriteLine("This branch already exist");
-                                else
-                                {
-                                    // To be implemented
+                                    isBranchExist = true;
                                 }
                             }
-                            catch (Exception ex)
+
+                            if (isBranchExist) Console.WriteLine("This branch already exist");
+                            else
                             {
-                                Console.WriteLine(ex.Message + " : You must specify a name for your branch");
+                                // To be implemented
                             }
                         }
-                        // add project
-                        else if (allProj > 0)
+                        catch (Exception ex)
                         {
-
+                            Console.WriteLine(ex.Message + " : You must specify a name for your branch");
                         }
-                        // add all project
-                        else
-                        {
-                            
-                        }
+                    }
+                    // add project
+                    else if (allProj > 0)
+                    {
 
-                        Console.WriteLine();
+                    }
+                    // add all project
+                    else
+                    {
+
+                    }
+
+                    Console.WriteLine();
                     return 0;
                 });
             });
@@ -117,27 +117,75 @@ namespace GoM
 
                 var excludeRepoOPtion = command.Option("-r|--repository",
                     "Exclude a repository from GoM",
-                    CommandOptionType.MultipleValue);
+                    CommandOptionType.NoValue);
 
                 var excludeBranchOPtion = command.Option("-b|--branch",
                    "Exclude one branch from GoM",
-                   CommandOptionType.MultipleValue);
+                   CommandOptionType.NoValue);
 
                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
                   "Exclude all branches from GoM",
-                  CommandOptionType.MultipleValue);
+                  CommandOptionType.NoValue);
 
                 var excludeProjectOPtion = command.Option("-p|--project",
                   "Exclude one project from GoM",
-                  CommandOptionType.MultipleValue);
+                  CommandOptionType.NoValue);
 
                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
                   "Exclude all projects from GoM",
-                  CommandOptionType.MultipleValue);
+                  CommandOptionType.NoValue);
 
+                CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
                 command.OnExecute(() =>
                 {
-                    // To immplement 
+                    int repo = excludeRepoOPtion.Values.Count;
+                    int branch = excludeBranchOPtion.Values.Count;
+                    int allBranches = excludeAllBranchOPtion.Values.Count;
+                    int project = excludeProjectOPtion.Values.Count;
+                    int allProjects = excludeAllProjectshOPtion.Values.Count;
+                    var path = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+
+                    // remove repo
+                    if (repo > 0)
+                    {
+                        Communicator com = new Communicator(path);
+
+                        Console.WriteLine("Is repo : " + com.isRepository());
+                        com.getBasicGitRepository().Details = null;
+                        Console.WriteLine(com.getBasicGitRepository().Details == null ? "null" : " not null");
+
+                        /*foreach (var file in com.getFiles())
+                        {
+                            
+                            Directory.Delete(file);
+                        }
+
+                        foreach (var directory in com.getFolders())
+                        {
+                            
+                            Directory.Delete(directory);
+                        }*/
+                    }
+                    // remove branch
+                    else if (branch > 0)
+                    {
+
+                    }
+                    // remove branch
+                    else if (allBranches > 0)
+                    {
+
+                    }
+                    // remove branch
+                    else if (project > 0)
+                    {
+
+                    }
+                    // remove branch
+                    else if (allProjects > 0)
+                    {
+
+                    }
                     return 0;
                 });
             });
@@ -151,10 +199,10 @@ namespace GoM
                 command.OnExecute(() =>
                 {
                     string pathFound;
-                    var succes =  new Persistence().TryInit(myCurrentDirectory,out pathFound);
+                    var succes = new Persistence().TryInit(myCurrentDirectory, out pathFound);
 
                     if (succes) Console.WriteLine("GoM repository has been correctly initialized");
-                    else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}",pathFound);
+                    else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}", pathFound);
 
                     return 0;
                 });
@@ -225,7 +273,7 @@ namespace GoM
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
-                {                   
+                {
                     FileTree n = new FileTree();
                     n.Data = item;
                     n.Nodes = new List<FileTree>();
@@ -233,14 +281,14 @@ namespace GoM
                     ft.Nodes.Add(n);
                     GetChildren(item, n);
                 }
- 
+
             }
         }
         public static void GetChildren(string path, FileTree ft)
         {
-           if (Directory.Exists(path))
+            if (Directory.Exists(path))
             {
-               
+
                 foreach (string item in Directory.GetDirectories(path))
                 {
                     FileTree n = new FileTree();
@@ -255,7 +303,7 @@ namespace GoM
         public static void GetFiles(string path, FileTree ft)
         {
             foreach (string item in Directory.GetFiles(path))
-            {            
+            {
                 ft.Nodes.Add(new FileTree(Path.GetFileName(item)));
             }
         }
