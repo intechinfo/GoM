@@ -14,26 +14,24 @@ namespace GoM.Core.FSAnalyzer
         {
             List<IProject> projects = new List<IProject>();
 
-            if (rootPath.GetDirectoryContents(".git").Exists)
+            IDirectoryContents directories = rootPath.GetDirectoryContents("");
+            foreach (IFileInfo fileInfo in directories)
             {
-                IDirectoryContents directories = rootPath.GetDirectoryContents("");
-                foreach(IFileInfo fileInfo in directories)
+                if (fileInfo.IsDirectory)
                 {
-                    if (fileInfo.IsDirectory)
+                    // On each project call specialize handler with PhysicalFileProvider
+                    ProjectFolderHandler projectHandler = new ProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
+                    IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
+                    if (specializedProjectHandler != null)
                     {
-                        // On each project call specialize handler with PhysicalFileProvider
-                        ProjectFolderHandler projectHandler = new ProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
-                        IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
-                        if (specializedProjectHandler != null)
-                        {
-                            // If true, add in collection
-                            // Return IProject collection
-                            IProject project = specializedProjectHandler.Read();
-                            projects.Add(project);
-                        }
+                        // If true, add in collection
+                        // Return IProject collection
+                        IProject project = specializedProjectHandler.Read();
+                        projects.Add(project);
                     }
                 }
-            }          
+            }
+
             IReadOnlyCollection<IProject> readOnlyProjects = new ReadOnlyCollection<IProject>(projects);
             return readOnlyProjects;
         }
