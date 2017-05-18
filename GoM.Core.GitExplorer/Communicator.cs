@@ -7,14 +7,7 @@ using LibGit2Sharp;
 using GoM.Core.Mutable;
 using GoM.GitFileProvider;
 using Microsoft.Extensions.FileProviders;
-/*
- *  A faire : 
- *  + Statistiques sur les extensions de fichiers ( nombre de fichiers par extension)
- *  + Déterminer le type de projet (application c# windows, android, ios, web, etc...)
- *  + Déterminer les dépendances utilisées
- *  ...
- * 
- */
+
 
 namespace GoM.Core.GitExplorer
 {
