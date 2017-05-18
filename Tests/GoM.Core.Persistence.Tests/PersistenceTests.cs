@@ -121,25 +121,6 @@ namespace GoM.Core.Persistence.Tests
         }
 
         [Fact]
-        public void first_xml_try_on_package_instance()
-        {
-
-            PackageInstance pi = new PackageInstance("SDL", "2.0");
-
-            XDocument doc = new XDocument();
-            doc.Add();
-
-            XElement element = new XElement(typeof(PackageInstance).Name);
-            element.SetAttributeValue(nameof(pi.Version), pi.Version);
-            element.SetAttributeValue(nameof(pi.Name), pi.Name);
-            doc.Add(element);
-
-            var s = doc.ToString();
-            Console.WriteLine(s);
-            Assert.True(s == "<PackageInstance Version=\"2.0\" Name=\"SDL\" />");
-        }
-
-        [Fact]
         public void xml_works_using_extensions()
         {
             PackageInstance pi = new PackageInstance("SDL", "2.0");
@@ -218,13 +199,11 @@ namespace GoM.Core.Persistence.Tests
 
 #region Repo 1
             Assert.True(ctx.Repositories[1].Path == "/usr/developpement/mdr");
-            Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[1].Details == null);
 #endregion
 
 #region Repo 2
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
-            Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
             Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
 
