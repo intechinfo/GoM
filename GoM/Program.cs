@@ -137,13 +137,10 @@ namespace GoM
             /// This command allow to show the directory and the file inside a path
             app.Command("files", c =>
             {
-
-                c.Description = "Get files";
+                c.Description = "Get directories and files relative to a path";
                 var locationArgument = c.Argument("[location]",
                                    "Where the files should be located .");
-
                 c.HelpOption("-?,|-h|--help");
-
                 c.OnExecute(() =>
                 {
                     var projectPath = locationArgument.Value != null && locationArgument.Value != "" ? locationArgument.Value : Directory.GetCurrentDirectory();
@@ -160,14 +157,11 @@ namespace GoM
                         string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
                         File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
                         ProcessDirectory(projectPath, fileList);
-
                     }
                     else
                     {
                         Console.WriteLine("{0} is not a valid file or directory.", projectPath);
                     }
-
-                    Console.ReadLine();
                     return 0;
                 });
             });
@@ -186,23 +180,38 @@ namespace GoM
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
-                {
-
+                {                   
                     FileTree n = new FileTree();
                     n.Data = item;
                     n.Nodes = new List<FileTree>();
                     GetFiles(item, n);
                     ft.Nodes.Add(n);
-                    GetNodes(item, ft);
+                    GetChildren(item, n);
+                }
+ 
+            }
+        }
+        public static void GetChildren(string path, FileTree ft)
+        {
+           if (Directory.Exists(path))
+            {
+               
+                foreach (string item in Directory.GetDirectories(path))
+                {
+                    FileTree n = new FileTree();
+                    n.Data = item;
+                    n.Nodes = new List<FileTree>();
+                    GetFiles(item, n);
+                    ft.Nodes.Add(n);
+                    GetChildren(item, ft);
                 }
             }
         }
-
         public static void GetFiles(string path, FileTree ft)
         {
             foreach (string item in Directory.GetFiles(path))
-            {
-                ft.Nodes.Add(new FileTree(item));
+            {            
+                ft.Nodes.Add(new FileTree(Path.GetFileName(item)));
             }
         }
         public static void ProcessDirectory(string targetDirectory, List<string> fileList)
