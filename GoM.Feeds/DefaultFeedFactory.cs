@@ -1,11 +1,7 @@
 ﻿using GoM.Feeds.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GoM.Core;
-
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {

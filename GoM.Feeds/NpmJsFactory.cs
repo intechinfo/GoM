@@ -1,10 +1,8 @@
 ﻿using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GoM.Core;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
@@ -21,18 +19,29 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
-        public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)
+        public GetReadersResult Snif(IEnumerable<Uri> links)
         {
-            return links.SelectMany(x => Snif(x));
+            var t = links.Select(x => Snif(x));
+            return new GetReadersResult(t.SelectMany(x => x.Reasons), t.SelectMany(x => x.Result));
         }
 
-        public IEnumerable<IFeedReader> Snif(Uri link)
+        public GetReadersResult Snif(Uri link)
         {
-            var list = new List<IFeedReader>();
             var res = _feedReader.FeedMatch(link).Result;
-            var fr = res.Success&&res.Result? _feedReader : null;
-            if (fr != null) list.Add(fr);
-            return list;
+            List<IFeedReader> list=null;
+            List < Exception> exs=null;
+            if (res.Result && res.Success) {
+                list = new List<IFeedReader>{ _feedReader };
+            }
+            else if (res.Success && !res.Result)
+            {
+                list = new List<IFeedReader>();
+            }
+            else
+            {
+                exs = new List<Exception> { res.Reason };
+            }
+            return new GetReadersResult(exs,list);
         }
     }
 }
