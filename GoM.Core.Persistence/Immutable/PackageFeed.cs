@@ -17,8 +17,8 @@ namespace GoM.Core.Persistence
         public PackageFeed(XElement e)
         {
             this.Url = new Uri(e.Attribute(PACKAGE_FEED_URL).Value);
-            this.Packages = new List<PackageInstance>();
-            this.Packages = e.Elements(PackageFeed.PACKAGE_FEED).Select(t => new PackageInstance(t)).ToList();
+            this.Packages = e.Elements(PackageInstance.PACKAGE_INSTANCE)
+                .Select(t => new PackageInstance(t)).ToList();
             //foreach (var t in e.Elements(PackageInstance.PACKAGE_INSTANCE))
             //{
             //    this.Packages.Add(new PackageInstance(t));
