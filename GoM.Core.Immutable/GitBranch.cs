@@ -28,7 +28,7 @@ namespace GoM.Core.Immutable
 
         public string Name { get; }
 
-        internal static GitBranch Create(string name, BranchVersionInfo version = null)
+        public static GitBranch Create(string name, BranchVersionInfo version = null)
         {
             return new GitBranch(name, version);
         }
