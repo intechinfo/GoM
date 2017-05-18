@@ -19,7 +19,6 @@ namespace GoM.Core.Persistence.Tests
         [Fact]
         public void test_integration_with_given_batch()
         {
-
             var path = new DirectoryInfo(TuPath());
 
             // run bat if Dev folder doesn't exists
@@ -37,18 +36,42 @@ namespace GoM.Core.Persistence.Tests
                 proc.Start();
                 proc.WaitForExit();
                 // TODO error management for CI
-
             }
 
-            Cle
-                
+            // get dev dir & clean in all directory if exists
+            var devFolder = path.Parent.GetDirectories().First( e => e.Name == "Dev");
+            CleanGomPersistenceInAllFolder( devFolder );
 
+            // It's testing time !
+            Persistence p = new Persistence();
+            string output;
+            // First init works
+            Assert.True(p.TryInit( devFolder.FullName, out output ));
 
+            // Second init doesn't work and return devfolder path
+            Assert.False(p.TryInit( devFolder.FullName, out output ));
+            Assert.True( output == devFolder.FullName );
+
+            // Go childs folder and retry init
+            Assert.False( p.TryInit( devFolder.GetDirectories()[1].FullName, out output ) );
+            Assert.True( output == devFolder.FullName );
+            Assert.False( p.TryInit( devFolder.GetDirectories() [1].GetDirectories()[1].FullName, out output ) );
+            Assert.True( output == devFolder.FullName );
+
+            var ctx = p.Load( devFolder.FullName );
 
 
 
         }
 
+        private void CleanGomPersistenceInAllFolder ( DirectoryInfo devFolder )
+        {
+            Persistence p = new Persistence();
+            foreach(var path in p.SearchFolderRecursive( devFolder, ".gom" ))
+            {
+                Directory.Delete( Path.Combine(path, ".gom"), true );
+            }
+        }
 
         [Fact]
         public void test_runner_working()
