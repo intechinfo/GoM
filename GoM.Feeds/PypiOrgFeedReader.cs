@@ -1,6 +1,7 @@
 using GoM.Core;
 using GoM.Core.Mutable;
 using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semver;
@@ -16,115 +17,121 @@ namespace GoM.Feeds
 {
     public class PypiOrgFeedReader : FeedReaderBase
     {
-        string _baseUrl = "http://registry.npmjs.org/";
+        string _baseUrl = "https://pypi.python.org/pypi/Python/json";
 
-        public async override Task<bool> FeedMatch(Uri adress)
+        public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
-            HttpResponseMessage response = await HttpClient.GetAsync(adress);
+            if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
 
-            if (!response.IsSuccessStatusCode)
+            var result = await GetJson(adress);
+            if (result.Success)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                JObject o = result.Result;
+
+                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                bool isPypi = o.TryGetValue("info", out JToken value);
+                if (isPypi)
                 {
-                    throw new ArgumentException("Package could not be found");
+                    return new FeedMatchResult(null,o.Property("info").Value.ToString() == "registry");
                 }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
+                return new FeedMatchResult(null, false);
             }
-            string resp = await response.Content.ReadAsStringAsync();
-
-            JObject o;
-            try
-            {
-                o = JObject.Parse(resp);
-            }
-            catch (JsonReaderException)
-            {
-                return false;
-            }
-            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
-            bool isPypi = o.TryGetValue("info", out JToken value);
-            if (isPypi)
-            {
-                var datas = new JObject(o.Property("info"));
-                return datas["name"].Value<string>() == "Python";
-            }
-            return false;
+            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false);
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
+
+        public override async Task<GetPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            HttpResponseMessage response = await HttpClient.GetAsync(_baseUrl + name + "/json");
-
-            if (!response.IsSuccessStatusCode)
+            var result = await GetJson(new Uri( _baseUrl + name));
+            if (result.Success)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                JObject o = result.Result;
+                if (!o.HasValues )
                 {
-                    throw new ArgumentException("Package could not be found");
+                    return new GetPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null);
                 }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
+                var list = new List<PackageInstanceResult>();
+                var versions = new JObject( new JObject(o["info"]).Property("releases"));
+                foreach (var item in versions)
+                {
+
+                    if (SemVersion.TryParse(item.Key, out SemVersion item_v))
+                    {
+                        string packageVersion = item.Key;
+                        string packageName = o["info"].Value<string>("name");
+                        var p = new PackageInstance { Name = packageName, Version = packageVersion };
+                        list.Add(new PackageInstanceResult(null,p));
+                    }
+                }
+                return new GetPackagesResult(null, list);
             }
-            string resp = await response.Content.ReadAsStringAsync();
-
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
-
-            var list = new List<IPackageInstance>();
-            var versions = new JObject( new JObject(o["info"]).Property("releases"));
-            foreach (var item in versions)
+            else
             {
-
-                if (SemVersion.TryParse(item.Key, out SemVersion item_v))
-                {
-                    string packageVersion = item.Key;
-                    string packageName = o["info"].Value<string>("name");
-                    list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
-                }
+                return new GetPackagesResult(result.NetworkException ?? result.JsonException, null);
             }
-            return list;
         }
 
-        public override async Task<IEnumerable<ITarget>> GetDependencies(string name, string version)
+        public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await HttpClient.GetStringAsync(_baseUrl + name + '/' + version+"/json");
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : " + version + " found.");
-            o = new JObject(o.Property("info"));
-            var list = new List<Target>();
-
-            Regex reg = new Regex(@"^Programming Language :: Python :: \d([.]\d([.]\d)?)?$");
-            foreach (var item in o.Property("classifiers"))
+            var result = await GetJson(new Uri(_baseUrl + name + '/' + version + "/json"));
+            if (result.Success)
             {
-                var val = item.Value<string>();
-                if(reg.IsMatch(val)) list.Add(new Target { Name =val  });
-            }
-            bool hasDependencies = o.TryGetValue("requires_dist", out JToken t);
-            if (hasDependencies)
-            {
-                JObject dependencies = new JObject(t);
-               
-                //iterate on eah version of the json
-                foreach (var item in dependencies)
+                JObject o = result.Result;
+                if (!o.HasValues)
                 {
-                    string depName = item.Key;
-                    string depVersion = item.Value.ToString();
-                    list.ForEach((x) => x.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion }));
+                    return new GetDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
                 }
+                o = new JObject(o.Property("info"));
+                var list = new List<TargetResult>();
+
+                Regex reg = new Regex(@"^Programming Language :: Python :: \d([.]\d([.]\d)?)?$");
+                foreach (var item in o.Property("classifiers"))
+                {
+                    var val = item.Value<string>();
+                    if (reg.IsMatch(val))
+                    {
+                        var tar = new Target { Name = val };
+                        list.Add(new TargetResult(null,tar));
+                    }
+                }
+                bool hasDependencies = o.TryGetValue("requires_dist", out JToken t);
+                if (hasDependencies)
+                {
+                    JObject dependencies = new JObject(t);
+
+                    //iterate on eah version of the json
+                    foreach (var item in dependencies)
+                    {
+                        string depName = item.Key;
+                        string depVersion = item.Value.ToString();
+                        list.Where(x=>x.Success).ToList().ForEach(x => ((Target)(x.Result)).Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion }));
+                    }
+                }
+                return new GetDependenciesResult(null,list);
             }
-            return list;
+            else
+            {
+                return new GetDependenciesResult(result.NetworkException ?? result.JsonException, null);
+            }
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => SemVersion.Parse(x.Version) > SemVersion.Parse(version));
+            if (res.Success)
+            {
+                var packages = res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
+                return new GetPackagesResult(null, packages);
+            }
+            return res;
         }
     }
 }
