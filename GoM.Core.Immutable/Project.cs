@@ -12,7 +12,7 @@ namespace GoM.Core.Immutable
         {
             Debug.Assert(!(details is Project));
             Path = details.Path ?? throw new ArgumentException(nameof(details.Path));
-            if (details.Targets != null) Targets = (ImmutableList<Target>)details.Targets;
+            Targets = details.Targets == null ? ImmutableList.Create<Target>() : ImmutableList.Create(details.Targets.Select(x => Target.Create(x)).ToArray());
 
             // Check duplicates
             if (CheckDuplicates(Targets)) throw new ArgumentException($"A duplicate target was found in {nameof(details.Targets)}");

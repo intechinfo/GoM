@@ -10,7 +10,7 @@ namespace GoM.Core.Immutable
         private Target(ITarget target)
         {
             Name = target.Name ?? throw new ArgumentException(nameof(target.Name));
-            if (target.Dependencies != null) Dependencies = (ImmutableList<TargetDependency>)target.Dependencies;
+            Dependencies = target.Dependencies == null ? ImmutableList.Create<TargetDependency>() : ImmutableList.Create(target.Dependencies.Select(x => TargetDependency.Create(x)).ToArray());
 
             // Check duplicates
             if (CheckDuplicates(Dependencies)) throw new ArgumentException($"Duplicates found in {nameof(Dependencies)}");

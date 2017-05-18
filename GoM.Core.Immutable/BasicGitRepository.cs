@@ -14,7 +14,7 @@ namespace GoM.Core.Immutable
 
         private BasicGitRepository(IBasicGitRepository basicGitRepository)
         {
-            Debug.Assert(basicGitRepository is BasicGitRepository);
+            Debug.Assert(!(basicGitRepository is BasicGitRepository));
             Path = basicGitRepository.Path ?? throw new ArgumentException(nameof(basicGitRepository.Path));
             Url = basicGitRepository.Url ?? throw new ArgumentException(nameof(basicGitRepository.Url));
             Details = basicGitRepository.Details != null ? GitRepository.Create(basicGitRepository.Details) : null;
