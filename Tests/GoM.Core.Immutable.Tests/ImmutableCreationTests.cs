@@ -70,9 +70,10 @@ namespace GoM.Core.Immutable.Tests
             var visitor = new ToUppercaseVisitor("a");
             context = visitor.Visit(context);
 
-            Immutable.GitRepository newGitRepository = GitRepository.Create("path", new Uri("http://uri"));
+            Immutable.GitRepository newGitRepository = GitRepository.Create("ioegzhviohezovhohazoi", new Uri("http://uri"));
 
-            context.SetRepositoryDetails(newGitRepository);
+            context = context.SetRepositoryDetails(newGitRepository);
+            var truc = "fc";
         }
     }
 }

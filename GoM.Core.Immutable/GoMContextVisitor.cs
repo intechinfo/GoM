@@ -39,8 +39,7 @@ namespace GoM.Core.Immutable
         {
             if (detailed == null) throw new ArgumentNullException(nameof(detailed));
             var visitor = new DetailRepositoryVisitor(detailed);
-            var newContext = visitor.Visit(detailed);
-            return null;
+            return visitor.Visit(this);
         }
     }
 }
