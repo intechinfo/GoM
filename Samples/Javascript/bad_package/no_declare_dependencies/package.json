@@ -1,0 +1,22 @@
+{
+  "name": "node-ts-express-neo4j-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "test": "npm run compile & mocha test",
+    "compile": "tsc",
+    "watch": "npm run compile & npm run tsc:w",
+    "start": "npm run compile & node index.js",
+    "dbsetup": "node src/shared/database/setup"
+  },
+  "dependencies": {
+  
+  },
+  "devDependencies": {
+  
+  },
+  "license": "ISC"
+}

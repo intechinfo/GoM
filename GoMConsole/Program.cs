@@ -10,14 +10,25 @@ namespace GoMConsole
     {
         static void Main(string[] args)
         {
-            Communicator communicator = new Communicator("https://github.com/intechinfo/GoM.git");
+            test();
+        }
+
+        public static void test()
+        {
+            Communicator communicator = new Communicator("https://github.com/SimpleGitVersion/SGV-Net");
 
             var branches = communicator.getAllBranches();
-            int count = branches.Count;
+            
 
-            foreach(var branch in branches)
+                int count = branches.Count;
+
+            foreach (var branch in branches)
             {
                 Console.WriteLine(branch.Name);
+                if (!branch.Details.Version.LastTag.Equals(null))
+                {
+                    Console.WriteLine(branch.Details.Version.LastTag.FullName);
+                }
             }
 
             Console.WriteLine("Files : " + Environment.NewLine);
