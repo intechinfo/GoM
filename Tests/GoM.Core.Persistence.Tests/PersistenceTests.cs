@@ -110,10 +110,6 @@ namespace GoM.Core.Persistence.Tests
             }
         }
 
-        [Fact]
-        public void test_runner_working()
-        {
-            Assert.True(true);
         public void xml_works_using_extensions()
         {
             PackageInstance pi = new PackageInstance("SDL", "2.0");
@@ -154,7 +150,6 @@ namespace GoM.Core.Persistence.Tests
 
 #region Repo 1
             Assert.True(ctx.Repositories[1].Path == "/usr/developpement/mdr");
-            Assert.True(ctx.Repositories[1].Details.Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[1].Details == null);
 #endregion
 
@@ -162,7 +157,6 @@ namespace GoM.Core.Persistence.Tests
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
             Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
-            Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
 
 #region Branch 1
             Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "develop");

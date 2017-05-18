@@ -110,7 +110,6 @@ namespace GoM.Core.Persistence
             if (_this == null) return null;
             XElement element = new XElement(BasicGitRepository.BASIC_GIT_REPOSITORY);
             element.SetAttributeValue(BasicGitRepository.BASIC_GIT_REPOSITORY_PATH, _this.Path);
-            element.SetAttributeValue(BasicGitRepository.BASIC_GIT_REPOSITORY_URL, _this.Url);
 
             element.Add(_this.Details.ToXML());
             return element;
