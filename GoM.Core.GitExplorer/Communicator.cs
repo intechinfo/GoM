@@ -87,7 +87,7 @@ namespace GoM.Core.GitExplorer
                     return repo;
                 }
 
-
+                Directory.CreateDirectory("repos");
                 File.CreateText(tmp_downloading_file_indicator).Close();
                 //Clone and return repository if not stored
                 Repository.Clone(Source, path);
@@ -219,6 +219,8 @@ namespace GoM.Core.GitExplorer
 
         /// <summary>
         /// Get a ExtensionStatictic Dictionary.
+        /// Can accept a file in 2 extensions key
+        /// Example : .tar and .targets
         /// </summary>
         /// <returns>Dictionary<String, ExtensionStatistic></returns>
         public Dictionary<String, ExtensionFileStatistic> getExtensionDictionary()
@@ -228,20 +230,25 @@ namespace GoM.Core.GitExplorer
             Dictionary<String, ExtensionFileStatistic> extensionDictionary = new Dictionary<string, ExtensionFileStatistic>();
             foreach (var file in allFiles)
             {
+
                 String[] splitFolder = file.Split('\\');
-                String[] splitExtension = splitFolder[splitFolder.Length - 1].Split('.');
+                String fileName = splitFolder[splitFolder.Length - 1];
+                String[] splitExtension = fileName.Split('.');
                 String ext;
-                if (splitExtension.Length > 1)
+                if (splitExtension.Length > 1 && !(splitExtension.Length == 2 && splitExtension[0] == ""))
                 {
                     ext = splitExtension[splitExtension.Length - 1];
-                    if (!extensionDictionary.ContainsKey(ext))
+                    if (!ext.Contains('~'))
                     {
-                        List<String> allExtensionsFile = getFiles("*." + ext);
-                        ExtensionFileStatistic extStat = new ExtensionFileStatistic();
-                        extStat.extension = ext;
-                        extStat.count = allExtensionsFile.Count;
-                        extStat.listPath = allExtensionsFile;
-                        extensionDictionary.Add(ext, extStat);
+                        if (!extensionDictionary.ContainsKey(ext))
+                        {
+                            List<String> allExtensionsFile = getFiles("*." + ext);
+                            ExtensionFileStatistic extStat = new ExtensionFileStatistic();
+                            extStat.extension = ext;
+                            extStat.count = allExtensionsFile.Count;
+                            extStat.listPath = allExtensionsFile;
+                            extensionDictionary.Add(ext, extStat);
+                        }
                     }
                 }
                 else

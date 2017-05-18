@@ -3,13 +3,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace GoM.Core.GitExplorer.Tests
 {
     [TestClass]
     public class GitExplorerTests
     {
-        public string url = "https://github.com/bmgm/Simple.git";
+        public string url = "https://github.com/intechinfo/GoM.git";
 
         [TestMethod]
         public void Check_repository_is_loaded()
@@ -58,9 +59,19 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Communicator communicator = new Communicator(url);
             var dictionaryExtensionFile = communicator.getExtensionDictionary();
-            int countAllFile = communicator.getFiles().Count;
-            int countDictionaryFile = dictionaryExtensionFile.Sum(x => x.Value.listPath.Count);
-            Assert.AreEqual(countAllFile, countDictionaryFile);
+            var listRepo = communicator.getFiles();
+            var listDictionaryFile = new List<String>();
+            foreach (String ext in dictionaryExtensionFile.Keys)
+            {
+                foreach (String file in dictionaryExtensionFile[ext].listPath)
+                {
+                    if (!listDictionaryFile.Contains(file.ToString()))
+                    {
+                        listDictionaryFile.Add(file);
+                    }
+                }
+            }
+            Assert.AreEqual(listRepo.Count, listDictionaryFile.Count);
         }
     }
 }
