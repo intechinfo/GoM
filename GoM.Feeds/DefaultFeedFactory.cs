@@ -1,11 +1,8 @@
 ﻿using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using GoM.Core;
-
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
@@ -27,13 +24,16 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> FeedReaders => _factories.SelectMany(x => x.FeedReaders);
 
-        public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)
+        public GetReadersResult Snif(IEnumerable<Uri> links)
         {
-            return links.SelectMany(l => Snif(l));
+            var t = links.Select(x => Snif(x));
+            return new GetReadersResult(t.SelectMany(x => x.Reasons), t.SelectMany(x => x.Result));
         }
-        public IEnumerable<IFeedReader> Snif(Uri link)
+        public GetReadersResult Snif(Uri link)
         {
-           return _factories.SelectMany(f => f.FeedReaders).Where(fr => fr.FeedMatch(link).Result);
+            var t = _factories.Select(fr => fr.Snif(link));
+            return new GetReadersResult(t.SelectMany(x => x.Reasons), t.SelectMany(x => x.Result));
         }
+
     }
 }

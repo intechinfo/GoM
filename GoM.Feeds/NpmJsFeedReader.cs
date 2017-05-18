@@ -1,15 +1,10 @@
-﻿using GoM.Core;
-using GoM.Core.Mutable;
-using GoM.Feeds.Abstractions;
+﻿using GoM.Core.Mutable;
 using GoM.Feeds.Results;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GoM.Feeds
