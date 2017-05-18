@@ -39,42 +39,40 @@ namespace GoM.Feeds
             return new FeedMatchResult(result.NetworkException==null? result.JsonException:result.NetworkException, false);
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
+        public override async Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            HttpResponseMessage response = await HttpClient.GetAsync(_baseUrl + name);
-
-            if (!response.IsSuccessStatusCode)
+            var result = await GetJson(new Uri( _baseUrl + name));
+            if (result.Success)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new ArgumentException("Package could not be found");
-                }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
-            }
-            string resp = await response.Content.ReadAsStringAsync();
+                JObject o = result.Result;
+                if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
 
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
-
-            var list = new List<IPackageInstance>();
-            JObject versions = new JObject( o.Property("versions"));
-            //iterate on eah version of the json
-            foreach (var item in versions)
-            {
-                if (SemVersion.TryParse(item.Key, out SemVersion item_v))
+                var list = new List<PackageInstanceResult>();
+                JObject versions = new JObject(result.Result.Property("versions"));
+                //iterate on eah version of the json
+                foreach (var item in versions)
                 {
-                    string packageVersion = item.Key;
-                    string packageName = item.Value["name"].ToString();
-                    list.Add(new PackageInstance { Name = packageName, Version = packageVersion });
+                    if (SemVersion.TryParse(item.Key, out SemVersion item_v))
+                    {
+                        string packageVersion = item.Key;
+                        string packageName = item.Value["name"].ToString();
+                        list.Add(new PackageInstanceResult(null, new PackageInstance { Name = packageName, Version = packageVersion }));
+                    }
+                    else
+                    {
+                        list.Add(new PackageInstanceResult(null, null));
+
+                    }
+
                 }
-                
+                return list;
             }
-            return list;
+            else return null;
         }
-        public override async Task<IEnumerable<ITarget>> GetDependencies(string name, string version)
+        public override async Task<IEnumerable<TargetResult>> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
@@ -86,7 +84,7 @@ namespace GoM.Feeds
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : "+version+" found.");
 
             JObject dependencies = new JObject( o.Property("dependencies"));
-            var list = new List<ITarget>();
+            var list = new List<TargetResult>();
             var target = new Target { Name = o.Value<string>("name") };
             //iterate on eah version of the json
             foreach (var item in dependencies)
@@ -95,14 +93,14 @@ namespace GoM.Feeds
                 string depVersion = item.Value.ToString();
                 target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });                
             }
-            list.Add(target);
+            list.Add(new TargetResult(null, target));
             return list;
         }
 
-        public override async Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version)
+        public override async Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => SemVersion.Parse(x.Version) > SemVersion.Parse(version));
+            return res.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
         }
     }
 }

@@ -29,9 +29,9 @@ namespace GoM.Feeds
         protected HttpClient HttpClient => _client;
 
         public abstract Task<FeedMatchResult> FeedMatch(Uri adress);
-        public abstract Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name);
-        public abstract Task<IEnumerable<TargetResult>> GetDependencies(string name, string version);
-        public abstract Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version);
+        public abstract Task<GetPackagesResult> GetAllVersions(string name);
+        public abstract Task<GetDependenciesResult> GetDependencies(string name, string version);
+        public abstract Task<GetPackagesResult> GetNewestVersions(string name, string version);
 
 
         protected async Task<JsonResult> GetJson( Uri url )
