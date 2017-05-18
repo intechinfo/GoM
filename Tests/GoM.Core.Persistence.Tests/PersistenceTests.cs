@@ -17,6 +17,40 @@ namespace GoM.Core.Persistence.Tests
         }
 
         [Fact]
+        public void test_integration_with_given_batch()
+        {
+
+            var path = new DirectoryInfo(TuPath());
+
+            // run bat if Dev folder doesn't exists
+            if ( path.Parent.GetDirectories().FirstOrDefault( ( e ) => e.Name == "Dev" ) == null )
+            {
+                if (path.Parent.GetFiles().FirstOrDefault( e => e.Name == "CreateSampleRoot.bat" ) == null)
+                {
+                    throw new Exception( "CreateSapleRoot.bat is needed" );
+                }
+
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo.FileName = path.Parent.GetFiles().FirstOrDefault( e => e.Name == "CreateSampleRoot.bat" ).FullName;
+                proc.StartInfo.WorkingDirectory = path.Parent.FullName;
+
+                proc.Start();
+                proc.WaitForExit();
+                // TODO error management for CI
+
+            }
+
+            Cle
+                
+
+
+
+
+
+        }
+
+
+        [Fact]
         public void test_runner_working()
         {
             Assert.True(true);
