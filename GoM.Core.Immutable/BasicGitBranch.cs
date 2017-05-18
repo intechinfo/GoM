@@ -24,9 +24,8 @@ namespace GoM.Core.Immutable
 
         IGitBranch IBasicGitBranch.Details => Details;
 
-        public static BasicGitBranch Create(string name, GitBranch details = null)
-        {
-            return Create(name, details);
-        }
+        public static BasicGitBranch Create(string name, GitBranch details = null) => new BasicGitBranch(name, details);
+
+        public static BasicGitBranch Create(IBasicGitBranch gitBranch) => gitBranch as BasicGitBranch ?? new BasicGitBranch(gitBranch);
     }
 }

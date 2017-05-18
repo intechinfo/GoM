@@ -22,15 +22,7 @@ namespace GoM.Core.Immutable
             if (Feeds.Any(feed => feed != null)) throw new ArgumentException($"A feed in {nameof(feeds)} is null");
 
             // Check duplicates on repositories(path) and feeds (url)
-            bool isDuplicates = false;
-            isDuplicates = repositories.Distinct(
-                EqualityComparerGenerator.CreateEqualityComparer<BasicGitRepository>((x, y) => x.Path == y.Path, x => x.Path.GetHashCode())
-            ).Count() < repositories.Count;
-            isDuplicates = isDuplicates ? true : feeds.Distinct(
-                EqualityComparerGenerator.CreateEqualityComparer<PackageFeed>((x, y) => x.Url.OriginalString == y.Url.OriginalString, x => x.Url.OriginalString.GetHashCode())
-            ).Count() < feeds.Count;
-
-            if (isDuplicates) throw new ArgumentException("Duplicate package feeds or repositories found");
+            if (CheckDuplicates(repositories, feeds)) throw new ArgumentException("Duplicate package feeds or repositories found");
         }
 
         private GoMContext(IGoMContext context)
@@ -39,6 +31,9 @@ namespace GoM.Core.Immutable
             //Repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
             Repositories = ImmutableList.Create(context.Repositories.Select( x => BasicGitRepository.Create(x)).ToArray());
             Feeds = (ImmutableList<PackageFeed>)context.Feeds;
+
+            // Check duplicates on repositories(path) and feeds (url)
+            if (CheckDuplicates(Repositories, Feeds)) throw new ArgumentException("Duplicate package feeds or repositories found");
         }
 
         public string RootPath { get; }
@@ -94,5 +89,17 @@ namespace GoM.Core.Immutable
         //{
         //    Visitor v = new 
         //}
+
+        bool CheckDuplicates(ImmutableList<BasicGitRepository> repositories, ImmutableList<PackageFeed> feeds)
+        {
+            bool isDuplicates = false;
+            isDuplicates = repositories.Distinct(
+                EqualityComparerGenerator.CreateEqualityComparer<BasicGitRepository>((x, y) => x.Path == y.Path, x => x.Path.GetHashCode())
+            ).Count() < repositories.Count;
+            isDuplicates = isDuplicates ? true : feeds.Distinct(
+                EqualityComparerGenerator.CreateEqualityComparer<PackageFeed>((x, y) => x.Url.OriginalString == y.Url.OriginalString, x => x.Url.OriginalString.GetHashCode())
+            ).Count() < feeds.Count;
+            return isDuplicates;
+        }
     }
 }
