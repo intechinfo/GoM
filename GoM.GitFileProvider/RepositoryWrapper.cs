@@ -19,7 +19,8 @@ namespace GoM.GitFileProvider
 
         internal void Create(string rootPath)
         {
-            Repo = new Repository(rootPath);
+            if (Repo == null)
+              Repo = new Repository(rootPath);
         }
     }
 }

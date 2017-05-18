@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GoM.Core.FSAnalyzer\GoM.Core.FSAnalyzer.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
     <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
   </ItemGroup>
 
