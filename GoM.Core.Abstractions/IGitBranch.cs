@@ -4,7 +4,7 @@ namespace GoM.Core
 {
     public interface IGitBranch : IBasicGitBranch
     {
-        IReadOnlyCollection<IProject> Projects { get; }
+        IReadOnlyCollection<IBasicProject> Projects { get; }
 
         IBranchVersionInfo Version { get; }
     }
