@@ -5,9 +5,7 @@ namespace GoM.Core.Immutable
 {
     public class BasicProject : IBasicProject
     {
-        private IBasicProject project;
-
-        public BasicProject(IBasicProject project)
+        private BasicProject(IBasicProject project)
         {
             Debug.Assert(!(project is BasicProject));
             Path = project.Path ?? throw new ArgumentException(nameof(project.Path));

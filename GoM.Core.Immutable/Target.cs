@@ -7,9 +7,7 @@ namespace GoM.Core.Immutable
 {
     public class Target : ITarget
     {
-        private ITarget target;
-
-        public Target(ITarget target)
+        private Target(ITarget target)
         {
             Name = target.Name ?? throw new ArgumentException(nameof(target.Name));
             if (target.Dependencies != null) Dependencies = (ImmutableList<TargetDependency>)target.Dependencies;

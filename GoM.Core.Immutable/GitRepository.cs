@@ -24,7 +24,7 @@ namespace GoM.Core.Immutable
             Debug.Assert(!(repository is GitRepository));
             Path = repository.Path ?? throw new ArgumentException(nameof(repository.Path));
             Url = repository.Url ?? throw new ArgumentException(nameof(repository.Url));
-            Branches = repository.Branches == null ? ImmutableList.Create<BasicGitBranch>() : ImmutableList.Create(repository.Branches.Select(x => BasicGitBranch.Create(x).ToArray());
+            Branches = repository.Branches == null ? ImmutableList.Create<BasicGitBranch>() : ImmutableList.Create(repository.Branches.Select(x => BasicGitBranch.Create(x)).ToArray());
 
             // Check for branch duplicates
             if (CheckDuplicates(Branches)) throw new ArgumentException("Duplicates found in branches");
