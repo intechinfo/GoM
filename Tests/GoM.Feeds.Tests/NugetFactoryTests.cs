@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GoM.Feeds.Results;
 using GoM.Feeds;
 using GoM.Feeds.Abstractions;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace GoM.Feeds.Tests
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://api.nuget.org/v3/index.json");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count.Should().BeGreaterThan(0);
             }
             
@@ -41,8 +42,8 @@ namespace GoM.Feeds.Tests
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }  
         }
@@ -54,8 +55,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().BeGreaterThan(0);
             }   
         }
@@ -67,8 +68,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
         }
