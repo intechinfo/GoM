@@ -33,7 +33,21 @@ namespace GoM.Core.Immutable.Visitors
 
         public virtual BasicGitBranch Visit(BasicGitBranch basicBranch)
         {
-            return basicBranch;
+            var visitedBranchDetails = basicBranch.Details != null ? Visit(basicBranch.Details) : null;
+            return visitedBranchDetails != basicBranch.Details
+                ? (visitedBranchDetails == null ? BasicGitBranch.Create(basicBranch.Name) : BasicGitBranch.Create(visitedBranchDetails))
+                : basicBranch;
+        }
+
+        public virtual GitBranch Visit(GitBranch branch)
+        {
+            var visitedProjecs = branch.Projects != null ? Visit(branch.Projects, Visit) : ImmutableList.Create<BasicProject>();
+            return visitedProjecs != branch.Projects ? GitBranch.Create(branch.Name, branch.Version, visitedProjecs) : branch;
+        }
+
+        public virtual BasicProject Visit(BasicProject project)
+        {
+            return project;
         }
 
         public virtual PackageFeed Visit(PackageFeed p)

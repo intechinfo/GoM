@@ -41,5 +41,22 @@ namespace GoM.Core.Immutable
             var visitor = new DetailRepositoryVisitor(detailed);
             return visitor.Visit(this);
         }
+
+        public GoMContext SetBranchDetails(GitBranch detailed)
+        {
+            if (detailed == null) throw new ArgumentNullException(nameof(detailed));
+            var visitor = new DetailBranchVisitor(detailed);
+            return visitor.Visit(this);
+        }
+
+        public GoMContext UpdateRepositoryFields(string path, string newPath = null, Uri newUrl = null)
+        {
+            if(path == null) throw new ArgumentNullException(nameof(path));
+            if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
+            if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
+            var repositoryToUpdate = Repositories.SingleOrDefault(rep => rep.Path == path) ?? throw new ArgumentException("This repository does not exist");
+            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
+            return visitor.Visit(this);
+        }
     }
 }

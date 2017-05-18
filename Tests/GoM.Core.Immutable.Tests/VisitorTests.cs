@@ -1,17 +1,14 @@
+﻿using FluentAssertions;
 using System;
-using Xunit;
-using System.Collections.Immutable;
-using FluentAssertions;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
-using GoM.Core.Mutable.Tests;
-using GoM.Core.Mutable;
-using GoM.Core.Immutable.Visitors;
+using System.Text;
+using Xunit;
 
 namespace GoM.Core.Immutable.Tests
 {
-    public class CreationTests
+    public class VisitorTests
     {
         private GoMContext CreateTestGoMContext()
         {
@@ -20,7 +17,7 @@ namespace GoM.Core.Immutable.Tests
             Immutable.BranchVersionInfo newBranchVersionInfo = BranchVersionInfo.Create(1, newVersionTag);
 
             // TargetDependenciy    
-            Immutable.TargetDependency newTargetDependency = TargetDependency.Create("Ma target d�pendence", "1.0.0");
+            Immutable.TargetDependency newTargetDependency = TargetDependency.Create("Ma target dépendence", "1.0.0");
             ImmutableList<TargetDependency> dependencies = ImmutableList.Create<TargetDependency>(newTargetDependency);
 
             // Targets
@@ -52,6 +49,28 @@ namespace GoM.Core.Immutable.Tests
 
             // Context
             return Immutable.GoMContext.Create("myContextPath", repositories, feeds);
+        }
+
+        [Fact]
+        public void SetRepositoryDetails_method_returns_a_new_GoMContext_with_new_details()
+        {
+            var context = CreateTestGoMContext();
+            Immutable.GitRepository newGitRepository = GitRepository.Create("newPath", new Uri("http://newUri"));
+            context = context.SetRepositoryDetails(newGitRepository);
+
+            var repo = context.Repositories.SingleOrDefault(rep => rep.Details == newGitRepository);
+            repo.Should().NotBeNull();
+
+            repo.Details.Should().Be(newGitRepository);
+        }
+
+        [Fact]
+        public void UpdateRepositoryFields_method_returns_a_new_GoMContext()
+        {
+            var context = CreateTestGoMContext();
+            var newContext = context.UpdateRepositoryFields("path", "newPath");
+
+            newContext.Repositories[0].Path.Should().Be("newPath");
         }
     }
 }
