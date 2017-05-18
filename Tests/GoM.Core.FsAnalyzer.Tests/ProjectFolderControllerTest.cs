@@ -29,7 +29,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_folder_handler_controller_returns_right_git_projects_folder_using_git_file_provider()
         {
             ProjectFolderController projectFolderController = new ProjectFolderController();
-            GoM.GitFileProvider.GitFileProvider gitFileProvider = new GoM.GitFileProvider.GitFileProvider(@"D:\VS2017_Projets\GoM");
+            GoM.GitFileProvider.GitFileProvider gitFileProvider = new GoM.GitFileProvider.GitFileProvider(RootDirectory);
             IReadOnlyCollection<IProject> projects = projectFolderController.Analyze(gitFileProvider);
             Assert.True(true);
         }
