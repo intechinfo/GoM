@@ -18,8 +18,8 @@ namespace GoM.Core.Immutable
             Repositories = repositories ?? throw new ArgumentException(nameof(repositories));
             Feeds = feeds ?? throw new ArgumentException(nameof(feeds));
 
-            if (Repositories.Any(rep => rep != null)) throw new ArgumentException($"A repository in {nameof(repositories)} is null");
-            if (Feeds.Any(feed => feed != null)) throw new ArgumentException($"A feed in {nameof(feeds)} is null");
+            if (Repositories.Any(rep => rep == null)) throw new ArgumentException($"A repository in {nameof(repositories)} is null");
+            if (Feeds.Any(feed => feed == null)) throw new ArgumentException($"A feed in {nameof(feeds)} is null");
 
             // Check duplicates on repositories(path) and feeds (url)
             if (CheckDuplicates(repositories, feeds)) throw new ArgumentException("Duplicate package feeds or repositories found");
