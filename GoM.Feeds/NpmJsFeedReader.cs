@@ -36,7 +36,7 @@ namespace GoM.Feeds
                 }
                 return new FeedMatchResult(null, false);
             }
-            return new FeedMatchResult(result.NetworkException==null? result.JsonException:result.NetworkException, false);
+            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false);
         }
 
         public override async Task<GetPackagesResult> GetAllVersions(string name)
@@ -73,7 +73,7 @@ namespace GoM.Feeds
             }
             else
             {
-                return new GetPackagesResult(result.NetworkException == null ? result.JsonException : result.NetworkException, null);
+                return new GetPackagesResult(result.NetworkException ?? result.JsonException, null);
             }
         }
         public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
@@ -106,7 +106,7 @@ namespace GoM.Feeds
             }
             else
             {
-                return new GetDependenciesResult(result.NetworkException == null ? result.JsonException : result.NetworkException, null);
+                return new GetDependenciesResult(result.NetworkException ?? result.JsonException, null);
             }
         }
 
