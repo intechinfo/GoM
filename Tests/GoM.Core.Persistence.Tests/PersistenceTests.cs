@@ -59,8 +59,49 @@ namespace GoM.Core.Persistence.Tests
             Assert.True( output == devFolder.FullName );
 
             var ctx = p.Load( devFolder.FullName );
-
-
+            Assert.True(ctx.Repositories.ToList()[0].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-AspNet-Projects")
+                .GetDirectories().First(el => el.Name == "CK-AspNet" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [1].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-AspNet-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-AspNet-Auth" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [2].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-ActivityMonitor" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [3].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-Auth-Abstractions" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [4].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-Core" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [5].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-Monitoring" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [6].Path == devFolder
+                .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+                .GetDirectories().First( el => el.Name == "CK-Reflection" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [7].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Core-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-Text" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [8].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Database-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-Database" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [9].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Database-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-DB" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [10].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Database-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-Setup-Dependency" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [11].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Database-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-SqlServer-Parser" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [12].Path == devFolder
+               .GetDirectories().First( el => el.Name == "CK-Database-Projects" )
+               .GetDirectories().First( el => el.Name == "CK-SqlServer-Parser-Model" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [13].Path == devFolder
+               .GetDirectories().First( el => el.Name == "NUnit-GUI" ).FullName );
+            Assert.True( ctx.Repositories.ToList() [14].Path == devFolder
+               .GetDirectories().First( el => el.Name == "Yodii" ).FullName );
 
         }
 
@@ -175,54 +216,54 @@ namespace GoM.Core.Persistence.Tests
             var p = new Persistence();
             GoMContext ctx = (GoMContext)p.Load(rootPath);
 
-            #region Repo 1
+#region Repo 1
             Assert.True(ctx.Repositories[1].Path == "/usr/developpement/mdr");
             Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[1].Details == null);
-            #endregion
+#endregion
 
-            #region Repo 2
+#region Repo 2
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
             Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
             Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
 
-            #region Branch 1
+#region Branch 1
             Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "develop");
 
-            #region Projet 1
+#region Projet 1
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Path == "fakebasicproject1" );
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Name == "target1");
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Name == "dependency1");
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[0].Dependencies.ToList()[0].Version == "1.0.0");
 
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.ToList()[1].Name == "target2");
-            #endregion
+#endregion
 
-            #region Projet 2
+#region Projet 2
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Path == "fakebasicproject2" );
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[1].Details.Targets.ToList()[0].Name == "target3");
-            #endregion
+#endregion
 
-            #region Projet 3
+#region Projet 3
             Assert.True(ctx.Repositories[0].Details.Branches[0].Details.Projects[2].Path == "fakebasicproject3");
-            #endregion
+#endregion
 
-            #region Projet 4
+#region Projet 4
             Assert.True( ctx.Repositories [0].Details.Branches [0].Details.Projects [3].Path == "fakebasicproject4" );
             Assert.True( ctx.Repositories [0].Details.Branches [0].Details.Projects [3].Details == null );
-            #endregion
+#endregion
 
-            #endregion
+#endregion
 
-            #region Branch 2
+#region Branch 2
             Assert.True(ctx.Repositories[0].Details.Branches[1].Name == "Cubado");
             Assert.True(ctx.Repositories[0].Details.Branches[1].Details == null);
-            #endregion
+#endregion
 
-            #endregion
+#endregion
 
-            #region Feed 1
+#region Feed 1
             Assert.True(ctx.Feeds[0].Url == new Uri("http://www.google.fr"));
 
             // Packages 1, 2 et 3
@@ -234,11 +275,11 @@ namespace GoM.Core.Persistence.Tests
 
             Assert.True(ctx.Feeds[0].Packages[2].Version == "1.5.0");
             Assert.True(ctx.Feeds[0].Packages[2].Name == "chibre");
-            #endregion
+#endregion
 
-            #region Feed 2
+#region Feed 2
             Assert.True(ctx.Feeds[1].Url == new Uri("http://www.google.com"));
-            #endregion
+#endregion
 
             CleanGoMPersistence();
         }
