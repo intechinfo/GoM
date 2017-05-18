@@ -7,6 +7,7 @@ using Semver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -29,7 +30,20 @@ namespace GoM.Feeds
         public override async Task<bool> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
-            string resp = await _client.GetStringAsync(adress);
+
+            HttpResponseMessage response = await _client.GetAsync(adress);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new ArgumentException("Package could not be found");
+                }
+                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
+            }
+            string resp = await response.Content.ReadAsStringAsync();
+
+
             JObject o;
             try
             {
@@ -52,7 +66,19 @@ namespace GoM.Feeds
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
-            string resp = await  _client.GetStringAsync(_baseUrl + name );
+
+            HttpResponseMessage response = await _client.GetAsync(_baseUrl + name);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new ArgumentException("Package could not be found");
+                }
+                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
+            }
+            string resp = await response.Content.ReadAsStringAsync();
+
             JObject o = JObject.Parse(resp);
             if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
 

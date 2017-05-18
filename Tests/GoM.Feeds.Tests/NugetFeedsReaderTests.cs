@@ -50,7 +50,10 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetAllVersions("NUnit").Result.Should().NotBeNullOrEmpty();
-                testReader.GetAllVersions("PackageMustn0TExISte").Result.Should().BeNullOrEmpty();
+            //testReader.GetAllVersions("PackageMustn0TExISte").Result.Should().BeNullOrEmpty();
+
+            Action a1 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("PackageMustn0TExISte").Result; };
+            a1.ShouldThrow<ArgumentException>();
 
                 Action a2 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
