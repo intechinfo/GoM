@@ -30,7 +30,7 @@ namespace GoM.Core.Immutable.Tests
             Immutable.BasicProject newBasicProject = BasicProject.Create(newProject);
             ImmutableList<BasicProject> projects = ImmutableList.Create<BasicProject>(newBasicProject);
 
-            // FIXME : Erreyr dans les tests ligne 258. Les détails des projets seraient nuls
+            // FIXME : Erreur dans les tests ligne 258. Les détails des projets seraient nuls
 
             // BasicGitBranch
             Immutable.GitBranch newGitBranch = GitBranch.Create("Ma git branch", newBranchVersionInfo, projects);
