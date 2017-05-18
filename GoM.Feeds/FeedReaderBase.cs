@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using GoM.Feeds.Results;
 
 namespace GoM.Feeds
 {
@@ -27,10 +28,10 @@ namespace GoM.Feeds
 
         protected HttpClient HttpClient => _client;
 
-        public abstract Task<bool> FeedMatch(Uri adress);
-        public abstract Task<IEnumerable<IPackageInstance>> GetAllVersions(string name);
-        public abstract Task<IEnumerable<ITarget>> GetDependencies(string name, string version);
-        public abstract Task<IEnumerable<IPackageInstance>> GetNewestVersions(string name, string version);
+        public abstract Task<FeedMatchResult> FeedMatch(Uri adress);
+        public abstract Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name);
+        public abstract Task<IEnumerable<TargetResult>> GetDependencies(string name, string version);
+        public abstract Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version);
 
 
         protected async Task<JsonResult> GetJson( Uri url )

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace GoM.Feeds
+namespace GoM.Feeds.Results
 {
     public class JsonResult
     {

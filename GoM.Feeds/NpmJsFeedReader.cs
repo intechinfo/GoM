@@ -1,6 +1,7 @@
 ﻿using GoM.Core;
 using GoM.Core.Mutable;
 using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Semver;
@@ -17,39 +18,25 @@ namespace GoM.Feeds
     {
         string _baseUrl = "http://registry.npmjs.org/";
 
-        public override async Task<bool> FeedMatch(Uri adress)
+        public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
 
-            HttpResponseMessage response = await HttpClient.GetAsync(adress);
 
-            if (!response.IsSuccessStatusCode)
+            var result = await GetJson(adress);
+            if (result.Success)
             {
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                JObject o = result.Result;
+
+                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                bool isNpm = o.TryGetValue("db_name", out JToken value);
+                if (isNpm)
                 {
-                    throw new ArgumentException("Package could not be found");
+                    return new FeedMatchResult(null,o.Property("db_name").Value.ToString() == "registry");
                 }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
+                return new FeedMatchResult(null, false);
             }
-            string resp = await response.Content.ReadAsStringAsync();
-
-
-            JObject o;
-            try
-            {
-                o = JObject.Parse(resp);
-            }
-            catch(JsonReaderException)
-            {
-                return false;
-            }
-            if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() +" .");
-            bool isNpm = o.TryGetValue("db_name", out JToken value);
-            if (isNpm)
-            {
-                return o.Property("db_name").Value.ToString() == "registry";
-            }
-            return false;
+            return new FeedMatchResult(result.NetworkException==null? result.JsonException:result.NetworkException, false);
         }
 
         public override async Task<IEnumerable<IPackageInstance>> GetAllVersions(string name)
