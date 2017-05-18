@@ -8,46 +8,52 @@ namespace GoM.Core.Immutable.Visitors
         public virtual GoMContext Visit(GoMContext c)
         {
             var repos = Visit(c.Repositories, Visit);
-            //var feeds = Visit(c.Feeds, Visit);
+            var feeds = Visit(c.Feeds, Visit);
             if (repos != c.Repositories
-                /*|| feeds != c.Feeds*/)
+                || feeds != c.Feeds)
             {
-                return GoMContext.Create(c.RootPath, repos, c.Feeds/*feeds*/);
+                return GoMContext.Create(c.RootPath, repos, feeds);
             }
             return c;
         }
 
-        protected virtual BasicGitRepository Visit(BasicGitRepository r)
+        protected virtual BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
-            var dV = r.Details != null ? Visit(r.Details) : null;
-            return dV != r.Details
-                    ? (dV == null ? BasicGitRepository.Create(r.Path, r.Url) : BasicGitRepository.Create(dV))
-                    : r;
+            var visitedDetails = basicRepository.Details != null ? Visit(basicRepository.Details) : null;
+            return visitedDetails != basicRepository.Details
+                    ? (visitedDetails == null ? BasicGitRepository.Create(basicRepository.Path, basicRepository.Url) : BasicGitRepository.Create(visitedDetails))
+                    : basicRepository;
         }
 
-        protected virtual GitRepository Visit(GitRepository r)
+        protected virtual GitRepository Visit(GitRepository repository)
         {
-            return r;
+            var visitedBanches = repository.Branches != null ? Visit(repository.Branches, Visit) : ImmutableList.Create<BasicGitBranch>();
+            return visitedBanches != repository.Branches ? GitRepository.Create(repository.Path, repository.Url, visitedBanches) : repository;
+        }
+
+        protected virtual BasicGitBranch Visit(BasicGitBranch basicBranch)
+        {
+            return basicBranch;
         }
 
         protected virtual PackageFeed Visit(PackageFeed p)
         {
-            throw new NotImplementedException();
+            return p;
         }
 
         static ImmutableList<T> Visit<T>(ImmutableList<T> input, Func<T, T> transformer) where T : class
         {
             int i = 0;
             ImmutableList<T>.Builder listBuilder = null;
-            foreach (var r in input)
+            foreach (var element in input)
             {
-                T rV = transformer(r);
-                if (rV != r && listBuilder == null)
+                T visitedElement = transformer(element);
+                if (visitedElement != element && listBuilder == null)
                 {
                     listBuilder = ImmutableList.CreateBuilder<T>();
                     listBuilder.AddRange(input.GetRange(0, i));
                 }
-                if (listBuilder != null && rV != null) listBuilder.Add(rV);
+                if (listBuilder != null && visitedElement != null) listBuilder.Add(visitedElement);
                 ++i;
             }
             return listBuilder == null ? input : listBuilder.ToImmutableList();
