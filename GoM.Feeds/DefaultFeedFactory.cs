@@ -33,7 +33,7 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> Snif(Uri link)
         {
-           return _factories.SelectMany(f => f.FeedReaders).Where(fr => fr.FeedMatch(link).Result);
+           return _factories.SelectMany(f => f.FeedReaders).Where( (fr) => { var res = fr.FeedMatch(link).Result; return res.Success && res.Result; });
         }
     }
 }
