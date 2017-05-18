@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GoM.Feeds;
+using GoM.Feeds.Results;
 using GoM.Feeds.Abstractions;
 using System.Linq;
 using Xunit;
@@ -27,8 +28,8 @@ namespace GoM.Feeds.Tests
             using (PypiFactory fac = new PypiFactory()) 
             {
                 Uri myUri = new Uri("https://pypi.python.org/pypi/Python/json");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count.Should().BeGreaterThan(0);
             }
         }
@@ -39,8 +40,8 @@ namespace GoM.Feeds.Tests
             using (PypiFactory fac = new PypiFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
         }
@@ -52,8 +53,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (PypiFactory fac = new PypiFactory()) 
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().BeGreaterThan(0);
             }
             
@@ -67,8 +68,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (PypiFactory fac = new PypiFactory())
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
         }

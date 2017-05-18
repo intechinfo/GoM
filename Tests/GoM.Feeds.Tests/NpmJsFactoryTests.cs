@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GoM.Feeds;
+using GoM.Feeds.Results;
 using GoM.Feeds.Abstractions;
 using System.Linq;
 using Xunit;
@@ -26,8 +27,8 @@ namespace GoM.Feeds.Tests
             using (NpmJsFactory fac = new NpmJsFactory())
             {
                 Uri myUri = new Uri("http://registry.npmjs.org/");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count.Should().BeGreaterThan(0);
             }
         }
@@ -38,8 +39,8 @@ namespace GoM.Feeds.Tests
             using (NpmJsFactory fac = new NpmJsFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                IEnumerable<IFeedReader> res = fac.Snif(myUri);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myUri);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
         }
@@ -51,8 +52,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NpmJsFactory fac = new NpmJsFactory())
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().BeGreaterThan(0);
             }
         }
@@ -64,8 +65,8 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NpmJsFactory fac = new NpmJsFactory())
             {
-                IEnumerable<IFeedReader> res = fac.Snif(myList);
-                var sut = res.ToList();
+                GetReadersResult res = fac.Snif(myList);
+                var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
         }
