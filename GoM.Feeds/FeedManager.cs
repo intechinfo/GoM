@@ -19,12 +19,16 @@ namespace GoM.Feeds
         {
             _factory.Dispose();
         }
-        public IDictionary<IPackageInstance, IEnumerable<IPackageInstance>> GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
+        public IDictionary<IPackageInstance, IEnumerable<Results.PackageInstanceResult>> GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds);
-            var toDo = packages.Join(feedsResults, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.GetAllVersions(p.Name) });
+            if( feedsResults.Succes)
+            {
+
+            }
+            var toDo = packages.Join(feedsResults.Result, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.GetAllVersions(p.Name) });
             Task.WaitAll(toDo.Select(x => x.T).ToArray());
-            return toDo.ToDictionary(x => x.P, x => x.T.Result);
+            return toDo.ToDictionary(x => x.P, x => x.T.Result.Result);
         }
 
         public IDictionary<IPackageInstance, IEnumerable<IPackageInstance>> GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)

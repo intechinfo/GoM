@@ -17,12 +17,12 @@ namespace GoM.Feeds.Abstractions
         /// </summary>
         /// <param name="links">A list of <see cref="Uri"/> used as <see cref="IFeedReader"/> identifiers </param>
         /// <returns>A <see cref="IEnumerable{IFeedReader}"/></returns>
-        GetReadersResult Snif(IEnumerable<Uri> links);
+        Task<IEnumerable<FeedMatchResult>> Snif(IEnumerable<Uri> links);
         /// <summary>
         /// Returns the <see cref="IFeedReader"/> that match the given <see cref="Uri"/>
         /// </summary>
         /// <param name="link">A <see cref="Uri"/> used as <see cref="IFeedReader"/> identifier </param>
         /// <returns>A <see cref="IEnumerable{IFeedReader}"/></returns>
-        GetReadersResult Snif(Uri link);
+        Task<IEnumerable<FeedMatchResult>> Snif(Uri link);
     }
 }

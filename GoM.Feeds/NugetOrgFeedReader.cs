@@ -31,13 +31,13 @@ namespace GoM.Feeds
                 if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
 
                 if (o.TryGetValue("version", out JToken j1) && o.TryGetValue("resources", out JToken j2) && o.TryGetValue("@context", out JToken j3))
-                    return new FeedMatchResult(null, true);
+                    return new FeedMatchResult(null, true,json,this);
 
-                return new FeedMatchResult(null, false);
+                return new FeedMatchResult(null, false, json, this);
             }
             else
             {
-                return new FeedMatchResult(json.NetworkException == null ? json.JsonException : json.NetworkException, false);
+                return new FeedMatchResult(json.NetworkException ?? json.JsonException , false, json,this);
             }
         }
 

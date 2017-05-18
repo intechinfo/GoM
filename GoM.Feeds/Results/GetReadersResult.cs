@@ -10,10 +10,12 @@ namespace GoM.Feeds.Results
         public readonly IEnumerable<IFeedReader> Result;
         public bool Succes => Result != null;
         public IEnumerable<Exception> Reasons;
-        public GetReadersResult(IEnumerable<Exception> e, IEnumerable<IFeedReader> r)
+        public readonly JsonResult Json;
+        public GetReadersResult(IEnumerable<Exception> e, IEnumerable<IFeedReader> r, JsonResult j)
         {
             Result = r;
             Reasons = e;
+            Json = j;
         }
     }
 }

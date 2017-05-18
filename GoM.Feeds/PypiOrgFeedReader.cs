@@ -28,15 +28,18 @@ namespace GoM.Feeds
             {
                 JObject o = result.Result;
 
-                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                if (!o.HasValues)
+                {
+                    return new FeedMatchResult(new InvalidOperationException("No data found at " + adress + " ."), false, result, this);
+                }
                 bool isPypi = o.TryGetValue("info", out JToken value);
                 if (isPypi)
                 {
-                    return new FeedMatchResult(null,o.Property("info").Value.ToString() == "registry");
+                    return new FeedMatchResult(null,o.Property("info").Value.ToString() == "registry",result, this);
                 }
-                return new FeedMatchResult(null, false);
+                return new FeedMatchResult(null, false,result, this);
             }
-            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false);
+            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false,result, this);
         }
 
 

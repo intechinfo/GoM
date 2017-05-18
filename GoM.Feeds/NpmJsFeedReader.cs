@@ -23,15 +23,18 @@ namespace GoM.Feeds
             {
                 JObject o = result.Result;
 
-                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                if (!o.HasValues)
+                {
+                    return new FeedMatchResult(new InvalidOperationException("No data found at "+adress+" ."), false,result);
+                }
                 bool isNpm = o.TryGetValue("db_name", out JToken value);
                 if (isNpm)
                 {
-                    return new FeedMatchResult(null,o.Property("db_name").Value.ToString() == "registry");
+                    return new FeedMatchResult(null,o.Property("db_name").Value.ToString() == "registry", result);
                 }
-                return new FeedMatchResult(null, false);
+                return new FeedMatchResult(null, false,result);
             }
-            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false);
+            return new FeedMatchResult(result.NetworkException ?? result.JsonException, false, result);
         }
 
         public override async Task<GetPackagesResult> GetAllVersions(string name)

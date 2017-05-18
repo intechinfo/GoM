@@ -3,6 +3,7 @@ using GoM.Feeds.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoM.Feeds
 {
@@ -19,30 +20,15 @@ namespace GoM.Feeds
         }
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
-        public GetReadersResult Snif(IEnumerable<Uri> links)
+        public async Task<IEnumerable<FeedMatchResult>> Snif(IEnumerable<Uri> links)
         {
             var t = links.Select(x => Snif(x));
-            return new GetReadersResult(t.SelectMany(x => x.Reasons), t.SelectMany(x => x.Result));
+            var ret = (await Task.WhenAll(t.Select(x => x))).SelectMany(x => x);
+            return ret;
         }
-
-        public GetReadersResult Snif(Uri link)
+        public async Task<IEnumerable<FeedMatchResult>> Snif(Uri link)
         {
-            var res = _feedReader.FeedMatch(link).Result;
-            List<IFeedReader> list = null;
-            List<Exception> exs = null;
-            if (res.Result && res.Success)
-            {
-                list = new List<IFeedReader> { _feedReader };
-            }
-            else if (res.Success && !res.Result)
-            {
-                list = new List<IFeedReader>();
-            }
-            else
-            {
-                exs = new List<Exception> { res.Reason };
-            }
-            return new GetReadersResult(exs, list);
+            return new List<FeedMatchResult> { await _feedReader.FeedMatch(link) };
         }
     }
 }
