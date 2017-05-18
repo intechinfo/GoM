@@ -10,12 +10,9 @@ namespace GoM.Core.FSAnalyzer
 {
     public class ProjectFolderController : IProjectFolderController
     {
-        public IReadOnlyCollection<IProject> Analyze(string path)
+        public IReadOnlyCollection<IProject> Analyze(IFileProvider rootPath)
         {
             List<IProject> projects = new List<IProject>();
-
-            //Check the .git on the path
-            PhysicalFileProvider rootPath = new PhysicalFileProvider(path);
 
             if (rootPath.GetDirectoryContents(".git").Exists)
             {
