@@ -14,7 +14,7 @@ namespace GoM.Core.GitExplorer.Tests
         [Test]
         public void Check_repository_is_loaded()
         {
-            var repository = new Communicator(url).loadRepository();
+            var repository = new Communicator(url).loadRepository(url);
             Assert.NotNull(repository);
             Assert.IsInstanceOf(typeof(Repository), repository);
         }

@@ -71,6 +71,6 @@ namespace GoM.Core.GitExplorer
         /// Get All Branches of a repository
         /// </summary>
         /// <returns>IEnumerable<string></returns>
-        List<BasicGitBranchDecorator> getAllBranches();
+        List<BasicGitBranch> getAllBranches();
     }
 }

@@ -42,14 +42,12 @@ namespace GoM.Core.GitExplorer
         /// Uri instance of source if repository is founded on internet.
         /// </summary>
         public Uri Url { get => url; }
-
-        public RepositoryWrapper RepoWrap { get; }
+        
 
         public GitFileProvider.GitFileProvider FileProvider { get => fileProvider; }
 
         public Communicator(string source)
         {
-            RepoWrap = new RepositoryWrapper();
             ReposPath = REPOS_DIRECTORY;
             Source = source;
             loadRepository(source);
@@ -82,7 +80,7 @@ namespace GoM.Core.GitExplorer
                 //Return repository if already stored
                 if (RepoExist)
                 {
-                    RepoWrap.Create(path);
+                    repo = new Repository(path);
                     return repo;
                 }
 
@@ -90,7 +88,7 @@ namespace GoM.Core.GitExplorer
 
                 //Clone and return repository if not stored
                 Repository.Clone(source, path);
-                RepoWrap.Create(path);
+                repo = new Repository(path);
                 return repo;
             }
             else
@@ -105,7 +103,7 @@ namespace GoM.Core.GitExplorer
 
 
                 //Return if exist
-                RepoWrap.Create(source);
+                repo = new Repository(source);
 
                 return repo;
             }
@@ -153,33 +151,31 @@ namespace GoM.Core.GitExplorer
            return branches.Select(c => c.Name);
         }
 
-        public List<BasicGitBranchDecorator> getAllBranches()
+        public List<BasicGitBranch> getAllBranches()
         {
-            List<BasicGitBranchDecorator> branches = new List<BasicGitBranchDecorator>();
+            List<BasicGitBranch> branches = new List<BasicGitBranch>();
             
-            using (loadRepository(Path))
+            using (Repository repo = loadRepository(Path))
             {
-                foreach (var branch in RepoWrap.Repo.Branches)
-                    branches.Add(convertBranchToGitBranch(branch));
+                foreach (var branch in repo.Branches)
+                    branches.Add(convertBranchToGitBranch(branch, repo));
             }
             return branches;
         }
 
-        private BasicGitBranchDecorator convertBranchToGitBranch(Branch branch)
+        private BasicGitBranch convertBranchToGitBranch(Branch branch, Repository repo)
         {
             string branchName = branch.FriendlyName;
 
-            Mutable.GitBranch gitBranch = new GitBranch() { Name = branchName, Version = getBranchVersionInfo(branch) };
+            Mutable.GitBranch gitBranch = new GitBranch() { Name = branchName, Version = getBranchVersionInfo(branch, repo) };
 
             Mutable.BasicGitBranch basicGitBranch = new BasicGitBranch() { Name = branchName, Details = gitBranch };
 
-            BasicGitBranchDecorator basicGitBranchDeco = new BasicGitBranchDecorator(basicGitBranch, RepoWrap);
-
-            return basicGitBranchDeco;
+            return basicGitBranch;
         }
 
-        
-        private BranchVersionInfo getBranchVersionInfo(Branch branch)
+
+        private BranchVersionInfo getBranchVersionInfo(Branch branch, Repository repo)
         {
             Mutable.VersionTag versionTag = new VersionTag();
             BranchVersionInfo branchVersionInfo = new BranchVersionInfo();
@@ -189,7 +185,7 @@ namespace GoM.Core.GitExplorer
             
                 foreach (var commit in branch.Commits)
                 {
-                    foreach (var tag in RepoWrap.Repo.Tags)
+                    foreach (var tag in repo.Tags)
                     {
                         if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
                         {

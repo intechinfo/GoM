@@ -15,11 +15,12 @@ namespace GoMConsole
 
         public static void test()
         {
-            Communicator communicator = new Communicator(@"C:\Users\Adams\Documents\visual studio 2017\Projects\GoM\GoMConsole\bin\Debug\repos\SGV-Net");
+            Communicator communicator = new Communicator("https://github.com/SimpleGitVersion/SGV-Net");
 
-            List<BasicGitBranchDecorator> branches = communicator.getAllBranches();
-          
-            int count = branches.Count;
+            var branches = communicator.getAllBranches();
+            
+
+                int count = branches.Count;
 
             foreach (var branch in branches)
             {
