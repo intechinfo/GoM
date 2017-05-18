@@ -7,13 +7,12 @@ using LibGit2Sharp;
 using GoM.Core.Mutable;
 using GoM.GitFileProvider;
 using Microsoft.Extensions.FileProviders;
-
-
+using GoM.Core.FSAnalyzer;
 namespace GoM.Core.GitExplorer
 {
     public class Communicator : ICommunicator
     {
-        const string REPOS_DIRECTORY = "repos";
+        const string REPOS_DIRECTORY = "../../repos";
 
         private Uri url;
         private GitFileProvider.GitFileProvider fileProvider;
@@ -36,7 +35,6 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         public Uri Url { get => url; }
         
-
         public GitFileProvider.GitFileProvider FileProvider { get => fileProvider; }
 
         public Communicator(string source)
@@ -94,7 +92,6 @@ namespace GoM.Core.GitExplorer
                 bool directoryExist = Directory.Exists(source);
                 if (!directoryExist) return null;
 
-
                 //Return if exist
                 repo = new Repository(source);
 
@@ -115,19 +112,6 @@ namespace GoM.Core.GitExplorer
         /// <param name="searchPattern">Model of search</param>
         /// <returns>All folders</returns>
         public List<string> getFolders(string searchPattern = "*") { return Helpers.getAllFoldersInDirectory(this.Path, searchPattern); }
-        
-        /// <summary>
-        /// Get BasicGitRepository instance of repository
-        /// </summary>
-        /// <returns>BasicGitRepository</returns>
-        public BasicGitRepository getBasicGitRepository()
-        {
-            BasicGitRepository BasicGitRepo = new BasicGitRepository() { Url = Url, Path = Path };
-
-            GitRepository gitRepo = new GitRepository() { Url = BasicGitRepo.Url, Path = BasicGitRepo.Path };
-
-            return BasicGitRepo;
-        }
 
         /// <summary>
         /// Get All Branches from DirectoryContents
@@ -136,6 +120,25 @@ namespace GoM.Core.GitExplorer
         public IDirectoryContents directoryContents()
         {
             return FileProvider.GetDirectoryContents("branches");
+        }
+
+        /// <summary>
+        /// Get BasicGitRepository instance of repository
+        /// </summary>
+        /// <returns>BasicGitRepository</returns>
+        public BasicGitRepository getBasicGitRepository()
+        {
+            BasicGitRepository basicGetRepo = new BasicGitRepository() { Url = url, Path = Path };
+
+            using (Repository repo = loadRepository(Path))
+            {
+                GitRepository gitRepo = new GitRepository() { Url = url, Path = Path };
+                gitRepo.Details.Branches.AddRange(getAllBranches());
+
+                basicGetRepo.Details = gitRepo;
+            }
+
+            return basicGetRepo;
         }
 
         public IEnumerable<string> getAllBranchesName()
@@ -162,11 +165,12 @@ namespace GoM.Core.GitExplorer
 
             Mutable.GitBranch gitBranch = new GitBranch() { Name = branchName, Version = getBranchVersionInfo(branch, repo) };
 
+            gitBranch.Projects.AddRange(getProjects());
+
             Mutable.BasicGitBranch basicGitBranch = new BasicGitBranch() { Name = branchName, Details = gitBranch };
 
             return basicGitBranch;
         }
-
 
         private BranchVersionInfo getBranchVersionInfo(Branch branch, Repository repo)
         {
@@ -176,21 +180,20 @@ namespace GoM.Core.GitExplorer
 
          //   if (RepoWrap.Repo.Tags.Count() == 0) return branchVersionInfo;
             
-                foreach (var commit in branch.Commits)
+            foreach (var commit in branch.Commits)
+            {
+                foreach (var tag in repo.Tags)
                 {
-                    foreach (var tag in repo.Tags)
+                    if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
                     {
-                        if (commit.Sha.ToString().Equals(tag.Target.Sha.ToString()))
-                        {
-                            versionTag.FullName = tag.FriendlyName;
-                            branchVersionInfo.LastTagDepth = depth;
-                            branchVersionInfo.LastTag = versionTag;
-                            return branchVersionInfo;
-                        }
+                        versionTag.FullName = tag.FriendlyName;
+                        branchVersionInfo.LastTagDepth = depth;
+                        branchVersionInfo.LastTag = versionTag;
+                        return branchVersionInfo;
                     }
-                    depth--;
                 }
-            
+                depth--;
+            }
 
             return branchVersionInfo;
         }
@@ -206,14 +209,18 @@ namespace GoM.Core.GitExplorer
             return result;
         }
 
-        private Project getProject()
+        private List<BasicProject> getProjects()
         {
-            throw new NotImplementedException();
-        }
+            ProjectFolderController projectFolderController = new ProjectFolderController();
+            List<BasicProject> basicProjects = new List<BasicProject>();
+            foreach (var project in projectFolderController.Analyze(fileProvider).ToList())
+            {
+                Project p = new Project(project);
+                BasicProject basicProject = new BasicProject() { Path = project.Path, Details = p };
+                basicProjects.Add(basicProject);
+            }
 
-        private List<Project> getProjects()
-        {
-            throw new NotImplementedException();
+            return basicProjects;
         }
 
         private Target getTarget()

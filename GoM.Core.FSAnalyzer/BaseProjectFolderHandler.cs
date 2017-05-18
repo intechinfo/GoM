@@ -29,7 +29,6 @@ namespace GoM.Core.FSAnalyzer
             throw new NotImplementedException();
         }
 
-
         public virtual IProject Read()
         {
             throw new NotImplementedException();
