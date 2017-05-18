@@ -39,7 +39,7 @@ namespace GoM.Feeds
             return new FeedMatchResult(result.NetworkException==null? result.JsonException:result.NetworkException, false);
         }
 
-        public override async Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name)
+        public override async Task<GetPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
@@ -97,10 +97,16 @@ namespace GoM.Feeds
             return list;
         }
 
-        public override async Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version)
+        public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            return res.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
+            if (res.Success)
+            {
+
+                var packages =  res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
+                return new GetPackagesResult(null, packages);
+            }
+            return res;
         }
     }
 }
