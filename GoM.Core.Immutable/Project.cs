@@ -8,9 +8,7 @@ namespace GoM.Core.Immutable
 {
     public class Project : IProject
     {
-        private IProject details;
-
-        public Project(IProject details)
+        private Project(IProject details)
         {
             Debug.Assert(!(details is Project));
             Path = details.Path ?? throw new ArgumentException(nameof(details.Path));
@@ -20,13 +18,13 @@ namespace GoM.Core.Immutable
             if (CheckDuplicates(Targets)) throw new ArgumentException($"A duplicate target was found in {nameof(details.Targets)}");
         }
 
-        public Project(string path, ImmutableList<Target> targets =  null)
+        private Project(string path, ImmutableList<Target> targets =  null)
         {
             Path = path ?? throw new ArgumentException(nameof(path));
             if (targets != null) Targets = targets;
 
             // Check duplicates
-            if (CheckDuplicates(Targets)) throw new ArgumentException($"A duplicate target was found in {nameof(details.Targets)}");
+            if (CheckDuplicates(Targets)) throw new ArgumentException($"A duplicate target was found in {nameof(Targets)}");
         }
 
         public ImmutableList<Target> Targets { get; } = ImmutableList.Create<Target>();

@@ -28,7 +28,8 @@ namespace GoM.Core.Immutable
         private GoMContext(IGoMContext context)
         {
             RootPath = context.RootPath;
-            Repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
+            //Repositories = (ImmutableList<BasicGitRepository>)context.Repositories;
+            Repositories = ImmutableList.Create(context.Repositories.Select( x => BasicGitRepository.Create(x)).ToArray());
             Feeds = (ImmutableList<PackageFeed>)context.Feeds;
 
             // Check duplicates on repositories(path) and feeds (url)

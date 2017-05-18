@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 
+
 namespace GoM.Core.Immutable
 {
     public class GitRepository : IGitRepository
@@ -23,7 +24,7 @@ namespace GoM.Core.Immutable
             Debug.Assert(!(repository is GitRepository));
             Path = repository.Path ?? throw new ArgumentException(nameof(repository.Path));
             Url = repository.Url ?? throw new ArgumentException(nameof(repository.Url));
-            Branches = (ImmutableList<BasicGitBranch>)repository.Branches ?? ImmutableList.Create<BasicGitBranch>();
+            Branches = repository.Branches == null ? ImmutableList.Create<BasicGitBranch>() : ImmutableList.Create(repository.Branches.Select(x => BasicGitBranch.Create(x)).ToArray());
 
             // Check for branch duplicates
             if (CheckDuplicates(Branches)) throw new ArgumentException("Duplicates found in branches");
