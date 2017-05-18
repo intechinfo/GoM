@@ -38,106 +38,121 @@ namespace GoM.Feeds
             else
             {
                 return new FeedMatchResult(json.NetworkException == null ? json.JsonException : json.NetworkException, false);
-            }           
+            }
         }
 
-        public override async Task<IEnumerable<PackageInstanceResult>> GetAllVersions(string name)
+        public override async Task<GetPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
-            //name = name.ToLowerInvariant();
 
             var json = await GetJson(new Uri("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json"));
 
             if (json.Success)
             {
                 JObject o = json.Result;
-                if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
+                if (!o.HasValues)
+                    return new GetPackagesResult(new InvalidOperationException("No package named : " + name + " found."), null);
 
-                if (o.TryGetValue("version", out JToken j1) && o.TryGetValue("resources", out JToken j2) && o.TryGetValue("@context", out JToken j3))
-                    return new FeedMatchResult(null, true);
+                var list = new List<PackageInstanceResult>();
+                JArray versions = o["versions"] as JArray;
 
-                return new FeedMatchResult(null, false);
+                foreach (var item in versions)
+                {
+                    if (SemVersion.TryParse(item.ToString(), out SemVersion item_v))
+                    {
+                        string packageVersion = item.ToString();
+                        var currentPackage = new PackageInstance { Name = name, Version = packageVersion };
+                        list.Add(new PackageInstanceResult(null, new PackageInstance { Name = packageVersion, Version = packageVersion }));
+                    }
+                    else
+                    {
+                        list.Add(new PackageInstanceResult(new ArgumentException("the version : " + item + "is not Server Compliant"), null));
+                    }
+                }
+                return new GetPackagesResult(null, list);
             }
             else
             {
-                return new FeedMatchResult(json.NetworkException == null ? json.JsonException : json.NetworkException, false);
+                return new GetPackagesResult(json.NetworkException ?? json.JsonException, null);
             }
-
-
-            HttpResponseMessage response = await HttpClient.GetAsync("http://api.nuget.org/v3-flatcontainer/" + name + "/index.json");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    throw new ArgumentException("Package could not be found" );
-                }
-                throw new InvalidOperationException("an error occured while request server status code:" + response.StatusCode);
-            }
-            string resp = await response.Content.ReadAsStringAsync();
-
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " found.");
-
-            var list = new List<IPackageInstance>();
-            JArray versions = o["versions"] as JArray;
-            //iterate on eah version of the json
-            foreach (var item in versions)
-            {
-                if (SemVersion.TryParse(item.ToString(), out SemVersion item_v))
-                {
-                    string packageVersion = item.ToString();
-                    list.Add(new PackageInstance { Name = name, Version = packageVersion });
-                }
-            }
-            return list;
         }
-        public override async Task<IEnumerable<TargetResult>> GetDependencies(string name, string version)
+
+        public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
             name = name.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
-            string resp = await HttpClient.GetStringAsync(_baseUrl + name + '/' + version + ".json");
-            JObject o = JObject.Parse(resp);
-            if (!o.HasValues) throw new InvalidOperationException("No package named : " + name + " with version : " + version + " found.");
+            var tryFoundPackage = await GetJson(new Uri(_baseUrl + name + '/' + version + ".json"));
 
-            string respDependencies = await HttpClient.GetStringAsync(o.Value<string>("catalogEntry"));
-
-            o = JObject.Parse(respDependencies);
-
-            var dependencies = o.Property("dependencyGroups").HasValues ? o.Property("dependencyGroups").Value<JObject>().Property("dependencies").Value<JArray>() : null;
-
-            var list = new List<ITarget>();
-
-            if (dependencies.HasValues)
+            if (tryFoundPackage.Success)
             {
-                var target = new Target { Name = o.Value<string>("title") };
+                if(!tryFoundPackage.Result.HasValues)
+                    return new GetDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
 
-                //iterate on eah version of the json
-                foreach (var item in dependencies)
+                JObject packageOverview = tryFoundPackage.Result;
+
+                var tryGetPackageDetails = await GetJson(new Uri(packageOverview.Value<string>("catalogEntry")));
+
+                if (tryGetPackageDetails.Success)
                 {
-                    var currentObj = new JObject(item);
+                    if (!tryGetPackageDetails.Result.HasValues)
+                        return new GetDependenciesResult(new InvalidOperationException("Could not find details for package : " + name + "."), null);
 
-                    string depName = currentObj.Property("id").ToString();
-                    string depVersion = currentObj.Property("range").ToString();
+                    try
+                    {
+                        var returnedDependecies = new List<TargetResult>();
 
-                    if (depVersion[0] == '[')
-                        depVersion = depVersion.Substring(1, depVersion.Length - 3);
+                        var deps = tryGetPackageDetails.Result.Children<JProperty>().FirstOrDefault(x => x.Name == "dependencyGroups")?.Values<JObject>();
+                        if (deps != null)
+                        {
+                            foreach(var targetFramework in deps)
+                            {
+                                var target = new Target { Name = targetFramework.Value<string>("targetFramework") };
 
-                    target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+                                var dependencys = targetFramework.Value<JArray>("dependencies");
+
+                                foreach (var dependency in dependencys)
+                                {
+                                    string depName = dependency.Value<string>("id");
+                                    string depVersion = dependency.Value<string>("range");
+
+                                    if (depVersion[0] == '[')
+                                        depVersion = depVersion.Substring(1, depVersion.Length - 2);
+
+                                    target.Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion });
+                                }
+                                returnedDependecies.Add(new TargetResult(null, target));
+                            }
+                        }
+                        return new GetDependenciesResult(null, returnedDependecies);
+                    }
+                    catch (Exception ex)
+                    {
+                        return new GetDependenciesResult(ex, null);
+                    }
                 }
-                list.Add(target);
+                else
+                {
+                    return new GetDependenciesResult(tryGetPackageDetails.JsonException ?? tryGetPackageDetails.NetworkException, null);
+                }
             }
-            return list;
+            else
+            {
+                return new GetDependenciesResult(tryFoundPackage.JsonException ?? tryFoundPackage.NetworkException, null);
+            }
         }
 
-        public override async Task<IEnumerable<PackageInstanceResult>> GetNewestVersions(string name, string version)
+        public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            var ver = SemVersion.Parse(version);
-            return res.Where(x => SemVersion.Parse(x.Version) > ver);
+            if (res.Success)
+            {
+                var packages = res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
+                return new GetPackagesResult(null, packages);
+            }
+            return res;
         }
     }
 }
