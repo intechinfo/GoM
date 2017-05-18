@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds.Abstractions
 {
-    public interface IFeedFactory
+    public interface IFeedFactory: IDisposable
     {
         /// <summary>
         /// Returns all the readers from the inner factories

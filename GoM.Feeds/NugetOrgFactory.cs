@@ -13,6 +13,10 @@ namespace GoM.Feeds
         {
             _feedReader = new NugetOrgFeedReader();
         }
+        public void Dispose()
+        {
+            _feedReader.Dispose();
+        }
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
         public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)

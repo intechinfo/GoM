@@ -33,30 +33,36 @@ namespace GoM.Feeds.Tests
         [Fact]
         public void check_manager_creation_shouldNotBeNull()
         {
-            var testManager = GetManager();
-            testManager.Should().NotBeNull();
+            using (var testManager = GetManager())
+            {
+                testManager.Should().NotBeNull();
+            }
         }
         [Fact]
         public void GetAllVersions_should_return_data_from_each_feed_available()
         {
-            var testManager = GetManager();
-            var pkg = GetCrossPackage();
-            var pkgList = new List<IPackageInstance> { pkg };
-            var res = testManager.GetAllVersions(GetUriList(),pkgList );
-            res.Keys.Count.Should().Be(1);
-            res.Keys.Single().Should().Be(pkg);
-            res[pkg].Should().NotBeNullOrEmpty();
+            using (var testManager = GetManager())
+            {
+                var pkg = GetCrossPackage();
+                var pkgList = new List<IPackageInstance> { pkg };
+                var res = testManager.GetAllVersions(GetUriList(), pkgList);
+                res.Keys.Count.Should().Be(1);
+                res.Keys.Single().Should().Be(pkg);
+                res[pkg].Should().NotBeNullOrEmpty();
+            }
         }
         [Fact]
         public void GetNewestVersions_should_return_data_from_each_feed_available()
         {
-            var testManager = GetManager();
-            var pkg = GetCrossPackage();
-            var pkgList = new List<IPackageInstance> { pkg };
-            var res = testManager.GetNewestVersions(GetUriList(), pkgList);
-            res.Keys.Count.Should().Be(1);
-            res.Keys.Single().Should().Be(pkg);
-            res[pkg].Should().NotBeNullOrEmpty();
+            using (var testManager = GetManager())
+            {
+                var pkg = GetCrossPackage();
+                var pkgList = new List<IPackageInstance> { pkg };
+                var res = testManager.GetNewestVersions(GetUriList(), pkgList);
+                res.Keys.Count.Should().Be(1);
+                res.Keys.Single().Should().Be(pkg);
+                res[pkg].Should().NotBeNullOrEmpty();
+            }
         }
     }
 }

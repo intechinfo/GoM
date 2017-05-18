@@ -21,6 +21,10 @@ namespace GoM.Feeds
                 new NugetOrgFactory()
             };
         }
+        public void Dispose()
+        {
+            _factories.ForEach(x => x.Dispose());
+        }
         public IEnumerable<IFeedReader> FeedReaders => _factories.SelectMany(x => x.FeedReaders);
 
         public IEnumerable<IFeedReader> Snif(IEnumerable<Uri> links)

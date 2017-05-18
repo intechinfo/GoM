@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoM.Feeds.Abstractions
 {
-    public interface IFeedReader
+    public interface IFeedReader: IDisposable
     {
         /// <summary>
         /// Gets all the version of a <see cref="IPackageInstance"/>
