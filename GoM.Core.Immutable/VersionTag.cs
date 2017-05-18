@@ -16,8 +16,8 @@ namespace GoM.Core.Immutable
 
         public string FullName { get; }
 
-        internal static VersionTag Create(IVersionTag lastTag) => lastTag as VersionTag ?? new VersionTag(lastTag);
+        public static VersionTag Create(IVersionTag lastTag) => lastTag as VersionTag ?? new VersionTag(lastTag);
 
-        internal static VersionTag Create(string name) => new VersionTag(name);
+        public static VersionTag Create(string name) => new VersionTag(name);
     }
 }

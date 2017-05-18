@@ -48,9 +48,9 @@ namespace GoM.Core.Immutable
 
         IProject IBasicProject.Details => Details;
 
-        internal static Project Create(IProject details) => details as Project ?? new Project(details);
+        public static Project Create(IProject details) => details as Project ?? new Project(details);
 
-        internal static Project Create(string path, ImmutableList<Target> targets = null) => new Project(path, targets);
+        public static Project Create(string path, ImmutableList<Target> targets = null) => new Project(path, targets);
 
     }
 }

@@ -52,6 +52,5 @@ namespace GoM.Core.Immutable
         }
 
         public static BasicGitRepository Create(IBasicGitRepository basicGitRepository) => basicGitRepository as BasicGitRepository ?? new BasicGitRepository(basicGitRepository);
-
     }
 }

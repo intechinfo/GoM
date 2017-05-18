@@ -32,11 +32,11 @@ namespace GoM.Core.Immutable
 
         public BranchVersionInfo Version { get; }
 
-        internal static GitBranch Create(IGitBranch details) => details as GitBranch ?? new GitBranch(details);
+        public static GitBranch Create(IGitBranch details) => details as GitBranch ?? new GitBranch(details);
 
         public string Name { get; }
 
-        internal static GitBranch Create(string name, BranchVersionInfo version = null)
+        public static GitBranch Create(string name, BranchVersionInfo version = null)
         {
             return new GitBranch(name, version);
         }
