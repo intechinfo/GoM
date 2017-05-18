@@ -54,6 +54,20 @@ namespace GoM.Core.GitExplorer
             Directory.Delete(target_dir, false);
         }
 
+        /// <summary>
+        /// Delete Git repo stored by GoM
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool DeleteGitRepository(string path)
+        {
+            if (!path.Contains("../")) return false;
+
+            DeleteDirectory(path);
+
+            return true;
+        }
+
         public static List<string> getAllFilesInDirectory(string target_dir, string searchPattern = "*")
         {
             return Directory.GetFiles(target_dir, searchPattern, SearchOption.AllDirectories).ToList();

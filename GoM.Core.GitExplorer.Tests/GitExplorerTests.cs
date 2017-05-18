@@ -53,13 +53,5 @@ namespace GoM.Core.GitExplorer.Tests
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getAllBranchesName());
         }
-
-        [TestFixtureTearDown]
-        public void Cleanup()
-        {
-            Helpers.DeleteDirectory("repos");
-        }
-
-
     }
 }

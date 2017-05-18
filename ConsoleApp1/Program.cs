@@ -12,7 +12,8 @@ namespace GoMConsole
         [STAThread]
         static void Main(string[] args)
         {
-            Communicator communicator = new Communicator("https://github.com/SimpleGitVersion/SGV-Net");
+            Communicator communicator = new Communicator("https://github.com/bmgm/Simple.git");
+            communicator.loadRepository("https://github.com/SimpleGitVersion/SGV-Net.git");
 
             var aaa = communicator.getBasicGitRepository();
 
@@ -23,10 +24,11 @@ namespace GoMConsole
             foreach (var branch in branches)
             {
                 Console.WriteLine(branch.Name);
-                if (!branch.Details.Version.LastTag.Equals(null))
+                if (branch.Details.Version.LastTag != null)
                 {
                     Console.WriteLine(branch.Details.Version.LastTag.FullName);
                 }
+
             }
 
             Console.WriteLine("Files : " + Environment.NewLine);
@@ -47,7 +49,13 @@ namespace GoMConsole
 
             Console.WriteLine("Nombre de branches: " + count);
 
+            foreach(var repo in Communicator.getAllStoredRepositoriesNames())
+            {
+                Console.WriteLine("Repo : " + repo);
+            }
+
             Console.ReadLine();
+
         }
 
     }
