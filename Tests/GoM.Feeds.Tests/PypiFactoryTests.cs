@@ -14,28 +14,35 @@ namespace GoM.Feeds.Tests
         [Fact]
         public void create_factory_works()
         {
-            PypiFactory sut = new PypiFactory();
-            sut.Should().NotBeNull();
+            using (PypiFactory sut = new PypiFactory()) 
+            {
+                sut.Should().NotBeNull();
+            }
+            
         }
 
         [Fact]
         public void sniff_python_with_proper_single_uri()
         {
-            PypiFactory fac = new PypiFactory();
-            Uri myUri = new Uri("https://pypi.python.org/pypi/Python/json");
-            IEnumerable<IFeedReader> res = fac.Snif(myUri);
-            var sut = res.ToList();
-            sut.Count.Should().BeGreaterThan(0);
+            using (PypiFactory fac = new PypiFactory()) 
+            {
+                Uri myUri = new Uri("https://pypi.python.org/pypi/Python/json");
+                IEnumerable<IFeedReader> res = fac.Snif(myUri);
+                var sut = res.ToList();
+                sut.Count.Should().BeGreaterThan(0);
+            }
         }
 
         [Fact]
         public void sniff_python_with_bad_single_uri_must_return_empty()
         {
-            PypiFactory fac = new PypiFactory();
-            Uri myUri = new Uri("http://www.google.com");
-            IEnumerable<IFeedReader> res = fac.Snif(myUri);
-            var sut = res.ToList();
-            sut.Count().Should().Be(0);
+            using (PypiFactory fac = new PypiFactory())
+            {
+                Uri myUri = new Uri("http://www.google.com");
+                IEnumerable<IFeedReader> res = fac.Snif(myUri);
+                var sut = res.ToList();
+                sut.Count().Should().Be(0);
+            }
         }
         [Fact]
         public void sniff_python_with_list_of_uris() 
@@ -43,10 +50,13 @@ namespace GoM.Feeds.Tests
             Uri myUri = new Uri("https://pypi.python.org/pypi/Python/json");
             List<Uri> myList = new List<Uri>();
             myList.Add(myUri);
-            PypiFactory fac = new PypiFactory();  
-            IEnumerable<IFeedReader> res = fac.Snif(myList);
-            var sut = res.ToList();
-            sut.Count().Should().BeGreaterThan(0);
+            using (PypiFactory fac = new PypiFactory()) 
+            {
+                IEnumerable<IFeedReader> res = fac.Snif(myList);
+                var sut = res.ToList();
+                sut.Count().Should().BeGreaterThan(0);
+            }
+            
         }
 
     }
