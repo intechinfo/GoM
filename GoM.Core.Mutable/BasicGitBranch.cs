@@ -17,7 +17,7 @@ namespace GoM.Core.Mutable
         public BasicGitBranch(IBasicGitBranch branch)
         {
             Name = branch.Name;
-            Details = (GitBranch)branch.Details;
+            Details = branch is BasicGitBranch ? (GitBranch)branch.Details : new GitBranch(branch.Details);
         }
         public string Name { get; set; }
 

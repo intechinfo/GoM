@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoM.Core.Mutable
 {
@@ -16,7 +17,7 @@ namespace GoM.Core.Mutable
         public Target(ITarget target)
         {
             Name = target.Name;
-            Dependencies = (List<TargetDependency>)target.Dependencies;
+            Dependencies = target is Target ? (List<TargetDependency>)target.Dependencies : new List<TargetDependency>(target.Dependencies.Select(x => new TargetDependency(x)));
         }
 
         public string Name { get; set; }

@@ -2,54 +2,336 @@ using System;
 using Xunit;
 using System.Collections.Immutable;
 using FluentAssertions;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GoM.Core.Immutable.Tests
 {
-    public class CreationTests
+    public class ImmutableCreationTests
     {
-        //[Fact]
-        //public void adding_updating_and_removing_repositories()
-        //{
-        //    // Create BasicGitRepository immutable list
-        //    var repo = BasicGitRepository.Create("path", new Uri("http://gitBasicUrl"));
-        //    var repositories = ImmutableList.Create(repo);
 
-        //    // Create PackageFeed immutalbe list
-        //    var packages = ImmutableList.Create(PackageFeed.Create());
+        private Immutable.GoMContext CreateTestGoMContext()
+        {
+            // BranchVersionInfo
+            Immutable.VersionTag newVersionTag = VersionTag.Create("Version 1.0.0");
+            Immutable.BranchVersionInfo newBranchVersionInfo = BranchVersionInfo.Create(1, newVersionTag);
 
-        //    // Create gomContext
-        //    var gomContext = GoMContext.Create("my/path", repositories, packages);
-        //    gomContext.Repositories[0].Path.Should().Be("path");
+            // TargetDependenciy    
+            Immutable.TargetDependency newTargetDependency = TargetDependency.Create("Ma target dépendence", "1.0.0");
+            ImmutableList<TargetDependency> dependencies = ImmutableList.Create<TargetDependency>(newTargetDependency);
 
-        //    // Add a new repository to the list
-        //    gomContext = gomContext.AddRepository(BasicGitRepository.Create("otherpath", new Uri("http://otherGitBasicUrl")));
-        //    gomContext.Repositories.Count.Should().Be(2);
-        //    gomContext.Repositories[1].Path.Should().Be("otherpath");
+            // Targets
+            Immutable.Target newTarget = Target.Create("Ma target", dependencies);
+            ImmutableList<Target> targets = ImmutableList.Create<Target>(newTarget);
 
-        //    // Update an existing repository
-        //    gomContext = gomContext.UpdateRepository(gomContext.Repositories[0], "newPath");
-        //    gomContext.Repositories[0].Path.Should().Be("newPath");
-        //}
+            // Projects
+            Immutable.Project newProject = Project.Create("Chemin/vers/projet", targets);
+            Immutable.BasicProject newBasicProject = BasicProject.Create(newProject);
+            ImmutableList<BasicProject> projects = ImmutableList.Create<BasicProject>(newBasicProject);
 
-        //[Fact]
-        //public void test_toUpper()
-        //{
-        //    // Create BasicGitRepository immutable list
-        //    var repo = BasicGitRepository.Create("upperCase", new Uri("http://gitBasicUrl"));
-        //    var repo2 = BasicGitRepository.Create("lowercasePath", new Uri("http://gitBasicUrl"));
-        //    var repo3 = BasicGitRepository.Create("allcapspath", new Uri("http://gitBasicUrl"));
-        //    var repositories = ImmutableList.Create(repo, repo2, repo3);
+            // FIXME : Erreur dans les tests ligne 258. Les détails des projets seraient nuls
 
-        //    // Create PackageFeed immutalbe list
-        //    var packages = ImmutableList.Create(PackageFeed.Create());
+            // BasicGitBranch
+            Immutable.GitBranch newGitBranch = GitBranch.Create("Ma git branch", newBranchVersionInfo, projects);
+            Immutable.BasicGitBranch newGitBasicBranch = Immutable.BasicGitBranch.Create(newGitBranch);
+            ImmutableList<BasicGitBranch> listBasicGitBranch = ImmutableList.Create<BasicGitBranch>(newGitBasicBranch);
 
-        //    // Create gomContext
-        //    var gomContext = GoMContext.Create("my/path/upper", repositories, packages);
+            // GitRepositories
+            Immutable.GitRepository newGitRepository = GitRepository.Create("path", new Uri("http://uri"), listBasicGitBranch);
+            Immutable.BasicGitRepository newBasicGitRepository = BasicGitRepository.Create(newGitRepository);
+            ImmutableList<BasicGitRepository> repositories = ImmutableList.Create<BasicGitRepository>(newBasicGitRepository);
+            
+            // PackageInstances
+            Immutable.PackageInstance newPackageInstance = PackageInstance.Create("Mon packageInstance", "Version ");
+            ImmutableList<PackageInstance> instances = ImmutableList.Create<PackageInstance>(newPackageInstance);
 
-        //    var vistor = new GoMContext.ToUppercaseVisitor("upper");
-        //    GoMContext newContext = vistor.Visit(gomContext);
+            // PackageFeeds
+            Immutable.PackageFeed newPackageFeed = PackageFeed.Create(new Uri("http://myPackageFeed"), instances);
+            ImmutableList<PackageFeed> feeds = ImmutableList.Create<PackageFeed>(newPackageFeed);
 
-        //    newContext.Should().Be(gomContext.RootPath.ToUpperInvariant());
-        //}
+            // Context
+            return Immutable.GoMContext.Create("myContextPath", repositories, feeds);
+        }
+
+        [Fact]
+        public void Check_testGomContext_creation_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            testGoM.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_creation_with_an_other_context_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+            otherCtx.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_feeds_shouldNotBeEmpty()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Feeds.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void Check_testGomContext_feeds_firstElement_packages_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Feeds[0].Packages.Should().NotBeNull();
+            otherCtx.Feeds[0].Packages.Should().NotBeNull();
+        }
+        [Fact]
+        public void Check_testGomContext_feeds_firstElement_packages_firstElement_name_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Feeds[0].Packages[0].Name.Should().NotBeNull();
+            otherCtx.Feeds[0].Packages[0].Name.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_feeds_firstElement_packages_firstElement_version_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Feeds[0].Packages[0].Version.Should().NotBeNull();
+            otherCtx.Feeds[0].Packages[0].Version.Should().NotBeNull();
+        }
+
+
+        [Fact]
+        public void Check_testGomContext_feeds_firstElement_url_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Feeds[0].Url.Should().NotBeNull();
+            otherCtx.Feeds[0].Url.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_shouldNotBeEmpty()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories.Should().NotBeEmpty();
+            otherCtx.Repositories.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_url_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Url.Should().NotBeNull();
+            otherCtx.Repositories[0].Url.Should().NotBeNull();
+        }
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_path_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Path.Should().NotBeNull();
+            otherCtx.Repositories[0].Path.Should().NotBeNull();
+        }
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_shouldNotBeEmpty()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches.Should().NotBeEmpty();
+            otherCtx.Repositories[0].Details.Branches.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_name_shouldNotBeEmpty()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Name.Should().NotBeEmpty();
+            otherCtx.Repositories[0].Details.Branches[0].Name.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_version_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Version.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Version.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_version_lastTagDepth_shouldBeGreterThan0()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Version.LastTagDepth.Should().BeGreaterThan(0);
+            otherCtx.Repositories[0].Details.Branches[0].Details.Version.LastTagDepth.Should().BeGreaterThan(0);
+        }
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_version_lastTag_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Version.LastTag.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Version.LastTag.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_version_lastTag_fullName_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Version.LastTag.FullName.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Version.LastTag.FullName.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_path_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Path.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Path.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_name_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Name.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Name.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_dependencies_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_dependencies_firstElement_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_dependencies_firstElement_name_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Name.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Name.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_repositories_firstElement_details_branches_firstElement_details_projects_firstElement_targets_firstElement_dependencies_firstElement_version_shouldNotBeNull()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Version.Should().NotBeNull();
+            otherCtx.Repositories[0].Details.Branches[0].Details.Projects[0].Details.Targets[0].Dependencies[0].Version.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Check_testGomContext_rootPath_shouldNotBeEmpty()
+        {
+            var testGoM = CreateTestGoMContext();
+            var otherCtx = GoMContext.Create(testGoM);
+
+            testGoM.RootPath.Should().NotBeEmpty();
+            otherCtx.RootPath.Should().NotBeEmpty();
+        }
     }
 }

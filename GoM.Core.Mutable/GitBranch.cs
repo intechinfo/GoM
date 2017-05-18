@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Collections.ObjectModel;
 
 namespace GoM.Core.Mutable
@@ -16,8 +17,8 @@ namespace GoM.Core.Mutable
         /// <param name="branch"></param>
         public GitBranch(IGitBranch branch)
         {
-            Projects = (List<BasicProject>)branch.Projects;
-            Version = (BranchVersionInfo)branch.Version;
+            Projects = branch is GitBranch ? (List<BasicProject>)branch.Projects : new List<BasicProject>(branch.Projects.Select(x => new BasicProject(x)));
+            Version = branch is GitBranch ? (BranchVersionInfo)branch.Version : new BranchVersionInfo(branch.Version);
             Name = branch.Name;
         }
 
