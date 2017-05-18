@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace GoM.Core.Persistence
 {
@@ -20,10 +21,11 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
             Projects = new List<BasicProject>();
 
-            foreach ( var t in xElement.Elements( BasicProject.BASIC_PROJECT) )
-            {
-                Projects.Add( new BasicProject( t ) );
-            }
+            Projects = xElement.Elements(BasicProject.BASIC_PROJECT).Select(t => new BasicProject(t)).ToList();
+            //foreach (var t in xElement.Elements(BasicProject.BASIC_PROJECT))
+            //{
+            //    Projects.Add(new BasicProject(t));
+            //}
 
             Version = new BranchVersionInfo( xElement.Element( BranchVersionInfo.BRANCH_VERSION_INFO ) );
             Name = xElement.Attribute( GIT_BRANCH_NAME ).Value;

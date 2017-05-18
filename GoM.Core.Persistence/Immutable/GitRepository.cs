@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace GoM.Core.Persistence
 {
@@ -21,10 +22,11 @@ namespace GoM.Core.Persistence
             this.xElement = xElement;
 
             Branches = new List<BasicGitBranch>();
-            foreach(var node in xElement.Elements(BasicGitBranch.BASIC_GIT_BRANCH))    
-            {
-                Branches.Add( new BasicGitBranch( node ) );
-            }
+            Branches = xElement.Elements(BasicGitBranch.BASIC_GIT_BRANCH).Select(node => new BasicGitBranch(node)).ToList();
+            //foreach (var node in xElement.Elements(BasicGitBranch.BASIC_GIT_BRANCH))    
+            //{
+            //    Branches.Add( new BasicGitBranch( node ) );
+            //}
 
             Path = xElement.Attribute( GIT_REPOSITORY_PATH ).Value;
             Url = new Uri(xElement.Attribute( GIT_REPOSITORY_URL ).Value);

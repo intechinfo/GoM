@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace GoM.Core.Persistence
 {
@@ -20,10 +21,11 @@ namespace GoM.Core.Persistence
             Path = node.Attribute( PROJECT_PATH).Value;
 
             Targets = new List<Target>();
-            foreach ( var t in node.Elements( Target.TARGET ))
-            {
-                Targets.Add(new Target(t));
-            }
+            Targets = node.Elements(Target.TARGET).Select(t => new Target(t)).ToList();
+            //foreach ( var t in node.Elements( Target.TARGET ))
+            //{
+            //    Targets.Add(new Target(t));
+            //}
         }
 
         public List<Target> Targets { get; } 

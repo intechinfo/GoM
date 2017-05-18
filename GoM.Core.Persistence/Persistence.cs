@@ -28,10 +28,11 @@ namespace GoM.Core.Persistence
             if (_this == null) return null;
             XElement element = new XElement(PackageFeed.PACKAGE_FEED);
             element.SetAttributeValue(PackageFeed.PACKAGE_FEED_URL, _this.Url);
-            foreach (IPackageInstance package in _this.Packages)
-            {
-                element.Add(package.ToXML());
-            }
+            element.Add(_this.Packages.Select(package => package.ToXML()).ToList());
+            //foreach (IPackageInstance package in _this.Packages)
+            //{
+            //    element.Add(package.ToXML());
+            //}
             return element;
         }
 
@@ -40,8 +41,10 @@ namespace GoM.Core.Persistence
             if (_this == null) return null;
             XElement element = new XElement(GoMContext.GOM_CONTEXT);
             element.SetAttributeValue(GoMContext.GOM_CONTEXT_ROOTPATH, _this.RootPath);
-            foreach (var t in _this.Repositories) element.Add(t.ToXML());
-            foreach (var t in _this.Feeds) element.Add(t.ToXML());
+            element.Add(_this.Repositories.Select(t => t.ToXML()).ToList());
+            //foreach (var t in _this.Repositories) element.Add(t.ToXML());
+            element.Add(_this.Feeds.Select(t => t.ToXML()).ToList()); 
+            //foreach (var t in _this.Feeds) element.Add(t.ToXML());
             return element;
         }
 
@@ -50,7 +53,8 @@ namespace GoM.Core.Persistence
             if (_this == null) return null;
             XElement element = new XElement(Project.PROJECT);
             element.SetAttributeValue(Project.PROJECT_PATH, _this.Path);
-            foreach (var t in _this.Targets) element.Add(t.ToXML());
+            element.Add(_this.Targets.Select(t => t.ToXML()).ToList());
+            //foreach (var t in _this.Targets) element.Add(t.ToXML());
             return element;
         }
 
@@ -77,7 +81,8 @@ namespace GoM.Core.Persistence
             if (_this == null) return null;
             XElement element = new XElement(Target.TARGET);
             element.SetAttributeValue(Target.TARGET_NAME, _this.Name);
-            foreach (var t in _this.Dependencies) element.Add(t.ToXML());
+            element.Add(_this.Dependencies.Select(t=> t.ToXML()).ToList());
+            //foreach (var t in _this.Dependencies) element.Add(t.ToXML());
 
             return element;
         }
@@ -128,7 +133,8 @@ namespace GoM.Core.Persistence
 
             XElement element = new XElement(GitBranch.GIT_BRANCH);
             element.Add(_this.Version.ToXML());
-            foreach (var t in _this.Projects) element.Add(t.ToXML());
+            element.Add(_this.Projects.Select(t => t.ToXML()).ToList());
+            //foreach (var t in _this.Projects) element.Add(t.ToXML());
 
             element.SetAttributeValue(GitBranch.GIT_BRANCH_NAME, _this.Name);
             return element;
@@ -142,7 +148,8 @@ namespace GoM.Core.Persistence
 
             element.SetAttributeValue(GitRepository.GIT_REPOSITORY_PATH, _this.Path);
             element.SetAttributeValue(GitRepository.GIT_REPOSITORY_URL, _this.Url);
-            foreach (var t in _this.Branches) element.Add(t.ToXML());
+            element.Add(_this.Branches.Select(t => t.ToXML()).ToList());
+            //foreach (var t in _this.Branches) element.Add(t.ToXML());
 
             return element;
         }

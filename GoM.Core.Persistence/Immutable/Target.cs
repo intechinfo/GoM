@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace GoM.Core.Persistence
 {
@@ -21,10 +22,11 @@ namespace GoM.Core.Persistence
             this.t = node;
             Name = node.Attribute( TARGET_NAME ).Value;
             Dependencies = new List<TargetDependency>();
-            foreach(var t in node.Elements(TargetDependency.TARGET_DEPENDENCY))
-            {
-                Dependencies.Add( new TargetDependency( t ) );
-            }
+            Dependencies = node.Elements(TargetDependency.TARGET_DEPENDENCY).Select(t => new TargetDependency(t)).ToList();
+            //foreach (var t in node.Elements(TargetDependency.TARGET_DEPENDENCY))
+            //{
+            //    Dependencies.Add( new TargetDependency( t ) );
+            //}
 
         }
 
