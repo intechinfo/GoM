@@ -14,18 +14,13 @@ namespace GoM.Core.FsAnalyzer.Tests
     public class ProjectFolderControllerTest : BaseFsAnalyzerTest
     {
         [Fact]
-        public void Test_project_folder_handler_controller_analyze_csharp_project()
+        public void Test_project_folder_handler_controller_analyze_returns_right_git_projects_folder_number()
         {
-            var file = new PhysicalFileInfo(new FileInfo(RootDirectory));
+            var file = new PhysicalFileInfo(new FileInfo(Path.Combine(SampleDirectory, "FakeGitFolderEmptyProjects/")));
             ProjectFolderController projectHandlerController = new ProjectFolderController();
             System.Collections.Generic.IReadOnlyCollection<IProject> projects = projectHandlerController.Analyze(file.PhysicalPath);
             //Assert
-            Assert.Equal(projects.Count, 3);
-        }
-
-        public void Test_project_folder_handler_controller_analyze_no_git_folder()
-        {
-            
+            Assert.Equal(projects.Count, 0);
         }
     }
 }
