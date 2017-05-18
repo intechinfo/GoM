@@ -120,13 +120,13 @@ namespace GoM.Core.Persistence.Tests
 
             #region Repo 1
             Assert.True(ctx.Repositories[1].Path == "/usr/developpement/mdr");
-            Assert.True(ctx.Repositories[1].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[1].Details.Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[1].Details == null);
             #endregion
 
             #region Repo 2
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
-            Assert.True(ctx.Repositories[0].Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
             Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
             Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
 
