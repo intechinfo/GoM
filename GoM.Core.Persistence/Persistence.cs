@@ -8,50 +8,7 @@ using System.Collections.Generic;
 
 namespace GoM.Core.Persistence
 {
-    public static class GoMAttributeNamesV1
-    {
-        public const string PACKAGE_INSTANCE = "packageInstance";
-        public const string PACKAGE_INSTANCE_VERSION = "version";
-        public const string PACKAGE_INSTANCE_NAME = "name";
 
-        public const string PACKAGE_FEED = "packageFeed";
-        public const string PACKAGE_FEED_URL = "url";
-
-        public const string GOM_CONTEXT = "gomContext";
-        public const string GOM_CONTEXT_ROOTPATH = "rootPath";
-
-        public const string PROJECT = "project";
-        public const string PROJECT_PATH = "path";
-
-        public const string TARGET_DEPENDENCY = "targetDependency";
-        public const string TARGET_DEPENDENCY_NAME = "name";
-        public const string TARGET_DEPENDENCY_VERSION = "version";
-
-        public const string VERSION_TAG = "versionTag";
-        public const string VERSION_TAG_FULL_NAME = "fullName";
-
-        public const string TARGET = "target";
-        public const string TARGET_NAME = "name";
-
-        public const string BASIC_GIT_BRANCH = "basicGitBranch";
-        public const string BASIC_GIT_BRANCH_NAME = "name";
-
-        public const string BRANCH_VERSION_INFO = "branchVersionInfo";
-        public const string BRANCH_VERSION_INFO_LAST_TAG_DEPTH = "LastTagDepth";
-
-        public const string BASIC_GIT_REPOSITORY = "basicGitRepository";
-        public const string BASIC_GIT_REPOSITORY_PATH = "path";
-        public const string BASIC_GIT_REPOSITORY_URL = "url";
-
-        public const string GIT_BRANCH = "gitBranch";
-        public const string GIT_BRANCH_NAME = "name";
-
-        public const string GIT_REPOSITORY = "gitRepository";
-        public const string GIT_REPOSITORY_PATH = "path";
-        public const string GIT_REPOSITORY_URL = "url";
-
-
-    }
     public static class Helper
     {
         // XELEMENT (XNAME, OBJECT[])
@@ -60,17 +17,17 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IPackageInstance _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.PACKAGE_INSTANCE);
-            element.SetAttributeValue(GoMAttributeNamesV1.PACKAGE_INSTANCE_VERSION, _this.Version);
-            element.SetAttributeValue(GoMAttributeNamesV1.PACKAGE_INSTANCE_NAME, _this.Name);
+            XElement element = new XElement(PackageInstance.PACKAGE_INSTANCE);
+            element.SetAttributeValue(PackageInstance.PACKAGE_INSTANCE_VERSION, _this.Version);
+            element.SetAttributeValue(PackageInstance.PACKAGE_INSTANCE_NAME, _this.Name);
             return element;
         }
 
         public static XElement ToXML(this IPackageFeed _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.PACKAGE_FEED);
-            element.SetAttributeValue(GoMAttributeNamesV1.PACKAGE_FEED_URL, _this.Url);
+            XElement element = new XElement(PackageFeed.PACKAGE_FEED);
+            element.SetAttributeValue(PackageFeed.PACKAGE_FEED_URL, _this.Url);
             foreach (IPackageInstance package in _this.Packages)
             {
                 element.Add(package.ToXML());
@@ -81,8 +38,8 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IGoMContext _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.GOM_CONTEXT);
-            element.SetAttributeValue(GoMAttributeNamesV1.GOM_CONTEXT_ROOTPATH, _this.RootPath);
+            XElement element = new XElement(GoMContext.GOM_CONTEXT);
+            element.SetAttributeValue(GoMContext.GOM_CONTEXT_ROOTPATH, _this.RootPath);
             foreach (var t in _this.Repositories) element.Add(t.ToXML());
             foreach (var t in _this.Feeds) element.Add(t.ToXML());
             return element;
@@ -91,8 +48,8 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IProject _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.PROJECT);
-            element.SetAttributeValue(GoMAttributeNamesV1.PROJECT_PATH, _this.Path);
+            XElement element = new XElement(Project.PROJECT);
+            element.SetAttributeValue(Project.PROJECT_PATH, _this.Path);
             foreach (var t in _this.Targets) element.Add(t.ToXML());
             return element;
         }
@@ -100,17 +57,17 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this ITargetDependency _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.TARGET_DEPENDENCY);
-            element.SetAttributeValue(GoMAttributeNamesV1.TARGET_DEPENDENCY_NAME, _this.Name);
-            element.SetAttributeValue(GoMAttributeNamesV1.TARGET_DEPENDENCY_VERSION, _this.Version);
+            XElement element = new XElement(TargetDependency.TARGET_DEPENDENCY);
+            element.SetAttributeValue(TargetDependency.TARGET_DEPENDENCY_NAME, _this.Name);
+            element.SetAttributeValue(TargetDependency.TARGET_DEPENDENCY_VERSION, _this.Version);
             return element;
         }
 
         public static XElement ToXML(this IVersionTag _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.VERSION_TAG);
-            element.SetAttributeValue(GoMAttributeNamesV1.VERSION_TAG_FULL_NAME, _this.FullName);
+            XElement element = new XElement(VersionTag.VERSION_TAG);
+            element.SetAttributeValue(VersionTag.VERSION_TAG_FULL_NAME, _this.FullName);
 
             return element;
         }
@@ -118,8 +75,8 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this ITarget _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.TARGET);
-            element.SetAttributeValue(GoMAttributeNamesV1.TARGET_NAME, _this.Name);
+            XElement element = new XElement(Target.TARGET);
+            element.SetAttributeValue(Target.TARGET_NAME, _this.Name);
             foreach (var t in _this.Dependencies) element.Add(t.ToXML());
 
             return element;
@@ -128,8 +85,8 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IBasicGitBranch _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.BASIC_GIT_BRANCH);
-            element.SetAttributeValue(GoMAttributeNamesV1.BASIC_GIT_BRANCH_NAME, _this.Name);
+            XElement element = new XElement(BasicGitBranch.BASIC_GIT_BRANCH);
+            element.SetAttributeValue(BasicGitBranch.BASIC_GIT_BRANCH_NAME, _this.Name);
             element.Add(_this.Details.ToXML());
             return element;
         }
@@ -137,8 +94,8 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IBranchVersionInfo _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.BRANCH_VERSION_INFO);
-            element.SetAttributeValue(GoMAttributeNamesV1.BRANCH_VERSION_INFO_LAST_TAG_DEPTH, _this.LastTagDepth);
+            XElement element = new XElement(BranchVersionInfo.BRANCH_VERSION_INFO);
+            element.SetAttributeValue(BranchVersionInfo.BRANCH_VERSION_INFO_LAST_TAG_DEPTH, _this.LastTagDepth);
             element.Add(_this.LastTag.ToXML());
             return element;
         }
@@ -146,9 +103,9 @@ namespace GoM.Core.Persistence
         public static XElement ToXML(this IBasicGitRepository _this)
         {
             if (_this == null) return null;
-            XElement element = new XElement(GoMAttributeNamesV1.BASIC_GIT_REPOSITORY);
-            element.SetAttributeValue(GoMAttributeNamesV1.BASIC_GIT_REPOSITORY_PATH, _this.Path);
-            element.SetAttributeValue(GoMAttributeNamesV1.BASIC_GIT_REPOSITORY_URL, _this.Url);
+            XElement element = new XElement(BasicGitRepository.BASIC_GIT_REPOSITORY);
+            element.SetAttributeValue(BasicGitRepository.BASIC_GIT_REPOSITORY_PATH, _this.Path);
+            element.SetAttributeValue(BasicGitRepository.BASIC_GIT_REPOSITORY_URL, _this.Url);
 
             element.Add(_this.Details.ToXML());
             return element;
@@ -158,8 +115,8 @@ namespace GoM.Core.Persistence
         {
             if ( _this == null ) return null;
 
-            XElement element = new XElement(typeof(IBasicProject).Name);
-            element.SetAttributeValue( nameof( _this.Path ), _this.Path );
+            XElement element = new XElement(BasicProject.BASIC_PROJECT);
+            element.SetAttributeValue( BasicProject.BASIC_PROJECT_PATH, _this.Path );
 
             element.Add( _this.Details.ToXML() );
             return element;
@@ -169,11 +126,11 @@ namespace GoM.Core.Persistence
         {
             if (_this == null) return null;
 
-            XElement element = new XElement(GoMAttributeNamesV1.GIT_BRANCH);
+            XElement element = new XElement(GitBranch.GIT_BRANCH);
             element.Add(_this.Version.ToXML());
             foreach (var t in _this.Projects) element.Add(t.ToXML());
 
-            element.SetAttributeValue(GoMAttributeNamesV1.GIT_BRANCH_NAME, _this.Name);
+            element.SetAttributeValue(GitBranch.GIT_BRANCH_NAME, _this.Name);
             return element;
         }
 
@@ -181,10 +138,10 @@ namespace GoM.Core.Persistence
         {
             if (_this == null) return null;
 
-            XElement element = new XElement(GoMAttributeNamesV1.GIT_REPOSITORY);
+            XElement element = new XElement(GitRepository.GIT_REPOSITORY);
 
-            element.SetAttributeValue(GoMAttributeNamesV1.GIT_REPOSITORY_PATH, _this.Path);
-            element.SetAttributeValue(GoMAttributeNamesV1.GIT_REPOSITORY_URL, _this.Url);
+            element.SetAttributeValue(GitRepository.GIT_REPOSITORY_PATH, _this.Path);
+            element.SetAttributeValue(GitRepository.GIT_REPOSITORY_URL, _this.Url);
             foreach (var t in _this.Branches) element.Add(t.ToXML());
 
             return element;

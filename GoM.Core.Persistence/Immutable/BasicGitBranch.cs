@@ -8,15 +8,19 @@ namespace GoM.Core.Persistence
 {
     public class BasicGitBranch : IBasicGitBranch
     {
+
+        public const string BASIC_GIT_BRANCH = "basicGitBranch";
+        public const string BASIC_GIT_BRANCH_NAME = "name";
+
         public string Name { get; }
         private XElement t;
 
         public BasicGitBranch ( XElement t )
         {
             this.t = t;
-            Name = t.Attribute( nameof( Name ) ).Value;
+            Name = t.Attribute( BASIC_GIT_BRANCH_NAME ).Value;
 
-            var node = t.Element( typeof(IGitBranch).Name );
+            var node = t.Element( GitBranch.GIT_BRANCH );
             Details = node != null ? new GitBranch( node ) : null;
         }
 
