@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Abstractions", "GoM.Core.Abstractions\GoM.Core.Abstractions.csproj", "{115F5512-8C4D-41BA-81C7-12B2626BDE57}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Mutable", "GoM.Core.Mutable\GoM.Core.Mutable.csproj", "{3D88E13C-2486-424C-835A-77735CA198F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Persistence", "GoM.Core.Persistence\GoM.Core.Persistence.csproj", "{B7B6ADAE-00B5-4FD7-9C78-E0EABA3D5C01}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Mutable.Tests", "XUnitTestProject1\GoM.Core.Mutable.Tests.csproj", "{961DE9AF-5741-4ED8-845E-8DB529BF5B17}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Persistence.Tests", "Tests\GoM.Core.Persistence.Tests\GoM.Core.Persistence.Tests.csproj", "{80A59E82-218C-46E9-8E92-225D1725AC7B}"
 EndProject
@@ -18,6 +16,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Immutable", "GoM.Core.Immutable\GoM.Core.Immutable.csproj", "{B410FE1D-E07A-437D-B69E-6F792F1CF536}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Immutable.Tests", "Tests\GoM.Core.Immutable.Tests\GoM.Core.Immutable.Tests.csproj", "{12ED410F-387B-4F39-A21F-A8B5564510F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Mutable.Tests", "Tests\GoM.Core.Mutable.Tests\GoM.Core.Mutable.Tests.csproj", "{61607694-427B-421A-B1F6-1B0A1DF98996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,8 +145,27 @@ Global
 		{12ED410F-387B-4F39-A21F-A8B5564510F9}.Release|x64.Build.0 = Release|Any CPU
 		{12ED410F-387B-4F39-A21F-A8B5564510F9}.Release|x86.ActiveCfg = Release|Any CPU
 		{12ED410F-387B-4F39-A21F-A8B5564510F9}.Release|x86.Build.0 = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|ARM.Build.0 = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|x64.Build.0 = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Debug|x86.Build.0 = Debug|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|ARM.ActiveCfg = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|ARM.Build.0 = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|x64.ActiveCfg = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|x64.Build.0 = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|x86.ActiveCfg = Release|Any CPU
+		{61607694-427B-421A-B1F6-1B0A1DF98996}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{61607694-427B-421A-B1F6-1B0A1DF98996} = {6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}
 	EndGlobalSection
 EndGlobal

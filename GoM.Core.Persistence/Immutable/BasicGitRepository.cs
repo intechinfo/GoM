@@ -24,18 +24,13 @@ namespace GoM.Core.Persistence
             Details = node != null ? new GitRepository(node) : null;
         }
 
-
-        public Uri Url { get; }
-
         public GitRepository Details { get; }
 
         IGitRepository IBasicGitRepository.Details => Details;
 
-
         public BasicGitRepository(string path, Uri url, GitRepository details)
         {
             Path    = path;
-            Url     = url;
             Details = details;
         }
     }

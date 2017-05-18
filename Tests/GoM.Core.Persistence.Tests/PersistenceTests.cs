@@ -28,20 +28,16 @@ namespace GoM.Core.Persistence.Tests
                 {
                     throw new Exception( "CreateSapleRoot.bat is needed" );
                 }
-
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo.FileName = path.Parent.GetFiles().FirstOrDefault( e => e.Name == "CreateSampleRoot.bat" ).FullName;
                 proc.StartInfo.WorkingDirectory = path.Parent.FullName;
-
                 proc.Start();
                 proc.WaitForExit();
                 // TODO error management for CI
             }
-
             // get dev dir & clean in all directory if exists
             var devFolder = path.Parent.GetDirectories().First( e => e.Name == "Dev");
             CleanGomPersistenceInAllFolder( devFolder );
-
             // It's testing time !
             Persistence p = new Persistence();
             string output;
@@ -114,13 +110,6 @@ namespace GoM.Core.Persistence.Tests
             }
         }
 
-        [Fact]
-        public void test_runner_working()
-        {
-            Assert.True(true);
-        }
-
-        [Fact]
         public void xml_works_using_extensions()
         {
             PackageInstance pi = new PackageInstance("SDL", "2.0");
@@ -143,50 +132,12 @@ namespace GoM.Core.Persistence.Tests
         }
 
 
-        [Fact]
-        public void first_xml_try_create_multiple_node()
-        {
-            PackageInstance pi = new PackageInstance("SDL", "2.0");
-            PackageInstance pi2 = new PackageInstance("SDL2", "2.02");
-            PackageInstance pi3 = new PackageInstance("SDL3", "2.03");
-
-            PackageFeed pf = new PackageFeed(new Uri("http://www.google.fr"));
-            pf.Packages.Add(pi);
-            pf.Packages.Add(pi2);
-            pf.Packages.Add(pi3);
-
-
-            XElement element = new XElement(typeof(PackageFeed).Name);
-            element.SetAttributeValue(nameof(pf.Url), pf.Url);
-            foreach (PackageInstance package in pf.Packages)
-            {
-                element.Add(package.ToXML());
-            }
-
-
-            XDocument doc = new XDocument();
-            doc.Add(element);
-
-
-            var s = doc.ToString();
-            Console.WriteLine(s);
-
-        }
-
-        [Fact]
-        public void read_version()
-        {
-            Assert.True(true);
-        }
-
-
         public void CleanGoMPersistence()
         {
             // Delete .gom folder
             var path = Path.Combine(TuPath(), ".gom");
             if (Directory.Exists(path)) Directory.Delete(path, true);
         }
-
         [Fact]
         public void load_the_gom_context_from_gom_file()
         {
@@ -204,8 +155,8 @@ namespace GoM.Core.Persistence.Tests
 
 #region Repo 2
             Assert.True(ctx.Repositories[0].Path == "/usr/developpement/lolilol");
-            Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
             Assert.True(ctx.Repositories[0].Details.Url == new Uri("http://www.google.fr"));
+            Assert.True(ctx.Repositories[0].Details.Path == "/usr/developpement/GoM/");
 
 #region Branch 1
             Assert.True(ctx.Repositories[0].Details.Branches[0].Name == "develop");
