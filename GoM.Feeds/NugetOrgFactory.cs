@@ -27,7 +27,8 @@ namespace GoM.Feeds
         public IEnumerable<IFeedReader> Snif(Uri link)
         {
             var list = new List<IFeedReader>();
-            var fr = _feedReader.FeedMatch(link).Result ? _feedReader : null;
+            var res = _feedReader.FeedMatch(link).Result;
+            var fr = res.Success && res.Result ? _feedReader : null;
             if (fr != null) list.Add(fr);
             return list;
         }
