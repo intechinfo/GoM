@@ -44,7 +44,7 @@ namespace GoM.GitFileProvider
             switch (type)
             {
                 case TYPE.Unhandled:
-                    return NotFoundDirectoryContents.Singleton;
+                    return GetDirectoryHead(splitPath, subpath);
                 case TYPE.Root:
                     return GetDirectoryRoot();
                 case TYPE.Branches:
@@ -84,16 +84,6 @@ namespace GoM.GitFileProvider
                 default:
                     return new NotFoundFileInfo(INVALID_COMMAND);
             }
-        }
-
-        private string GetPathToGit()
-        {
-            string fullpath = _rootPath;
-            if (!Regex.IsMatch(_rootPath, @".git\\?$"))
-            {
-                fullpath = fullpath + @"\.git";
-            }
-            return fullpath;
         }
 
         private bool IsCorrectGitDirectory()
@@ -150,11 +140,11 @@ namespace GoM.GitFileProvider
         {
             if (tree == null) return NotFoundDirectoryContents.Singleton;
             List<IFileInfo> files = new List<IFileInfo>();
-            if (relativePath != "") relativePath = relativePath + Path.DirectorySeparatorChar;
+            if (relativePath != "" && !relativePath.LastOrDefault().Equals(Path.DirectorySeparatorChar)) relativePath = relativePath + Path.DirectorySeparatorChar;
             foreach (var file in tree)
             {
-                IFileInfo f = file.TargetType != TreeEntryTargetType.Blob ? new FileInfoDirectory(true, _rootPath + Path.DirectorySeparatorChar + relativePath + file.Name, file.Name) as IFileInfo
-                                                          : new FileInfoFile(true, _rootPath + Path.DirectorySeparatorChar + relativePath, file.Name, DateTimeOffset.MinValue, file.Target as Blob, rw, true);
+                IFileInfo f = file.TargetType != TreeEntryTargetType.Blob ? new FileInfoDirectory(true, relativePath + file.Name, file.Name) as IFileInfo
+                                                          : new FileInfoFile(true, relativePath, file.Name, DateTimeOffset.MinValue, file.Target as Blob, rw, true);
                 files.Add(f);
             }
             DirectoryInfo fDir = new DirectoryInfo(files);
@@ -286,9 +276,9 @@ namespace GoM.GitFileProvider
                 if (node == null)
                     return new NotFoundFileInfo(INVALID_PATH);
                 if (node.TargetType == TreeEntryTargetType.Tree)
-                    return new FileInfoRef(true, -1, _rootPath + Path.DirectorySeparatorChar + relativePath, node.Name, DateTimeOffset.MaxValue, true);
+                    return new FileInfoRef(true, -1, relativePath, node.Name, DateTimeOffset.MaxValue, true);
                 if (node.TargetType == TreeEntryTargetType.Blob)
-                    return new FileInfoFile(true, _rootPath + Path.DirectorySeparatorChar + relativePath, node.Name, commit.Committer.When, node.Target as Blob, rw);
+                    return new FileInfoFile(true, relativePath, node.Name, commit.Committer.When, node.Target as Blob, rw);
             }
             return new NotFoundFileInfo(INVALID_PATH);
         }
@@ -308,9 +298,9 @@ namespace GoM.GitFileProvider
                 var tree = commit.Tree[relativePath];
                 if (tree == null) return new NotFoundFileInfo(INVALID_PATH);
                 if (tree.TargetType == TreeEntryTargetType.Tree)
-                    return new FileInfoRef(true, -1, _rootPath + Path.DirectorySeparatorChar + relativePath, tree.Name, DateTimeOffset.MaxValue, true);
+                    return new FileInfoRef(true, -1, relativePath, tree.Name, DateTimeOffset.MaxValue, true);
                 if (tree.TargetType == TreeEntryTargetType.Blob)
-                    return new FileInfoFile(true, _rootPath + Path.DirectorySeparatorChar + relativePath, tree.Name, commit.Committer.When, tree.Target as Blob, rw);
+                    return new FileInfoFile(true, relativePath, tree.Name, commit.Committer.When, tree.Target as Blob, rw);
             }
             return new NotFoundFileInfo(INVALID_PATH);
         }
@@ -334,9 +324,9 @@ namespace GoM.GitFileProvider
             if (node == null)
                 return new NotFoundFileInfo(INVALID_PATH);
             if (node.TargetType == TreeEntryTargetType.Tree)
-                return new FileInfoRef(true, -1, _rootPath + Path.DirectorySeparatorChar + relativePath, node.Name, DateTimeOffset.MaxValue, true);
+                return new FileInfoRef(true, -1, relativePath, node.Name, DateTimeOffset.MaxValue, true);
             if (node.TargetType == TreeEntryTargetType.Blob)
-                return new FileInfoFile(true, _rootPath + Path.DirectorySeparatorChar + relativePath, node.Name, branch.Tip.Committer.When, node.Target as Blob, rw);
+                return new FileInfoFile(true, relativePath, node.Name, branch.Tip.Committer.When, node.Target as Blob, rw);
             return new NotFoundFileInfo(INVALID_PATH);
         }
 
