@@ -62,6 +62,8 @@ namespace GoM.Feeds.Tests
             var testReader = CreateReader();
 
             testReader.GetDependencies("pyramid", "1.8.3").Result.Result.Should().NotBeNullOrEmpty();
+            
+            testReader.GetDependencies("colorama", "0.1.5").Result.Result.Count(x=>x.Result.Dependencies.Count()!=0).Should().Be(0);
 
             Action a1 = () => { var b = testReader.GetDependencies("", "3.4.0").Result; };
             a1.ShouldThrow<ArgumentException>();
