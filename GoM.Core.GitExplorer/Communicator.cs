@@ -10,6 +10,14 @@ using Microsoft.Extensions.FileProviders;
 using GoM.Core.FSAnalyzer;
 namespace GoM.Core.GitExplorer
 {
+
+    public struct ExtensionFileStatistic
+    {
+        public String extension;
+        public int count;
+        public List<String> listPath;
+    }
+
     public class Communicator : ICommunicator
     {
         const string REPOS_DIRECTORY = "../Repos";
@@ -25,7 +33,10 @@ namespace GoM.Core.GitExplorer
         /// Folder where repositories are stored by GoM.
         /// </summary>
         public string ReposPath { get; }
-
+        /// <summary>
+        /// Repository instance of source.
+        /// </summary>
+        public Repository Repository { get; set; }
         /// <summary>
         /// Path to the repository downloaded.
         /// </summary>
@@ -57,6 +68,8 @@ namespace GoM.Core.GitExplorer
                 string repoFullName = Helpers.ParseUrl(source, Helpers.UrlShape.Fullname);
                 string repoName = Helpers.ParseUrl(source, Helpers.UrlShape.Name);
 
+                string tmp_downloading_file_indicator = this.ReposPath + "/downloading_" + repoFullName + "_repository";
+
                 string path = ReposPath + "/" + repoName;
 
                 // return null if Source is invalid
@@ -69,7 +82,7 @@ namespace GoM.Core.GitExplorer
                 fileProvider = new GitFileProvider.GitFileProvider(Directory.GetCurrentDirectory() + "\\" + Path);
 
                 //Return repository if already stored
-                if (RepoExist)
+                if (RepoExist && !File.Exists(tmp_downloading_file_indicator))
                 {
                     repo = new Repository(path);
                     return repo;
@@ -77,9 +90,13 @@ namespace GoM.Core.GitExplorer
 
                 url = new Uri(source);
 
+                Directory.CreateDirectory(REPOS_DIRECTORY);
+                File.CreateText(tmp_downloading_file_indicator).Close();
                 //Clone and return repository if not stored
                 Repository.Clone(source, path);
                 repo = new Repository(path);
+                this.Repository = repo;
+                File.Delete(tmp_downloading_file_indicator);
                 return repo;
             }
             else
@@ -250,6 +267,54 @@ namespace GoM.Core.GitExplorer
             }
             Console.WriteLine(logMessage);
         }
+
+        /// <summary>
+        /// Get a ExtensionStatictic Dictionary.
+        /// Can accept a file in 2 extensions key
+        /// Example : .tar and .targets
+        /// </summary>
+        /// <returns>Dictionary<String, ExtensionStatistic></returns>
+        public Dictionary<String, ExtensionFileStatistic> getExtensionDictionary()
+        {
+
+            List<String> allFiles = getFiles();
+            Dictionary<String, ExtensionFileStatistic> extensionDictionary = new Dictionary<string, ExtensionFileStatistic>();
+            foreach (var file in allFiles)
+            {
+
+                String[] splitFolder = file.Split('\\');
+                String fileName = splitFolder[splitFolder.Length - 1];
+                String[] splitExtension = fileName.Split('.');
+                if (splitFolder.Contains(".git") // Not the .git Folder
+                    || fileName.StartsWith(".git") // Not the git files
+                    || fileName.Contains('~')) { // Not the temp file
+                    continue;
+                }
+                String ext;
+                if (splitExtension.Length > 1) // Have a extension
+                    {
+                    ext = splitExtension[splitExtension.Length - 1];
+                }
+                else
+                {
+                    ext = "";
+                }
+                if (!extensionDictionary.ContainsKey(ext))
+                {
+                    ExtensionFileStatistic extStat = new ExtensionFileStatistic();
+                    extStat.extension = ext;
+                    extStat.count = 0;
+                    extStat.listPath = new List<string>();
+                    extensionDictionary.Add(ext, extStat);
+                }
+                ExtensionFileStatistic stat = extensionDictionary[ext];
+                stat.count++;
+                stat.listPath.Add(file);
+                
+            }
+            return extensionDictionary;
+        }
+
 
         //Implement others methods..
 

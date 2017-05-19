@@ -75,5 +75,11 @@ namespace GoM.Core.GitExplorer
 
         void Fetch();
 
+
+        /// <summary>
+        /// Get a ExtensionStatictic Dictionary.
+        /// </summary>
+        /// <returns>Dictionary<String, ExtensionStatistic></returns>
+        Dictionary<String, ExtensionFileStatistic> getExtensionDictionary();
     }
 }
