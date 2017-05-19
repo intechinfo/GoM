@@ -71,7 +71,7 @@ namespace GoM
                         var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
                         try
                         {
-                            Communicator com = new Communicator(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
+                            Communicator com = new Communicator(Directory.GetCurrentDirectory());
                             var branches = com.getAllBranches();
                             bool isBranchExist = false;
 
@@ -86,15 +86,14 @@ namespace GoM
                             if (isBranchExist) Console.WriteLine("This branch already exist");
                             else
                             {
-                                GoM.Core.Mutable.GitBranch gitBranch = new Core.Mutable.GitBranch { Name = nameBranch };
-                                var allBranches = com.getAllBranches();
-
-                                foreach (var b in allBranches)
+                                using (Repository repo = com.loadRepository(com.Path))
                                 {
-
+                                    repo.CreateBranch(nameBranch);
+                                    var allBranches = com.getAllBranches();
+                                    int count2 = allBranches.Count;
+                                    Console.WriteLine(count2);
+                                    Console.WriteLine("The branch " + nameBranch + " is created");
                                 }
-                                Console.WriteLine("The branch " + nameBranch + " is created");
-
                             }
                         }
                         catch (Exception ex)
