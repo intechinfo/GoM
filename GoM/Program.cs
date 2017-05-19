@@ -9,8 +9,9 @@ using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
-using LibGit2Sharp;
 using GoM.Core.FSAnalyzer;
+using GoM.Core.FSAnalyzer;
+using Microsoft.Extensions.FileProviders;
 
 namespace GoM
 {
@@ -227,10 +228,29 @@ namespace GoM
             {
                 command.Description = "";
                 command.HelpOption("|-h|--help");
-
+                CommandArgument projectLocationArgument = command.Argument("[location]", "");
                 command.OnExecute(() =>
                 {
-                    Console.WriteLine("Refresh is done");
+                    var path = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+
+                    var projects = new ProjectFolderController().Analyze( new PhysicalFileProvider(path));
+
+                    foreach(var proj in projects)
+                    {
+                        
+                        Console.WriteLine(proj);
+                        Console.WriteLine("-ProjectPath: " + proj.Details.Path);
+                        foreach(var tar in proj.Targets)
+                        {
+                            Console.WriteLine("--Target: " + tar.Name);
+                            foreach (var depend in tar.Dependencies)
+                            {
+                                Console.WriteLine("--------: " + depend.Name +" | "+ depend.Version);
+                            }   
+                        }
+                        Console.WriteLine("");
+                    }
+                    
                     return 0;
                 });
             });
