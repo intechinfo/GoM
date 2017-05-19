@@ -4,23 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GoM.Core.GitExplorer;
+
 namespace GoMConsole
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
-        {
-            test();
-        }
-
-        public static void test()
         {
             Communicator communicator = new Communicator("https://github.com/SimpleGitVersion/SGV-Net");
 
-            var branches = communicator.getAllBranches();
-            
+            var aaa = communicator.getBasicGitRepository();
 
-                int count = branches.Count;
+            var branches = communicator.getAllBranches();
+
+            int count = branches.Count;
 
             foreach (var branch in branches)
             {
@@ -47,9 +45,10 @@ namespace GoMConsole
 
             Console.WriteLine(Environment.NewLine);
 
-            Console.WriteLine(count);
+            Console.WriteLine("Nombre de branches: " + count);
 
             Console.ReadLine();
         }
+
     }
 }
