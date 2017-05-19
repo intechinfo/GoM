@@ -75,48 +75,4 @@ namespace GoM.Core.Immutable.Visitors
             return base.Visit(basicRepository);
         }
     }
-    public class PackageInstanceVisitor : Visitor
-    {
-        private PackageInstance _instance;
-        private string _name;
-        private string _version;
-
-        public PackageInstanceVisitor(PackageInstance instance)
-        {
-            _instance = instance;
-            //_name = instance.Name ?? throw new ArgumentNullException(nameof(instance.Name));
-            //_version = instance.Version ?? throw new ArgumentNullException(nameof(instance.Version));
-        }
-
-        //public override PackageFeed Visit(PackageFeed feed)
-        //{
-        //    ImmutableList.Create<PackageInstance>()
-        //    feed = feed.Packages == _instance ? basicRepository : BasicGitRepository.Create(_detailed);
-        //    return base.Visit(basicRepository);
-        //}
-    }
-
-    //public class UpdatePackageFeedVisitor : Visitor
-    //{
-    //    // Get target unique path or reference
-    //    // Check if new path is not already taken
-        
-    //    readonly Uri _url;
-    //    readonly PackageFeed _feed;
-
-    //    public UpdatePackageFeedVisitor(PackageFeed feed)
-    //    {
-    //        _feed = feed ?? throw new ArgumentNullException(nameof(feed));
-    //    }
-
-    //    public override PackageFeed Visit(PackageFeed feed)
-    //    {
-    //        if (feed == _feed)
-    //        {
-    //            feed = PackageInstance.Create(uri);
-    //        }
-    //        return base.Visit(feed);
-    //    }
-    //}
-
 }

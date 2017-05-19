@@ -54,7 +54,7 @@ namespace GoM.Core.Immutable.Tests
         [Fact]
         public void AddFeeds()
         {
-            var context = gom.CreateTestGoMContext();
+            var context = _tests.CreateTestGoMContext();
             PackageFeed pf = PackageFeed.Create(new Uri("http://maNouvelleUrl"), ImmutableList.Create<PackageInstance>());
             context = context.AddOrUpdatePackageFeeds(pf);
             context.Feeds[2].Should().Be(pf);
@@ -63,7 +63,7 @@ namespace GoM.Core.Immutable.Tests
         [Fact]
         public void UpdateFeeds()
         {
-            var context = gom.CreateTestGoMContext();
+            var context = _tests.CreateTestGoMContext();
             PackageFeed pf = PackageFeed.Create(new Uri("http://myPackageFeed"), ImmutableList.Create<PackageInstance>());
             context = context.AddOrUpdatePackageFeeds(pf);
             context.Feeds[0].Should().Be(pf);
