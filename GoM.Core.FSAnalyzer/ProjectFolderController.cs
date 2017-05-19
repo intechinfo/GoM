@@ -10,17 +10,17 @@ namespace GoM.Core.FSAnalyzer
 {
     public class ProjectFolderController : IProjectFolderController
     {
-        public IReadOnlyCollection<IProject> Analyze(IFileProvider rootPath)
+        public IReadOnlyCollection<IProject> Analyze(IFileProvider gitFileProvider)
         {
             List<IProject> projects = new List<IProject>();
 
-            IDirectoryContents directories = rootPath.GetDirectoryContents("");
+            IDirectoryContents directories = gitFileProvider.GetDirectoryContents("");
             foreach (IFileInfo fileInfo in directories)
             {
                 if (fileInfo.IsDirectory)
                 {
                     // On each project call specialize handler with PhysicalFileProvider
-                    ProjectFolderHandler projectHandler = new ProjectFolderHandler(new PhysicalFileProvider(fileInfo.PhysicalPath));
+                    ProjectFolderHandler projectHandler = new ProjectFolderHandler(gitFileProvider, fileInfo.PhysicalPath);
                     IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
                     if (specializedProjectHandler != null)
                     {

@@ -12,8 +12,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class PhpProjectHandler: BaseProjectFolderHandler
     {
-        public PhpProjectHandler(IFileProvider provider) 
-            : base( provider )
+        public PhpProjectHandler(IFileProvider provider, string currentPathFolder) : base(provider, currentPathFolder)
         {
         }
 

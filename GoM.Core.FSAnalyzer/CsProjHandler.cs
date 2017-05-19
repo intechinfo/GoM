@@ -12,7 +12,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class CsProjHandler : BaseProjectFolderHandler
     {
-        public CsProjHandler(IFileProvider provider) : base(provider)
+        public CsProjHandler(IFileProvider provider, string currentPathFolder) : base(provider, currentPathFolder)
         {
         }
 

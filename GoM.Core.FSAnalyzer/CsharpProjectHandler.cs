@@ -12,7 +12,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class CsharpProjectHandler : BaseProjectFolderHandler
     {
-        public CsharpProjectHandler(IFileProvider provider) : base(provider)
+        public CsharpProjectHandler(IFileProvider provider, string currentPathFolder) : base(provider, currentPathFolder)
         {
         }
 
@@ -20,11 +20,11 @@ namespace GoM.Core.FSAnalyzer
         {
             if (HasFile("packages.config"))
             {
-                return new PackagesConfigHandler(FileProvider).Sniff();
+                return new PackagesConfigHandler(FileProvider, CurrentPathFolder).Sniff();
             }
             else
             {
-                return new CsProjHandler(FileProvider).Sniff();
+                return new CsProjHandler(FileProvider, CurrentPathFolder).Sniff();
             }
         }
     }

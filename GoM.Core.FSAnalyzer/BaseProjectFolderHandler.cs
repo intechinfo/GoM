@@ -11,12 +11,16 @@ namespace GoM.Core.FSAnalyzer
     public abstract class BaseProjectFolderHandler : IProjectFolderHandler
     {
         public IFileProvider FileProvider { get; internal set; }
-        public IEnumerable<IFileInfo> Files => FileProvider.GetDirectoryContents("./");
+
+        public string CurrentPathFolder { get; }
+        public IEnumerable<IFileInfo> Files => FileProvider.GetDirectoryContents(CurrentPathFolder);
         public IEnumerable<string> FileExtensions => Files.Select(x => Path.GetExtension(x.PhysicalPath));
 
-        protected BaseProjectFolderHandler(IFileProvider provider)
+        protected BaseProjectFolderHandler(IFileProvider provider, string currentPathFolder)
         {
             FileProvider = provider;
+            CurrentPathFolder = currentPathFolder;
+
         }
 
         public bool HasFile(string fileName)
