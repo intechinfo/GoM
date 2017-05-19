@@ -4,6 +4,7 @@ using Xunit;
 using System.Linq;
 using System.Collections.Generic;
 using GoM.Feeds.Results;
+using System.Net;
 
 namespace GoM.Feeds.Tests
 {
@@ -49,6 +50,7 @@ namespace GoM.Feeds.Tests
             {
                 testReader.GetAllVersions("colorama").Result.Result.Should().NotBeNullOrEmpty();
                 testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Json.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
                 Action a2 = () => {var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
@@ -60,6 +62,8 @@ namespace GoM.Feeds.Tests
             var testReader = CreateReader();
 
             testReader.GetDependencies("pyramid", "1.8.3").Result.Result.Should().NotBeNullOrEmpty();
+            
+            testReader.GetDependencies("colorama", "0.1.5").Result.Result.Count(x=>x.Result.Dependencies.Count()!=0).Should().Be(0);
 
             Action a1 = () => { var b = testReader.GetDependencies("", "3.4.0").Result; };
             a1.ShouldThrow<ArgumentException>();
