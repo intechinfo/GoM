@@ -40,19 +40,22 @@ namespace GoM.Core.Persistence.Tests
             CleanGomPersistenceInAllFolder( devFolder );
             // It's testing time !
             Persistence p = new Persistence();
-            string output;
             // First init works
-            Assert.True(p.TryInit( devFolder.FullName, out output ));
+            Assert.True(p.Init( devFolder.FullName).Success);
 
             // Second init doesn't work and return devfolder path
-            Assert.False(p.TryInit( devFolder.FullName, out output ));
-            Assert.True( output == devFolder.FullName );
+            var t = p.Init( devFolder.FullName );
+            Assert.False(t.Success);
+            Assert.True( t.GoMParentPaths.ToList()[0] == devFolder.FullName );
 
             // Go childs folder and retry init
-            Assert.False( p.TryInit( devFolder.GetDirectories()[1].FullName, out output ) );
-            Assert.True( output == devFolder.FullName );
-            Assert.False( p.TryInit( devFolder.GetDirectories() [1].GetDirectories()[1].FullName, out output ) );
-            Assert.True( output == devFolder.FullName );
+            t = p.Init( devFolder.GetDirectories()[1].FullName);
+            Assert.False( t.Success );
+            Assert.True( t.GoMParentPaths.ToList()[0] == devFolder.FullName );
+
+            t = p.Init( devFolder.GetDirectories() [1].GetDirectories() [1].FullName );
+            Assert.False( t.Success );
+            Assert.True( t.GoMParentPaths.ToList()[0] == devFolder.FullName );
 
             var ctx = p.Load( devFolder.FullName );
             Assert.True(ctx.Repositories.ToList()[0].Path == devFolder
@@ -402,23 +405,28 @@ namespace GoM.Core.Persistence.Tests
         {
             CleanGoMPersistence();
             Persistence p = new Persistence();
-            string outPath;
 
-            Assert.True(p.TryInit(TuPath(), out outPath));
-            Assert.True(outPath == string.Empty);
+            var t = p.Init(TuPath());
+            Assert.True(t.Success);
+            Assert.True(t.GoMParentPaths.Count==0);
 
-            Assert.False(p.TryInit(TuPath(), out outPath));
-            Assert.True(outPath == TuPath());
+            t = p.Init( TuPath() );
+            Assert.False(t.Success);
+            Assert.True(t.GoMParentPaths.ToList()[0] == TuPath());
 
-            Assert.False(p.TryInit(TuPath(), out outPath));
-            Assert.True(outPath == TuPath());
+            t = p.Init( TuPath() );
+            Assert.False( t.Success );
+            Assert.True( t.GoMParentPaths.ToList() [0] == TuPath() );
 
             CleanGoMPersistence();
-            Assert.True(p.TryInit(TuPath(), out outPath));
-            Assert.True(outPath == string.Empty);
 
-            Assert.False(p.TryInit(TuPath(), out outPath));
-            Assert.True(outPath == TuPath());
+            t = p.Init( TuPath() );
+            Assert.True( t.Success );
+            Assert.True( t.GoMParentPaths.Count == 0 );
+
+            t = p.Init( TuPath() );
+            Assert.False( t.Success );
+            Assert.True( t.GoMParentPaths.ToList() [0] == TuPath() );
 
         }
 
