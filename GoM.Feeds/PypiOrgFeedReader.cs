@@ -54,7 +54,7 @@ namespace GoM.Feeds
                 JObject o = result.Result;
                 if (!o.HasValues )
                 {
-                    return new ReadPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null);
+                    return new ReadPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null, result);
                 }
                 var list = new List<PackageInstanceResult>();
                 var versions = new JObject( new JObject(o["info"]).Property("releases"));
@@ -69,11 +69,11 @@ namespace GoM.Feeds
                         list.Add(new PackageInstanceResult(null,p));
                     }
                 }
-                return new ReadPackagesResult(null, list);
+                return new ReadPackagesResult(null, list, result);
             }
             else
             {
-                return new ReadPackagesResult(result.NetworkException ?? result.JsonException, null);
+                return new ReadPackagesResult(result.NetworkException ?? result.JsonException, null, result);
             }
         }
 
@@ -128,8 +128,11 @@ namespace GoM.Feeds
 
         public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
+            if (!SemVersion.TryParse(version, out SemVersion refSemver))
+                throw new ArgumentException("the version: " + version + " is not Server Compliant ");
+
             var res = await GetAllVersions(name);
-            if (res.Success) return new ReadPackagesResult(null, res.Result.Where(x => !x.Success || SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version)));
+            if (res.Success) return new ReadPackagesResult(null, res.Result.Where(x => !x.Success || SemVersion.Parse(x.Result.Version) > refSemver), res.Json);
             else return res;
         }
     }
