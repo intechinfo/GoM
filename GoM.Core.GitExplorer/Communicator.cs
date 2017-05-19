@@ -250,8 +250,5 @@ namespace GoM.Core.GitExplorer
             }
             Console.WriteLine(logMessage);
         }
-
-        //Implement others methods..
-
     }
 }

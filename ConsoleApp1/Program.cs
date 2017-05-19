@@ -12,12 +12,12 @@ namespace GoMConsole
         [STAThread]
         static void Main(string[] args)
         {
-            Communicator communicator = new Communicator("https://github.com/bmgm/Simple.git");
-            communicator.loadRepository("https://github.com/SimpleGitVersion/SGV-Net.git");
+            Communicator com = new Communicator("https://github.com/bmgm/Simple.git");
+            com.loadRepository("https://github.com/SimpleGitVersion/SGV-Net.git");
 
-            var aaa = communicator.getBasicGitRepository();
+            var aaa = com.getBasicGitRepository();
 
-            var branches = communicator.getAllBranches();
+            var branches = com.getAllBranches();
 
             int count = branches.Count;
 
@@ -33,14 +33,14 @@ namespace GoMConsole
 
             Console.WriteLine("Files : " + Environment.NewLine);
 
-            foreach (var file in communicator.getFiles())
+            foreach (var file in com.getFiles())
             {
                 Console.WriteLine(file);
             }
 
             Console.WriteLine("Directories : " + Environment.NewLine);
 
-            foreach (var directory in communicator.getFolders())
+            foreach (var directory in com.getFolders())
             {
                 Console.WriteLine(directory);
             }
@@ -53,6 +53,8 @@ namespace GoMConsole
             {
                 Console.WriteLine("Repo : " + repo);
             }
+
+            Helpers.DeleteGitRepository(com.Path);
 
             Console.ReadLine();
 
