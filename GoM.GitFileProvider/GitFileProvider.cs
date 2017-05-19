@@ -44,7 +44,7 @@ namespace GoM.GitFileProvider
             switch (type)
             {
                 case TYPE.Unhandled:
-                    return GetDirectoryHead(splitPath, subpath);
+                    return GetDirectoryHead(splitPath, subpath, 0);
                 case TYPE.Root:
                     return GetDirectoryRoot();
                 case TYPE.Branches:
@@ -233,13 +233,13 @@ namespace GoM.GitFileProvider
             }
         }
 
-        private IDirectoryContents GetDirectoryHead(string[] splitPath, string subPath)
+        private IDirectoryContents GetDirectoryHead(string[] splitPath, string subPath, int index = 1)
         {
             using (RepositoryWrapper rw = new RepositoryWrapper(_rootPath))
             {
                 Branch head = rw.Repo.Head;
                 if (head == null || head.Tip == null) return NotFoundDirectoryContents.Singleton;
-                string relativePath = GetRelativePath(splitPath,1);
+                string relativePath = GetRelativePath(splitPath,index);
                 if (String.IsNullOrEmpty(relativePath))
                     return GetDirectoryRoot();
                 var dir = head.Tip?.Tree[relativePath];
