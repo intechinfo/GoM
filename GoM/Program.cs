@@ -150,7 +150,6 @@ namespace GoM
                     {
                         Communicator com = new Communicator(path);
 
-                        Console.WriteLine("Is repo : " + com.isRepository());
                         com.getBasicGitRepository().Details = null;
                         Console.WriteLine(com.getBasicGitRepository().Details == null ? "null" : " not null");
 
