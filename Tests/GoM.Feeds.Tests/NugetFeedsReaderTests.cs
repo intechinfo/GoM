@@ -52,7 +52,7 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetAllVersions("NUnit").Result.Result.Should().NotBeNullOrEmpty();
-                //testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Json.JsonException.Should().NotBeNull();
 
                 Action a2 = () => { var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
