@@ -1,59 +1,46 @@
-# GoM command-line documentation
+## GitFileProvider
+	
+This API is made so the user can freely move beetwen branches and commits in a Git repository. He can also access File (readonly). 	
+	
+--- 
+	
+### Methods	
+** GitFileProvider **	
+Get the git repository from the given path 	
+Param : * string path => * 	
+	Example : "C:\Dev\GoM"
+Return not found if there is no .git 	
+	
+** GetDirectoryContent **	
+Param : * (string subpath)  *	
+Return : * IDirectoryContents * 	
+Exception : * NotFoundDirectoryContents.Singleton if not found *	
+Open a precise path, from one of this type :	
+Root (empty) (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);	
+            var rootDir = git.GetDirectoryContents("");) )	
 
-## gom Command
+* Branches (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);		
+            var rootDir = git.GetDirectoryContents(@"branches\origin/perso-KKKMPT\GoM.GitFileProvider"); )	
+	
+* Tags (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);	
+            var rootDir = git.GetDirectoryContents(@"tags\V1.0.0\GoM.GitFileProvider"); )	
+	
+* Commit (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);		
+            var rootDir = git.GetDirectoryContents(@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider"); )	
+	
+If only the type is given, return all elements of this type. 		
+	Example : (@"branches") will return every branches of the repository. 	
 
-Syntax :        gom [option]<br/>
-Help option :   -h<br/>
-Description :   Displays available commands.<br/>
-
-## init Command
-
-Syntax :        gom init [option]<br/>
-Help option :   -h<br/>
-Description :   Initialize a new GoM repository in the current directory.<br/>
-Exceptions :    If the current directory or one of his child is already a repository, the initialisation fail.
-
-## files Command
-
-Syntax :        gom files [option] [path]<br/>
-Help option :   -h<br/>
-Description :   List directories and files contained in the directory specified in [path].<br/>
-Exceptions :    
-* If no [path] is specified, current directory content is listed.
-* If [path] doesn't exist, an error message is displayed.
-
-## add Command
-
-Syntax :        gom add [option] [path]<br/>
-Help option :   -h<br/>
-Options :       
-* [-r|--repository]
-* [-p|--project]
-* [-p -all|--project -all]
-* [-b|--branch]<br/>
-Description :   Add repository, branch and/or project in GoM context.<br/>
-Exceptions :    If no [path] is specified, an error is displayed with the command help.
-
-## add Command
-
-Syntax :        gom remove [option] [path]<br/>
-Help option :   -h<br/>
-Options :       
-* [-r|--repository]
-* [-p|--project]
-* [-p -all|--project -all]
-* [-b|--branch]<br/>
-Description :   Remove repository, branch and/or project from GoM context.<br/>
-Exceptions :    If no [path] is specified, an error is displayed with the command help.
-
-## fetch Command
-
-Syntax :        gom fetch [option] [path]<br/>
-Help option :   -h<br/>
-Options :       
-* [-r|--repository]
-* [-p|--project]
-* [-p -all|--project -all]
-* [-b|--branch]<br/>
-Description :   Check on the specified remote branch in [path] if there are modifications and download them.<br/>
-Exceptions :    If no [path] is specified, an error is displayed with the command help.
+** GetFileInfo **  	
+Param : * string subpath * 	
+Return : * FileInfoFile *	
+Get a specific file from a subpath. 	
+	
+*  Branches (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);	
+            IFileInfo fileInBranchGuillaume = git.GetFileInfo (@"branches\origin/perso-KKKMPT\GoM.GitFileProvider\app.config "); )	
+	
+* Tags (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);	
+            IFileInfo fileInBranchGuillaume = git.GetFileInfo (@"tags\V1.0.0\GoM.GitFileProvider\app.config "); )	
+	
+* Commit (Exemple : GitFileProvider git = new GitFileProvider(ProjectRootPath);		
+            IFileInfo fileInBranchGuillaume = git.GetFileInfo (@"commits\1921471fd36db781bef6833b4723f34afccd8d71\GoM.GitFileProvider\app.config "); )	

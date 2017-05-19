@@ -22,13 +22,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.GitExplorer", "GoM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoMConsole", "GoMConsole\GoMConsole.csproj", "{B450BEBA-705A-47E7-817A-D5D13811A2A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.GitExplorer.Tests", "GoM.Core.GitExplorer.Tests\GoM.Core.GitExplorer.Tests.csproj", "{967F9355-1AA8-4465-B461-54AC620F7F8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.GitExplorer.Tests", "GoM.Core.GitExplorer.Tests\GoM.Core.GitExplorer.Tests.csproj", "{967F9355-1AA8-4465-B461-54AC620F7F8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM", "GoM\GoM.csproj", "{FB8541C7-84F2-44AE-AFF9-4425A61E5644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM", "GoM\GoM.csproj", "{FB8541C7-84F2-44AE-AFF9-4425A61E5644}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Immutable", "GoM.Core.Immutable\GoM.Core.Immutable.csproj", "{B410FE1D-E07A-437D-B69E-6F792F1CF536}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoM.Core.Immutable.Tests", "Tests\GoM.Core.Immutable.Tests\GoM.Core.Immutable.Tests.csproj", "{12ED410F-387B-4F39-A21F-A8B5564510F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Immutable.Tests", "Tests\GoM.Core.Immutable.Tests\GoM.Core.Immutable.Tests.csproj", "{12ED410F-387B-4F39-A21F-A8B5564510F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}"
 EndProject
