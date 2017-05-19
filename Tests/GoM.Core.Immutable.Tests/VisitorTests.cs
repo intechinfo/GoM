@@ -50,5 +50,29 @@ namespace GoM.Core.Immutable.Tests
             newContext.Repositories[0].Details.Url.Should().Be(context.Repositories[0].Details.Url);
             newContext.Repositories[0].Details.Branches.Should().BeEquivalentTo(context.Repositories[0].Details.Branches);
         }
+
+        [Fact]
+        public void AddFeeds()
+        {
+            var context = _tests.CreateTestGoMContext();
+            PackageFeed pf = PackageFeed.Create(new Uri("http://maNouvelleUrl"), ImmutableList.Create<PackageInstance>());
+            context = context.AddOrUpdatePackageFeeds(pf);
+            context.Feeds[2].Should().Be(pf);
+        }
+
+        [Fact]
+        public void UpdateFeeds()
+        {
+            var context = _tests.CreateTestGoMContext();
+            PackageFeed pf = PackageFeed.Create(new Uri("http://myPackageFeed"), ImmutableList.Create<PackageInstance>());
+            context = context.AddOrUpdatePackageFeeds(pf);
+            context.Feeds[0].Should().Be(pf);
+
+            Action act = () => context.Feeds[2].Should().NotBeNull();
+            act.ShouldThrow<ArgumentOutOfRangeException>();
+
+
+        }
+
     }
 }
