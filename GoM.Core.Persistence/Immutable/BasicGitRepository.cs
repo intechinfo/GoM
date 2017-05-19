@@ -19,7 +19,6 @@ namespace GoM.Core.Persistence
             this.el = el;
             Path = el.Attribute( BASIC_GIT_REPOSITORY_PATH ).Value;
 
-            // c=========================================================================3
             var node = el.Element( GitRepository.GIT_REPOSITORY );
             Details = node != null ? new GitRepository(node) : null;
         }
