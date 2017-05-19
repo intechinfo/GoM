@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
+using Microsoft.Extensions.FileProviders;
+
 namespace GoM.Core.GitExplorer
 {
     interface ICommunicator
@@ -17,10 +19,7 @@ namespace GoM.Core.GitExplorer
         /// Folder where repositories are stored by GoM.
         /// </summary>
         string ReposPath { get; }
-        /// <summary>
-        /// Repository instance of source.
-        /// </summary>
-        Repository Repository { get; }
+
         /// <summary>
         /// Path to the repository location.
         /// </summary>
@@ -31,16 +30,10 @@ namespace GoM.Core.GitExplorer
         Uri Url { get; }
 
         /// <summary>
-        /// Check if source was a git repository
-        /// </summary>
-        /// <returns></returns>
-        bool isRepository();
-
-        /// <summary>
         /// Load Repository instance of source.
         /// </summary>
         /// <returns>Repository</returns>
-        Repository loadRepository();
+        Repository loadRepository(string source);
 
         /// <summary>
         /// Get all files in repository.
@@ -61,10 +54,23 @@ namespace GoM.Core.GitExplorer
         /// </summary>
         /// <returns>BasicGitRepository</returns>
         BasicGitRepository getBasicGitRepository();
+
         /// <summary>
         /// Get All Branches of repository
         /// </summary>
-        /// <returns>List<BasicGitBranch></returns>
+        /// <returns>IDirectoryContents</returns>
+        IDirectoryContents directoryContents();
+
+        /// <summary>
+        /// Get All Branches name
+        /// </summary>
+        /// <returns>IEnumerable<string></returns>
+        IEnumerable<string> getAllBranchesName();
+
+        /// <summary>
+        /// Get All Branches of a repository
+        /// </summary>
+        /// <returns>IEnumerable<string></returns>
         List<BasicGitBranch> getAllBranches();
     }
 }
