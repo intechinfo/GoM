@@ -36,6 +36,6 @@ namespace GoM.Core.FSAnalyzer
             }          
             IReadOnlyCollection<IProject> readOnlyProjects = new ReadOnlyCollection<IProject>(projects);
             return readOnlyProjects;
-        }
+          }
     }
 }
