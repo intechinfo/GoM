@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using GoM.Core.Mutable;
 using System.IO;
+using System.Collections.Generic;
 
 namespace GoM.Core.GitExplorer.Tests
 {
@@ -69,7 +70,6 @@ namespace GoM.Core.GitExplorer.Tests
         {
             Helpers.DeleteDirectory("repos");
         }
-
 
     }
 }
