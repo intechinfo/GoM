@@ -22,6 +22,7 @@ namespace GoM.GitFileProvider.Tests
                 item.PhysicalPath.Should().Be(item.Name);
             }
         }
+        [Test]
         public void Get_directory_with_no_parameters_and_path()
         {
             GitFileProvider git = new GitFileProvider(ProjectRootPath);
