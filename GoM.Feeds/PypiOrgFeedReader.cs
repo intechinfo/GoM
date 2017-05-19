@@ -17,7 +17,7 @@ namespace GoM.Feeds
 {
     public class PypiOrgFeedReader : FeedReaderBase
     {
-        string _baseUrl = "https://pypi.python.org/pypi/Python/json";
+        string _baseUrl = "https://pypi.python.org/pypi/";
 
         public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
@@ -35,7 +35,7 @@ namespace GoM.Feeds
                 bool isPypi = o.TryGetValue("info", out JToken value);
                 if (isPypi)
                 {
-                    return new FeedMatchResult(null,o.Property("info").Value.ToString() == "registry",result, this);
+                    return new FeedMatchResult(null, value["name"].ToString() == "Python",result, this);
                 }
                 return new FeedMatchResult(null, false,result, this);
             }
@@ -48,7 +48,7 @@ namespace GoM.Feeds
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            var result = await GetJson(new Uri( _baseUrl + name));
+            var result = await GetJson(new Uri( _baseUrl +"/"+ name+"/json"));
             if (result.Success)
             {
                 JObject o = result.Result;
@@ -57,7 +57,7 @@ namespace GoM.Feeds
                     return new ReadPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null);
                 }
                 var list = new List<PackageInstanceResult>();
-                var versions = new JObject( new JObject(o["info"]).Property("releases"));
+                var versions = o.Value<JObject>("releases");
                 foreach (var item in versions)
                 {
 
@@ -128,6 +128,7 @@ namespace GoM.Feeds
 
         public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
+            if (!SemVersion.TryParse(version,out SemVersion v)) throw new ArgumentException("The version :" + version + " is not SemVer compliant");
             var res = await GetAllVersions(name);
             if (res.Success) return new ReadPackagesResult(null, res.Result.Where(x => !x.Success || SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version)));
             else return res;

@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
-using GoM.Core;
 using System;
-using System.Collections.Generic;
 using Xunit;
+using System.Linq;
 
 namespace GoM.Feeds.Tests
 {
@@ -32,15 +31,15 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetNewestVersions("colorama", "0.1.5").Result.Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("colorama", "0.3.9").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetNewestVersions("colorama", "0.3.9").Result.Result.Count(x=>x.Success).Should().Be(0);
 
-                testReader.GetNewestVersions("colorama", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
-
-                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
+                Action a1 = () => { var b = testReader.GetNewestVersions("colorama", "blabla").Result; };
                 a1.ShouldThrow<ArgumentException>();
+
+                Action a2 = () => { var b = testReader.GetNewestVersions("", "3.6.1").Result; };
+                a2.ShouldThrow<ArgumentException>();
             }
         }
-
         [Fact]
         public void Check_Reader_Get_All_Versions()
         {
