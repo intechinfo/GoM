@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace GoM.Feeds.Tests
@@ -30,11 +31,12 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetNewestVersions("sugar", "1.1.0").Result.Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("sugar", "2.0.4").Result.Result.Should().BeNullOrEmpty();
-                testReader.GetNewestVersions("sugar", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
+                testReader.GetNewestVersions("sugar", "2.0.4").Result.Result.Count(x=>x.Success).Should().Be(0);
 
-                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
+                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1").Result; };
                 a1.ShouldThrow<ArgumentException>();
+                Action a2 = () => { var b = testReader.GetNewestVersions("blabla", "blabla").Result; };
+                a2.ShouldThrow<ArgumentException>();
             }
         }
 
@@ -46,7 +48,7 @@ namespace GoM.Feeds.Tests
                 testReader.GetAllVersions("sugar").Result.Result.Should().NotBeNullOrEmpty();
                 testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
 
-                Action a2 = () => { var b = testReader.GetAllVersions(""); };
+                Action a2 = () => { var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
             }
         }
