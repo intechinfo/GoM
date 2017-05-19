@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
+using LibGit2Sharp;
 using GoM.Core.Mutable;
 using LibGit2Sharp;
-
 namespace GoM
 {
     class Program
@@ -242,14 +242,17 @@ namespace GoM
                     {
                         ProcessFile(projectPath, fileList);
                     }
-                    else if (Directory.Exists(projectPath))
+                    else if (Directory.Exists(projectPath) && Repository.IsValid(projectPath))
                     {
-                        FileTree ft = new FileTree();
-                        ft.Nodes = new List<FileTree>();
-                        GetNodes(projectPath, ft);
-                        string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
-                        File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
-                        ProcessDirectory(projectPath, fileList);
+                        
+                            FileTree ft = new FileTree();
+                            ft.Nodes = new List<FileTree>();
+                            GetNodes(projectPath, ft);
+                            string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
+                            //Console.WriteLine(json);
+                            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
+                            ProcessDirectory(projectPath, fileList);
+                        
                     }
                     else
                     {
@@ -277,6 +280,7 @@ namespace GoM
             }
             else if (Directory.Exists(path))
             {
+               
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
@@ -294,8 +298,9 @@ namespace GoM
         public static void GetChildren(string path, FileTree ft)
         {
             if (Directory.Exists(path))
-            {
+            {                
 
+               
                 foreach (string item in Directory.GetDirectories(path))
                 {
                     FileTree n = new FileTree();
