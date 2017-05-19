@@ -15,7 +15,7 @@ namespace GoM.Core.Immutable
             if (projects != null) Projects = projects;
 
             // Check duplicates in projects
-            if (CheckDuplicates(projects)) throw new ArgumentException($"Duplicates found in {nameof(projects)}");
+            if (CheckDuplicates(Projects)) throw new ArgumentException($"Duplicates found in {nameof(Projects)}");
         }
 
         GitBranch(IGitBranch branch)

@@ -11,44 +11,58 @@ namespace GoM.Core.Immutable.Tests
     public class ImmutableCreationTests
     {
 
-        private Immutable.GoMContext CreateTestGoMContext()
+        public Immutable.GoMContext CreateTestGoMContext()
         {
             // BranchVersionInfo
             Immutable.VersionTag newVersionTag = VersionTag.Create("Version 1.0.0");
+            Immutable.VersionTag newVersionTag2 = VersionTag.Create("Version 1.0.1");
+
             Immutable.BranchVersionInfo newBranchVersionInfo = BranchVersionInfo.Create(1, newVersionTag);
+            Immutable.BranchVersionInfo newBranchVersionInfo2 = BranchVersionInfo.Create(2, newVersionTag2);
 
             // TargetDependenciy    
             Immutable.TargetDependency newTargetDependency = TargetDependency.Create("Ma target dépendence", "1.0.0");
-            ImmutableList<TargetDependency> dependencies = ImmutableList.Create<TargetDependency>(newTargetDependency);
+            Immutable.TargetDependency newTargetDependency2 = TargetDependency.Create("Ma target dépendence 2", "1.0.1");
+            ImmutableList<TargetDependency> dependencies = ImmutableList.Create<TargetDependency>(newTargetDependency, newTargetDependency2);
 
             // Targets
             Immutable.Target newTarget = Target.Create("Ma target", dependencies);
-            ImmutableList<Target> targets = ImmutableList.Create<Target>(newTarget);
+            Immutable.Target newTarget2 = Target.Create("Ma target2", dependencies);
+            ImmutableList<Target> targets = ImmutableList.Create<Target>(newTarget, newTarget2);
 
             // Projects
             Immutable.Project newProject = Project.Create("Chemin/vers/projet", targets);
+            Immutable.Project newProject2 = Project.Create("Chemin/vers/projet2", targets);
             Immutable.BasicProject newBasicProject = BasicProject.Create(newProject);
-            ImmutableList<BasicProject> projects = ImmutableList.Create<BasicProject>(newBasicProject);
-
-            // FIXME : Erreur dans les tests ligne 258. Les détails des projets seraient nuls
+            Immutable.BasicProject newBasicProject2 = BasicProject.Create(newProject2);
+            ImmutableList<BasicProject> projects = ImmutableList.Create<BasicProject>(newBasicProject, newBasicProject2);
 
             // BasicGitBranch
             Immutable.GitBranch newGitBranch = GitBranch.Create("Ma git branch", newBranchVersionInfo, projects);
+            Immutable.GitBranch newGitBranch2 = GitBranch.Create("Ma git branch2", newBranchVersionInfo2, projects);
+
             Immutable.BasicGitBranch newGitBasicBranch = Immutable.BasicGitBranch.Create(newGitBranch);
-            ImmutableList<BasicGitBranch> listBasicGitBranch = ImmutableList.Create<BasicGitBranch>(newGitBasicBranch);
+            Immutable.BasicGitBranch newGitBasicBranch2 = Immutable.BasicGitBranch.Create(newGitBranch2);
+            ImmutableList<BasicGitBranch> listBasicGitBranch = ImmutableList.Create<BasicGitBranch>(newGitBasicBranch, newGitBasicBranch2);
 
             // GitRepositories
             Immutable.GitRepository newGitRepository = GitRepository.Create("path", new Uri("http://uri"), listBasicGitBranch);
+            Immutable.GitRepository newGitRepository2 = GitRepository.Create("path2", new Uri("http://uri2"), listBasicGitBranch);
+
             Immutable.BasicGitRepository newBasicGitRepository = BasicGitRepository.Create(newGitRepository);
-            ImmutableList<BasicGitRepository> repositories = ImmutableList.Create<BasicGitRepository>(newBasicGitRepository);
+            Immutable.BasicGitRepository newBasicGitRepository2 = BasicGitRepository.Create(newGitRepository2);
+
+            ImmutableList<BasicGitRepository> repositories = ImmutableList.Create<BasicGitRepository>(newBasicGitRepository, newBasicGitRepository2);
             
             // PackageInstances
-            Immutable.PackageInstance newPackageInstance = PackageInstance.Create("Mon packageInstance", "Version ");
-            ImmutableList<PackageInstance> instances = ImmutableList.Create<PackageInstance>(newPackageInstance);
+            Immutable.PackageInstance newPackageInstance = PackageInstance.Create("Mon packageInstance", "Version 1.0.0");
+            Immutable.PackageInstance newPackageInstance2 = PackageInstance.Create("Mon packageInstance2", "Version 2.0.0");
+            ImmutableList<PackageInstance> instances = ImmutableList.Create<PackageInstance>(newPackageInstance, newPackageInstance2);
 
             // PackageFeeds
             Immutable.PackageFeed newPackageFeed = PackageFeed.Create(new Uri("http://myPackageFeed"), instances);
-            ImmutableList<PackageFeed> feeds = ImmutableList.Create<PackageFeed>(newPackageFeed);
+            Immutable.PackageFeed newPackageFeed2 = PackageFeed.Create(new Uri("http://myPackageFeed2"), instances);
+            ImmutableList<PackageFeed> feeds = ImmutableList.Create<PackageFeed>(newPackageFeed, newPackageFeed2);
 
             // Context
             return Immutable.GoMContext.Create("myContextPath", repositories, feeds);
