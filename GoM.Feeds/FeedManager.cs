@@ -1,5 +1,6 @@
 using GoM.Core;
 using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,24 +20,31 @@ namespace GoM.Feeds
         {
             _factory.Dispose();
         }
-        public IDictionary<IPackageInstance, IEnumerable<Results.PackageInstanceResult>> GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
+        public GetPackagesResult GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
-            var feedsResults = _factory.Snif(packageFeeds);
-            if( feedsResults.Succes)
-            {
+            var feedsResults = _factory.Snif(packageFeeds).Result;
 
-            }
-            var toDo = packages.Join(feedsResults.Result, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.GetAllVersions(p.Name) });
+            var validFeeds = feedsResults.Where(x => x.Success);
+            var invalidFeeds = feedsResults.Where(x => !x.Success);
+
+            var toDo = packages.Join(validFeeds, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.FeedReader.GetAllVersions(p.Name) });
+
             Task.WaitAll(toDo.Select(x => x.T).ToArray());
-            return toDo.ToDictionary(x => x.P, x => x.T.Result.Result);
+            var ret = new GetPackagesResult(null, toDo.ToDictionary(x => x.P, x => x.T.Result.Result), invalidFeeds);
+            return ret;
         }
-
-        public IDictionary<IPackageInstance, IEnumerable<IPackageInstance>> GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
+        public GetPackagesResult GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
-            var feedsResults = _factory.Snif(packageFeeds);
-            var toDo = packages.Join(feedsResults, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.GetNewestVersions(p.Name, p.Version) } );
+            var feedsResults = _factory.Snif(packageFeeds).Result;
+            var validFeeds = feedsResults.Where(x => x.Success);
+            var invalidFeeds = feedsResults.Where(x => !x.Success);
+
+
+            var toDo = packages.Join(validFeeds, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.FeedReader.GetNewestVersions(p.Name, p.Version) } );
             Task.WaitAll(toDo.Select(x => x.T).ToArray());
-            return toDo.ToDictionary(x => x.P, x => x.T.Result);
+             
+            var ret = new GetPackagesResult(null, toDo.ToDictionary(x => x.P, x => x.T.Result.Result), invalidFeeds);
+            return ret;
         }
     }
 }

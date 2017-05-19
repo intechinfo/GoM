@@ -11,7 +11,6 @@ namespace GoM.Feeds.Results
 
         public readonly Exception Reason;
 
-
         public bool Success => Result != null;
 
         public PackageInstanceResult(Exception rE, IPackageInstance r)

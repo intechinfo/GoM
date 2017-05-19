@@ -14,20 +14,20 @@ namespace GoM.Feeds.Abstractions
         /// </summary>
         /// <param name="name">the name of the package to search</param>
         /// <returns>A <see cref="Task"/> of all the instances getting retreived from the web</returns>
-        Task<GetPackagesResult> GetAllVersions(string name);
+        Task<ReadPackagesResult> GetAllVersions(string name);
         /// <summary>
         /// Gets the newest version of a <see cref="IPackageInstance"/>
         /// </summary>
         /// <param name="name">the name of the package to search</param>
         /// <returns>A <see cref="Task"/> of all the instances getting retreived from the web</returns>
-        Task<GetPackagesResult> GetNewestVersions(string name,string version);
+        Task<ReadPackagesResult> GetNewestVersions(string name,string version);
         /// <summary>
         /// Gets all the dependencies of a package for  given version and package name
         /// </summary>
         /// <param name="name">the name of the package to search</param>
         /// <param name="version">the version of the package to search</param>
         /// <returns>A <see cref="Task"/> of all the instances getting retreived from the web</returns>
-        Task<GetDependenciesResult> GetDependencies(string name, string version);
+        Task<ReadDependenciesResult> GetDependencies(string name, string version);
         /// <summary>
         /// Finds if a Feed is mathing a given endpoint
         /// </summary>

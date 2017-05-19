@@ -29,12 +29,12 @@ namespace GoM.Feeds
         {
             var t = links.Select(x => Snif(x));
             var ret = await Task.WhenAll(t.Select(x => x));
-            return ret;
+            return ret.SelectMany(x=>x);
         }
         public async Task<IEnumerable<FeedMatchResult>> Snif(Uri link)
-        {   
-            var ret = await Task.WhenAll(_factories.Select(fr => fr.Snif(link))));
-            return ret;
+        {
+            var ret = await Task.WhenAll(_factories.Select(fr => fr.Snif(link)));
+            return ret.SelectMany(x=>x);
         }
 
     }

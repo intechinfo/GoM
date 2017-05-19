@@ -41,7 +41,7 @@ namespace GoM.Feeds
             }
         }
 
-        public override async Task<GetPackagesResult> GetAllVersions(string name)
+        public override async Task<ReadPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
 
@@ -51,7 +51,7 @@ namespace GoM.Feeds
             {
                 JObject o = json.Result;
                 if (!o.HasValues)
-                    return new GetPackagesResult(new InvalidOperationException("No package named : " + name + " found."), null);
+                    return new ReadPackagesResult(new InvalidOperationException("No package named : " + name + " found."), null);
 
                 var list = new List<PackageInstanceResult>();
                 JArray versions = o["versions"] as JArray;
@@ -69,15 +69,15 @@ namespace GoM.Feeds
                         list.Add(new PackageInstanceResult(new ArgumentException("the version : " + item + "is not Server Compliant"), null));
                     }
                 }
-                return new GetPackagesResult(null, list);
+                return new ReadPackagesResult(null, list);
             }
             else
             {
-                return new GetPackagesResult(json.NetworkException ?? json.JsonException, null);
+                return new ReadPackagesResult(json.NetworkException ?? json.JsonException, null);
             }
         }
 
-        public override async Task<GetDependenciesResult> GetDependencies(string name, string version)
+        public override async Task<ReadDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("The parameter version cannot be null or empty.");
@@ -89,7 +89,7 @@ namespace GoM.Feeds
             if (tryFoundPackage.Success)
             {
                 if(!tryFoundPackage.Result.HasValues)
-                    return new GetDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
+                    return new ReadDependenciesResult(new InvalidOperationException("No package named : " + name + " found."), null);
 
                 JObject packageOverview = tryFoundPackage.Result;
 
@@ -98,7 +98,7 @@ namespace GoM.Feeds
                 if (tryGetPackageDetails.Success)
                 {
                     if (!tryGetPackageDetails.Result.HasValues)
-                        return new GetDependenciesResult(new InvalidOperationException("Could not find details for package : " + name + "."), null);
+                        return new ReadDependenciesResult(new InvalidOperationException("Could not find details for package : " + name + "."), null);
 
                     try
                     {
@@ -126,33 +126,29 @@ namespace GoM.Feeds
                                 returnedDependecies.Add(new TargetResult(null, target));
                             }
                         }
-                        return new GetDependenciesResult(null, returnedDependecies);
+                        return new ReadDependenciesResult(null, returnedDependecies);
                     }
                     catch (Exception ex)
                     {
-                        return new GetDependenciesResult(ex, null);
+                        return new ReadDependenciesResult(ex, null);
                     }
                 }
                 else
                 {
-                    return new GetDependenciesResult(tryGetPackageDetails.JsonException ?? tryGetPackageDetails.NetworkException, null);
+                    return new ReadDependenciesResult(tryGetPackageDetails.JsonException ?? tryGetPackageDetails.NetworkException, null);
                 }
             }
             else
             {
-                return new GetDependenciesResult(tryFoundPackage.JsonException ?? tryFoundPackage.NetworkException, null);
+                return new ReadDependenciesResult(tryFoundPackage.JsonException ?? tryFoundPackage.NetworkException, null);
             }
         }
 
-        public override async Task<GetPackagesResult> GetNewestVersions(string name, string version)
+        public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
             var res = await GetAllVersions(name);
-            if (res.Success)
-            {
-                var packages = res.Result.Where(x => SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version));
-                return new GetPackagesResult(null, packages);
-            }
-            return res;
+            if (res.Success) return new ReadPackagesResult(null, res.Result.Where(x => !x.Success || SemVersion.Parse(x.Result.Version) > SemVersion.Parse(version)));
+            else return res;
         }
     }
 }
