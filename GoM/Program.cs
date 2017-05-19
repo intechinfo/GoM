@@ -10,7 +10,6 @@ using GoM.Core.GitExplorer;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
 using GoM.Core.FSAnalyzer;
-using GoM.Core.FSAnalyzer;
 using Microsoft.Extensions.FileProviders;
 namespace GoM
 {
@@ -134,29 +133,28 @@ namespace GoM
 
                 var excludeRepoOPtion = command.Option("-r|--repository",
                 "Exclude a repository from GoM",
-                    CommandOptionType.NoValue);
+                CommandOptionType.NoValue);
 
                 var excludeBranchOPtion = command.Option("-b|--branch",
                 "Exclude one branch from GoM",
-                   CommandOptionType.NoValue);
+                CommandOptionType.NoValue);
 
                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
                 "Exclude all branches from GoM",
-                  CommandOptionType.NoValue);
+                CommandOptionType.NoValue);
 
                 var excludeProjectOPtion = command.Option("-p|--project",
                 "Exclude one project from GoM",
-                  CommandOptionType.NoValue);
+                CommandOptionType.NoValue);
 
                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
                 "Exclude all projects from GoM",
-                  CommandOptionType.NoValue);
+                CommandOptionType.NoValue);
 
                 CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
 
 
 
-                CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
                 command.OnExecute(() =>
                 {
                     int repo = excludeRepoOPtion.Values.Count;
@@ -164,64 +162,65 @@ namespace GoM
                     int allBranches = excludeAllBranchOPtion.Values.Count;
                     int project = excludeProjectOPtion.Values.Count;
                     int allProjects = excludeAllProjectshOPtion.Values.Count;
+
                     var path = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+                    var name = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
 
                     // remove repo
                     if (repo > 0)
                     {
-                        Communicator com = new Communicator(path);
-                        com.getBasicGitRepository().Details = null;
-                        Console.WriteLine(com.getBasicGitRepository().Details == null ? "null" : " not null");
-
-                        /*foreach (var file in com.getFiles())
+                        try
                         {
-                            
-                            Directory.Delete(file);
+                            var removeRepo = Helpers.DeleteGitRepository(path);
+                            if (removeRepo)
+                            {
+                                Console.WriteLine("Repository successfully removed.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Repository wasn't removed.");
+                            }
+
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("The path specified isn't valid.");
+                            Console.WriteLine(e.Message);
                         }
 
-                        foreach (var directory in com.getFolders())
-                        {
-                            
-                            Directory.Delete(directory);
-                        }*/
+
                     }
                     // remove branch
                     else if (branch > 0)
                     {
+                        Console.WriteLine("remove branch option");
 
-                    }
-                    // remove branch
-                    else if (allBranches > 0)
-                    {
+                        Communicator c = new Communicator("B:/alexandrebabeu sur mon Mac/Desktop/IN'TECH/C#/GoM");
+                        //Communicator c = new Communicator(Directory.GetCurrentDirectory());
 
-                    }
-                    // remove branch
-                    else if (project > 0)
-                    {
-
-                    }
-                    // remove branch
-                    else if (allProjects > 0)
-                    {
-
-                    }
-                    Console.WriteLine(c.getAllBranches().First().Name);
-                    foreach (var b in branches)
-                    {
-                        if (b.Name.Equals(name))
+                        var branches = c.getAllBranches();
+                        foreach (var br in branches)
                         {
-                            b.Details = null;
-                            if (b.Details == null)
+                            Console.WriteLine(br.Name);
+                        }
+                        Console.WriteLine(c.getAllBranches().First().Name);
+                        foreach (var b in branches)
+                        {
+                            if (b.Name.Equals(name))
                             {
-                                Console.WriteLine("Branch details set to null.");
-                                try
+                                b.Details = null;
+                                if (b.Details == null)
                                 {
-                                    branches.Remove(b);
-                                } catch (Exception e)
-                                {
-                                    Console.WriteLine("Remove failed "+ e.Message);
+                                    Console.WriteLine("Branch details set to null.");
+                                    try
+                                    {
+                                        branches.Remove(b);
                                     }
-                                    
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("Remove failed " + e.Message);
+                                    }
+
                                 }
                             }
                         }
@@ -237,13 +236,9 @@ namespace GoM
 
                     }
 
-
-
-
                     return 0;
                 });
             });
-
             app.Command("init", (command) =>
             {
                 command.Description = "Initialize a new GoM repository in the current directory";
@@ -271,31 +266,48 @@ namespace GoM
                 {
                     var path = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
 
-                    var projects = new ProjectFolderController().Analyze( new PhysicalFileProvider(path));
+                    var projects = new ProjectFolderController().Analyze(new PhysicalFileProvider(path));
 
-                    foreach(var proj in projects)
+                    foreach (var proj in projects)
                     {
-                        
+
                         Console.WriteLine(proj);
                         Console.WriteLine("-ProjectPath: " + proj.Details.Path);
-                        foreach(var tar in proj.Targets)
+                        foreach (var tar in proj.Targets)
                         {
                             Console.WriteLine("--Target: " + tar.Name);
                             foreach (var depend in tar.Dependencies)
                             {
-                                Console.WriteLine("--------: " + depend.Name +" | "+ depend.Version);
-                            }   
+                                Console.WriteLine("--------: " + depend.Name + " | " + depend.Version);
+                            }
                         }
                         Console.WriteLine("");
                     }
-                    
+
                     return 0;
                 });
             });
 
+            app.Command("fetch", c =>
+            {
+                c.Description = "Fetch updates on the remote server.";
+                var repoPath = c.Argument("[repoPath]",
+                                   "Where the repository should be located .");
+                var branchName = c.Argument("[branchName]", "The name of the branch to fetch.");
+
+                c.HelpOption("-h|--help");
+
+                c.OnExecute(() =>
+                {
+                    var path = repoPath.Value != null && repoPath.Value != "" ? repoPath.Value : Directory.GetCurrentDirectory();
+                    var name = branchName.Value != null && branchName.Value != "" ? branchName.Value : null;
+
+                    Communicator remoteRepo = new Communicator(path);
+                    //Communicator localRepo = new Communicator(Directory.GetCurrentDirectory());
+
                     var remoteBranches = remoteRepo.getAllBranches();
 
-                    foreach(var b in remoteBranches)
+                    foreach (var b in remoteBranches)
                     {
                         if (b.Name.Equals(name))
                         {
@@ -303,7 +315,6 @@ namespace GoM
                             break;
                         }
                     }
-
                     return 0;
                 });
             });
@@ -325,15 +336,15 @@ namespace GoM
                     }
                     else if (Directory.Exists(projectPath) && Repository.IsValid(projectPath))
                     {
-                        
-                            FileTree ft = new FileTree();
-                            ft.Nodes = new List<FileTree>();
-                            GetNodes(projectPath, ft);
-                            string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
-                            //Console.WriteLine(json);
-                            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
-                            ProcessDirectory(projectPath, fileList);
-                        
+
+                        FileTree ft = new FileTree();
+                        ft.Nodes = new List<FileTree>();
+                        GetNodes(projectPath, ft);
+                        string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
+                        //Console.WriteLine(json);
+                        File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
+                        ProcessDirectory(projectPath, fileList);
+
                     }
                     else
                     {
@@ -352,7 +363,6 @@ namespace GoM
                 Console.WriteLine(e.Message + ",you must specify a valid option");
             }
         }
-
         public static void GetNodes(string path, FileTree ft)
         {
             if (File.Exists(path))
@@ -361,7 +371,7 @@ namespace GoM
             }
             else if (Directory.Exists(path))
             {
-               
+
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
@@ -379,9 +389,7 @@ namespace GoM
         public static void GetChildren(string path, FileTree ft)
         {
             if (Directory.Exists(path))
-            {                
-
-               
+            {
                 foreach (string item in Directory.GetDirectories(path))
                 {
                     FileTree n = new FileTree();
@@ -392,7 +400,6 @@ namespace GoM
                     GetChildren(item, ft);
                 }
             }
-        }
         }
         public static void GetFiles(string path, FileTree ft)
         {
@@ -419,5 +426,4 @@ namespace GoM
             return fileList;
         }
     }
-
 }
