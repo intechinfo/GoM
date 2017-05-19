@@ -3,6 +3,7 @@ using LibGit2Sharp;
 using System.Linq;
 using NUnit.Framework;
 using GoM.Core.Mutable;
+using System.IO;
 
 namespace GoM.Core.GitExplorer.Tests
 {
@@ -10,6 +11,8 @@ namespace GoM.Core.GitExplorer.Tests
     public class GitExplorerTests
     {
         public string url = "https://github.com/SimpleGitVersion/SGV-Net.git";
+        private string ProjectRootPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+
 
         [Test]
         public void Check_repository_is_loaded()
@@ -53,5 +56,20 @@ namespace GoM.Core.GitExplorer.Tests
             Communicator communicator = new Communicator(url);
             Assert.AreNotEqual(0, communicator.getAllBranchesName());
         }
+
+        [Test]
+        public void Fetch_Repository()
+        {
+            Communicator communicator = new Communicator(ProjectRootPath);
+            communicator.Fetch();
+        }
+
+        [TestFixtureTearDown]
+        public void Cleanup()
+        {
+            Helpers.DeleteDirectory("repos");
+        }
+
+
     }
 }
