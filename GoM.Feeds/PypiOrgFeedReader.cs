@@ -96,25 +96,27 @@ namespace GoM.Feeds
                 var list = new List<TargetResult>();
 
                 Regex reg = new Regex(@"^Programming Language :: Python :: \d([.]\d([.]\d)?)?$");
-                foreach (var item in o.Property("classifiers"))
+                var properties = o.Value<JObject>("info").Value<JArray>("classifiers");
+                foreach (var item in properties)
                 {
-                    var val = item.Value<string>();
+                    var val = item.ToString();
                     if (reg.IsMatch(val))
                     {
                         var tar = new Target { Name = val };
                         list.Add(new TargetResult(null,tar));
                     }
                 }
-                bool hasDependencies = o.TryGetValue("requires_dist", out JToken t);
+                bool hasDependencies = o.Value<JObject>("info").TryGetValue("requires_dist", out JToken t);
                 if (hasDependencies)
                 {
-                    JObject dependencies = new JObject(t);
+                    JArray dependencies = new JArray(t);
 
                     //iterate on eah version of the json
                     foreach (var item in dependencies)
                     {
-                        string depName = item.Key;
-                        string depVersion = item.Value.ToString();
+                        var arrStr = item.ToString().Split('(');
+                        string depName = arrStr[0];
+                        string depVersion = string.IsNullOrWhiteSpace(arrStr.ElementAtOrDefault(1))? null: arrStr[1].Substring(0,arrStr[1].Length-1);
                         list.Where(x=>x.Success).ToList().ForEach(x => ((Target)(x.Result)).Dependencies.Add(new TargetDependency { Name = depName, Version = depVersion }));
                     }
                 }

@@ -2,6 +2,8 @@
 using System;
 using Xunit;
 using System.Linq;
+using System.Collections.Generic;
+using GoM.Feeds.Results;
 
 namespace GoM.Feeds.Tests
 {
@@ -51,7 +53,19 @@ namespace GoM.Feeds.Tests
                 Action a2 = () => {var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
             }
+        }
+        [Fact]
+        public void Check_Reader_Get_Dependencies()
+        {
+            var testReader = CreateReader();
 
+            testReader.GetDependencies("pyramid", "1.8.3").Result.Result.Should().NotBeNullOrEmpty();
+
+            Action a1 = () => { var b = testReader.GetDependencies("", "3.4.0").Result; };
+            a1.ShouldThrow<ArgumentException>();
+
+            Action a2 = () => { var b = testReader.GetDependencies("pyramid", "").Result; };
+            a1.ShouldThrow<ArgumentException>();
         }
     }
 }
