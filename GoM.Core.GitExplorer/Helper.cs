@@ -61,7 +61,7 @@ namespace GoM.Core.GitExplorer
         /// <returns></returns>
         public static bool DeleteGitRepository(string path)
         {
-            if (!path.Contains("../")) return false;
+            if (!path.Contains(Path.DirectorySeparatorChar)) return false;
 
             DeleteDirectory(path);
 

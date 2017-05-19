@@ -12,7 +12,6 @@ using GoM.Core.Mutable;
 using GoM.Core.FSAnalyzer;
 using GoM.Core.FSAnalyzer;
 using Microsoft.Extensions.FileProviders;
-
 namespace GoM
 {
     class Program
@@ -134,24 +133,28 @@ namespace GoM
                 command.HelpOption("-h|--help");
 
                 var excludeRepoOPtion = command.Option("-r|--repository",
-                    "Exclude a repository from GoM",
+                "Exclude a repository from GoM",
                     CommandOptionType.NoValue);
 
                 var excludeBranchOPtion = command.Option("-b|--branch",
-                   "Exclude one branch from GoM",
+                "Exclude one branch from GoM",
                    CommandOptionType.NoValue);
 
                 var excludeAllBranchOPtion = command.Option("-b -all|--branch -all",
-                  "Exclude all branches from GoM",
+                "Exclude all branches from GoM",
                   CommandOptionType.NoValue);
 
                 var excludeProjectOPtion = command.Option("-p|--project",
-                  "Exclude one project from GoM",
+                "Exclude one project from GoM",
                   CommandOptionType.NoValue);
 
                 var excludeAllProjectshOPtion = command.Option("-p -all|--projects -all",
-                  "Exclude all projects from GoM",
+                "Exclude all projects from GoM",
                   CommandOptionType.NoValue);
+
+                CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
+
+
 
                 CommandArgument projectLocationArgument = command.Argument("[location]", "Where the projects should be located");
                 command.OnExecute(() =>
@@ -202,6 +205,41 @@ namespace GoM
                     {
 
                     }
+                    Console.WriteLine(c.getAllBranches().First().Name);
+                    foreach (var b in branches)
+                    {
+                        if (b.Name.Equals(name))
+                        {
+                            b.Details = null;
+                            if (b.Details == null)
+                            {
+                                Console.WriteLine("Branch details set to null.");
+                                try
+                                {
+                                    branches.Remove(b);
+                                } catch (Exception e)
+                                {
+                                    Console.WriteLine("Remove failed "+ e.Message);
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                    // remove project
+                    else if (project > 0)
+                    {
+
+                    }
+                    // remove all projects
+                    else if (allProjects > 0)
+                    {
+
+                    }
+
+
+
+
                     return 0;
                 });
             });
@@ -251,6 +289,21 @@ namespace GoM
                         Console.WriteLine("");
                     }
                     
+                    return 0;
+                });
+            });
+
+                    var remoteBranches = remoteRepo.getAllBranches();
+
+                    foreach(var b in remoteBranches)
+                    {
+                        if (b.Name.Equals(name))
+                        {
+                            Console.WriteLine("We can fetch the branch : {0}", name);
+                            break;
+                        }
+                    }
+
                     return 0;
                 });
             });
@@ -339,6 +392,7 @@ namespace GoM
                     GetChildren(item, ft);
                 }
             }
+        }
         }
         public static void GetFiles(string path, FileTree ft)
         {
