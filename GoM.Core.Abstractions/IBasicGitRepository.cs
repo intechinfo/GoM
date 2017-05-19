@@ -6,8 +6,6 @@ namespace GoM.Core
     {
         string Path { get; }
 
-        Uri Url { get; }
-
         IGitRepository Details { get; }
     }
 }

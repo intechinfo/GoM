@@ -17,30 +17,40 @@ namespace GoM.Core.Immutable.Visitors
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
-            basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
+            if(basicRepository.Path == _detailed.Path)
+            {
+                basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
+            }
             return base.Visit(basicRepository);
         }
     }
     public class DetailBranchVisitor : Visitor
     {
         GitBranch _detailed;
+        BasicGitBranch _branchToDetail;
 
-        public DetailBranchVisitor(GitBranch detailed)
+        public DetailBranchVisitor(BasicGitBranch branchToDetail, GitBranch detailed)
         {
             _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
+            _branchToDetail = branchToDetail ?? throw new ArgumentNullException(nameof(branchToDetail));
+        }
+
+        public override BasicGitRepository Visit(BasicGitRepository basicRepository)
+        {
+            return base.Visit(basicRepository);
         }
 
         public override BasicGitBranch Visit(BasicGitBranch basicBranch)
         {
-            basicBranch = basicBranch.Details == _detailed ? basicBranch : BasicGitBranch.Create(_detailed);
+            if(basicBranch.Name == _detailed.Name)
+            {
+                basicBranch = basicBranch.Details == _detailed ? basicBranch : BasicGitBranch.Create(_detailed);
+            }
             return base.Visit(basicBranch);
         }
     }
     public class UpdateRepositoryFieldsVisitor : Visitor
     {
-        // Get target unique path or reference
-        // Check if new path is not already taken
-
         readonly string _path;
         readonly Uri _url;
         readonly BasicGitRepository _target;
@@ -58,8 +68,9 @@ namespace GoM.Core.Immutable.Visitors
             if(basicRepository == _target)
             {
                 string path = _path != null ? (_path != basicRepository.Path ? _path : basicRepository.Path) : basicRepository.Path;
-                Uri uri = _url != null ? (_url != basicRepository.Url ? _url : basicRepository.Url) : basicRepository.Url;
-                basicRepository = BasicGitRepository.Create(path, uri);
+                Uri url = _url != null ? (_url != basicRepository.Url ? _url : basicRepository.Url) : basicRepository.Url;
+                basicRepository = basicRepository.Details == null ? BasicGitRepository.Create(path, url)
+                    : BasicGitRepository.Create(GitRepository.Create(path, url, basicRepository.Details.Branches));
             }
             return base.Visit(basicRepository);
         }

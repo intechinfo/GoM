@@ -25,55 +25,29 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        //public GoMContext AddOrSetGitRepositoryDetails(IGitRepository detailed)
-        //{
-        //    if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-        //    var basic = Repositories.FirstOrDefault(r => r.Path == detailed.Path);
-        //    ImmutableList<BasicGitRepository> list = basic == null
-        //            ? Repositories.Add(BasicGitRepository.Create(detailed))
-        //            : Repositories.SetItem(Repositories.IndexOf(basic), BasicGitRepository.Create(detailed));
-        //    return Create(RootPath, list, Feeds);
-        //}
+        public GoMContext UpdateRepositoryFields(BasicGitRepository repositoryToUpdate, string newPath = null, Uri newUrl = null)
+        {
+            if (repositoryToUpdate == null) throw new ArgumentNullException(nameof(repositoryToUpdate));
+            if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
+            if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
+            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
+            return visitor.Visit(this);
+        }
 
-        public GoMContext SetRepositoryDetails(GitRepository detailed)
+        public GoMContext AddOrSetRepositoryDetails(GitRepository detailed)
         {
             if (detailed == null) throw new ArgumentNullException(nameof(detailed));
             var visitor = new DetailRepositoryVisitor(detailed);
             return visitor.Visit(this);
         }
 
-        public GoMContext SetBranchDetails(GitBranch detailed)
+        //public GoMContext 
+
+        public GoMContext AddOrSetBranchDetails(BasicGitBranch branchToDetail, GitBranch detailed)
         {
             if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-            var visitor = new DetailBranchVisitor(detailed);
+            var visitor = new DetailBranchVisitor(branchToDetail, detailed);
             return visitor.Visit(this);
-        }
-
-        public GoMContext UpdateRepositoryFields(string path, string newPath = null, Uri newUrl = null)
-        {
-            if(path == null) throw new ArgumentNullException(nameof(path));
-            if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
-            if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
-            var repositoryToUpdate = Repositories.SingleOrDefault(rep => rep.Path == path) ?? throw new ArgumentException("This repository does not exist");
-            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
-            return visitor.Visit(this);
-        }
-
-        public GoMContext AddOrUpdatePackageFeeds(PackageFeed feed)
-        {
-            // Chercher si le feed n'existe pas déjà basé sur l'URL. Si oui on visite si non on l'ajoute à la liste
-            var feedFound = Feeds.SingleOrDefault(f => f.Url == feed.Url);
-            ImmutableList<PackageFeed> newFeeds;
-            if (feedFound == null)
-            {
-                //Add
-                 newFeeds = Feeds.Add(feed);
-            } else
-            {
-                // update
-                 newFeeds = Feeds.SetItem(Feeds.IndexOf(feedFound), feed);
-            }
-            return GoMContext.Create(this.RootPath, this.Repositories, newFeeds);
         }
     }
 }
