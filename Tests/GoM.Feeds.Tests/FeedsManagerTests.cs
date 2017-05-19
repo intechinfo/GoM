@@ -31,7 +31,7 @@ namespace GoM.Feeds.Tests
             return new PackageInstance { Name = "python", Version = "0" };
         }
         [Fact]
-        public void check_manager_creation_shouldNotBeNull()
+        public void Check_manager_creation_shouldNotBeNull()
         {
             using (var testManager = GetManager())
             {

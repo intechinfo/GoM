@@ -8,7 +8,7 @@ namespace GoM.Feeds.Results
     {
         public readonly IEnumerable<PackageInstanceResult> Result;
         public readonly Exception Error;
-        public bool Success => Error == null;
+        public bool Success => Result!=null;
         public ReadPackagesResult(Exception rE, IEnumerable<PackageInstanceResult> r)
         {
             Result = r;
