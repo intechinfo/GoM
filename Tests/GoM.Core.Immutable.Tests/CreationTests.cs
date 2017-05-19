@@ -11,7 +11,7 @@ namespace GoM.Core.Immutable.Tests
     public class ImmutableCreationTests
     {
 
-        private Immutable.GoMContext CreateTestGoMContext()
+        public Immutable.GoMContext CreateTestGoMContext()
         {
             // BranchVersionInfo
             Immutable.VersionTag newVersionTag = VersionTag.Create("Version 1.0.0");

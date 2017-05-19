@@ -50,9 +50,12 @@ namespace GoM.Core.Immutable.Visitors
             return project;
         }
 
-        public virtual PackageFeed Visit(PackageFeed p)
+        public virtual PackageFeed Visit(PackageFeed package)
         {
-            return p;
+            // URL et packageIntance
+            //var visitedPackages = package.Packages != null ? Visit(package.Packages, Visit) : ImmutableList.Create<PackageInstance>();
+            //return visitedPackages != package.Packages ? PackageFeed.Create(package.Url, visitedPackages) : package;
+            return package;
         }
 
         static ImmutableList<T> Visit<T>(ImmutableList<T> input, Func<T, T> transformer) where T : class
