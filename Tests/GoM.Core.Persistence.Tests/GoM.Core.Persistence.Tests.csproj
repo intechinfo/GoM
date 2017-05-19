@@ -3,21 +3,21 @@
   <PropertyGroup>    
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
+  
+  <ItemGroup> 
     <PackageReference Include="FluentAssertions" Version="4.19.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
+    <ProjectReference Include="..\..\GoM.Core.Abstractions\GoM.Core.Abstractions.csproj" />
     <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
-    <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Persistence\GoM.Core.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-
 </Project>

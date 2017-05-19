@@ -107,7 +107,7 @@ namespace GoM.Core.Mutable.Tests
 
             return newGoMContext;
         }
-
+        
         [Fact]
         public void Check_testGomContext_creation_shouldNotBeNull()
         {
