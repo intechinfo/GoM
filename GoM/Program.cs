@@ -8,7 +8,8 @@ using System.Text;
 using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
 using LibGit2Sharp;
-
+using GoM.Core.Mutable;
+using LibGit2Sharp;
 namespace GoM
 {
     class Program
@@ -70,7 +71,7 @@ namespace GoM
                         var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
                         try
                         {
-                            Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                            Communicator com = new Communicator(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
                             var branches = com.getAllBranches();
                             bool isBranchExist = false;
 
@@ -85,7 +86,15 @@ namespace GoM
                             if (isBranchExist) Console.WriteLine("This branch already exist");
                             else
                             {
-                                // To be implemented
+                                GoM.Core.Mutable.GitBranch gitBranch = new Core.Mutable.GitBranch { Name = nameBranch };
+                                var allBranches = com.getAllBranches();
+
+                                foreach (var b in allBranches)
+                                {
+
+                                }
+                                Console.WriteLine("The branch " + nameBranch + " is created");
+
                             }
                         }
                         catch (Exception ex)
@@ -149,7 +158,6 @@ namespace GoM
                     if (repo > 0)
                     {
                         Communicator com = new Communicator(path);
-
                         com.getBasicGitRepository().Details = null;
                         Console.WriteLine(com.getBasicGitRepository().Details == null ? "null" : " not null");
 
@@ -234,14 +242,17 @@ namespace GoM
                     {
                         ProcessFile(projectPath, fileList);
                     }
-                    else if (Directory.Exists(projectPath))
+                    else if (Directory.Exists(projectPath) && Repository.IsValid(projectPath))
                     {
-                        FileTree ft = new FileTree();
-                        ft.Nodes = new List<FileTree>();
-                        GetNodes(projectPath, ft);
-                        string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
-                        File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
-                        ProcessDirectory(projectPath, fileList);
+                        
+                            FileTree ft = new FileTree();
+                            ft.Nodes = new List<FileTree>();
+                            GetNodes(projectPath, ft);
+                            string json = JsonConvert.SerializeObject(ft, Formatting.Indented);
+                            //Console.WriteLine(json);
+                            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "fileList.json"), json);
+                            ProcessDirectory(projectPath, fileList);
+                        
                     }
                     else
                     {
@@ -269,6 +280,7 @@ namespace GoM
             }
             else if (Directory.Exists(path))
             {
+               
                 GetFiles(path, ft);
                 ft.Data = path;
                 foreach (string item in Directory.GetDirectories(path))
@@ -286,8 +298,9 @@ namespace GoM
         public static void GetChildren(string path, FileTree ft)
         {
             if (Directory.Exists(path))
-            {
+            {                
 
+               
                 foreach (string item in Directory.GetDirectories(path))
                 {
                     FileTree n = new FileTree();
