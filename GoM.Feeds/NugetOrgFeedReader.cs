@@ -104,7 +104,8 @@ namespace GoM.Feeds
                     {
                         var returnedDependecies = new List<TargetResult>();
 
-                        var deps = tryGetPackageDetails.Result.Children<JProperty>().FirstOrDefault(x => x.Name == "dependencyGroups")?.Values<JObject>();
+                        var deps = tryGetPackageDetails.Result.Value<JArray>("dependencyGroups");
+
                         if (deps != null)
                         {
                             foreach(var targetFramework in deps)
