@@ -30,8 +30,9 @@ namespace GoM.Feeds
             var toDo = packages.Join(validFeeds, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.FeedReader.GetAllVersions(p.Name) });
 
             Task.WaitAll(toDo.Select(x => x.T).ToArray());
-            var ret = new GetPackagesResult(null, toDo.ToDictionary(x => x.P, x => x.T.Result.Result), invalidFeeds);
-            return ret;
+            var toDicData = toDo.GroupBy(x => x.P);
+            
+            return new GetPackagesResult(null, toDicData.ToDictionary(x => x.Key, x => x.SelectMany(z=>z.T.Result.Result)), invalidFeeds);
         }
         public GetPackagesResult GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
@@ -42,9 +43,8 @@ namespace GoM.Feeds
 
             var toDo = packages.Join(validFeeds, p => 1, f => 1, (p, f) => new { P = p, F = f, T = f.FeedReader.GetNewestVersions(p.Name, p.Version) } );
             Task.WaitAll(toDo.Select(x => x.T).ToArray());
-             
-            var ret = new GetPackagesResult(null, toDo.ToDictionary(x => x.P, x => x.T.Result.Result), invalidFeeds);
-            return ret;
+            var toDicData = toDo.GroupBy(x => x.P);
+            return new GetPackagesResult(null, toDicData.ToDictionary(x => x.Key, x => x.SelectMany(z => z.T.Result.Result)), invalidFeeds);
         }
     }
 }
