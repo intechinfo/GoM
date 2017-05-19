@@ -12,7 +12,7 @@ namespace GoM.Core.GitExplorer
 {
     public class Communicator : ICommunicator
     {
-        const string REPOS_DIRECTORY = "../../repos";
+        const string REPOS_DIRECTORY = "../Repos";
 
         private Uri url;
         private GitFileProvider.GitFileProvider fileProvider;
@@ -223,22 +223,18 @@ namespace GoM.Core.GitExplorer
             return basicProjects;
         }
 
-        private Target getTarget()
+        public static List<string> getAllStoredRepositoriesNames()
         {
-            throw new NotImplementedException();
+            List<string> reposNames = new List<string>();
+            string[] reposLocation = Directory.GetDirectories(REPOS_DIRECTORY);
+
+            foreach(string repo in reposLocation)
+            {
+                string[] sourceUrl_exploded = repo.Split('/');
+                sourceUrl_exploded = repo.Split('\\');
+                reposNames.Add(sourceUrl_exploded[sourceUrl_exploded.Length - 1]);
+            }
+            return reposNames;
         }
-
-        private TargetDependency getTargetDependency()
-        {
-            throw new NotImplementedException();
-        }
-
-        private List<Target> getTargets()
-        {
-            throw new NotImplementedException();
-        }
-
-        //Implement others methods..
-
     }
 }
