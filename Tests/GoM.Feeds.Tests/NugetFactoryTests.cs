@@ -29,9 +29,9 @@ namespace GoM.Feeds.Tests
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://api.nuget.org/v3/index.json");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count.Should().BeGreaterThan(0);
+                sut.Count().Should().BeGreaterThan(0);
             }
             
         }
@@ -42,7 +42,7 @@ namespace GoM.Feeds.Tests
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }  
@@ -55,7 +55,7 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
                 sut.Count().Should().BeGreaterThan(0);
             }   
@@ -68,7 +68,7 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
                 sut.Count().Should().Be(0);
             }
