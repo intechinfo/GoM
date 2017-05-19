@@ -22,8 +22,8 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.FeedMatch(new Uri("http://registry.npmjs.org/")).Result.Should().Be(true);
-                testReader.FeedMatch(new Uri("http://google.com/")).Result.Should().Be(false);
+                testReader.FeedMatch(new Uri("http://registry.npmjs.org/")).Result.Result.Should().Be(true);
+                testReader.FeedMatch(new Uri("http://google.com/")).Result.Result.Should().Be(false);
             }
         }
         [Fact]
@@ -31,12 +31,11 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetNewestVersions("sugar", "1.1.0").Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("sugar", "2.0.4").Result.Should().BeNullOrEmpty();
-                Action a2 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("sugar", "blabla").Result; };
-                a2.ShouldThrow<ArgumentException>();
+                testReader.GetNewestVersions("sugar", "1.1.0").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetNewestVersions("sugar", "2.0.4").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetNewestVersions("sugar", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
 
-                Action a1 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("", "3.6.1").Result; };
+                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
                 a1.ShouldThrow<ArgumentException>();
             }
         }
@@ -46,10 +45,10 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetAllVersions("sugar").Result.Should().NotBeNullOrEmpty();
-                testReader.GetAllVersions("PackageMustn0TExISte").Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("sugar").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
 
-                Action a2 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("").Result; };
+                Action a2 = () => { var b = testReader.GetAllVersions(""); };
                 a2.ShouldThrow<ArgumentException>();
             }
         }
