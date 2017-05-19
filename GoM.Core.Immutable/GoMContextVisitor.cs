@@ -60,5 +60,22 @@ namespace GoM.Core.Immutable
             var visitor = new UpdateBrancNameVisitor(foundBranch, newName);
             return visitor.Visit(this);
         }
+
+        public GoMContext AddOrUpdatePackageFeeds(PackageFeed feed)
+        {
+            var feedFound = Feeds.SingleOrDefault(f => f.Url == feed.Url);
+            ImmutableList<PackageFeed> newFeeds;
+            if (feedFound == null)
+            {
+                //Add 
+                newFeeds = Feeds.Add(feed);
+            }
+            else
+            {
+                // update 
+                newFeeds = Feeds.SetItem(Feeds.IndexOf(feedFound), feed);
+            }
+            return GoMContext.Create(this.RootPath, this.Repositories, newFeeds);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
@@ -25,7 +26,6 @@ namespace GoM.Core.Immutable.Visitors
             return base.Visit(basicRepository);
         }
     }
-
     public class DetailBranchVisitor : Visitor
     {
         GitBranch _detailed;
@@ -51,7 +51,6 @@ namespace GoM.Core.Immutable.Visitors
             return base.Visit(basicBranch);
         }
     }
-
     public class UpdateRepositoryFieldsVisitor : Visitor
     {
         readonly string _path;
