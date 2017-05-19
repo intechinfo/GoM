@@ -7,16 +7,18 @@ namespace GoM.Core.Immutable.Visitors
 {
     public class DetailRepositoryVisitor : Visitor
     {
-        private GitRepository _detailed;
+        GitRepository _detailed;
+        BasicGitRepository _repositoryToDetail;
 
-        public DetailRepositoryVisitor(GitRepository detailed)
+        public DetailRepositoryVisitor(BasicGitRepository repositoryToDetail, GitRepository detailed)
         {
+            _repositoryToDetail = repositoryToDetail ?? throw new ArgumentNullException(nameof(repositoryToDetail));
             _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
         }
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
-            if(basicRepository.Path == _detailed.Path)
+            if (basicRepository == _repositoryToDetail)
             {
                 basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
             }
@@ -42,7 +44,7 @@ namespace GoM.Core.Immutable.Visitors
 
         public override BasicGitBranch Visit(BasicGitBranch basicBranch)
         {
-            if(basicBranch.Name == _detailed.Name)
+            if (basicBranch == _branchToDetail)
             {
                 basicBranch = basicBranch.Details == _detailed ? basicBranch : BasicGitBranch.Create(_detailed);
             }
@@ -66,7 +68,7 @@ namespace GoM.Core.Immutable.Visitors
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
-            if(basicRepository == _target)
+            if (basicRepository == _target)
             {
                 string path = _path != null ? (_path != basicRepository.Path ? _path : basicRepository.Path) : basicRepository.Path;
                 Uri url = _url != null ? (_url != basicRepository.Url ? _url : basicRepository.Url) : basicRepository.Url;
@@ -74,6 +76,26 @@ namespace GoM.Core.Immutable.Visitors
                     : BasicGitRepository.Create(GitRepository.Create(path, url, basicRepository.Details.Branches));
             }
             return base.Visit(basicRepository);
+        }
+    }
+
+    public class UpdateBrancNameVisitor : Visitor
+    {
+        BasicGitBranch _branch;
+        string _name;
+        public UpdateBrancNameVisitor(BasicGitBranch branch, string name)
+        {
+            _branch = branch;
+            _name = name;
+        }
+
+        public override BasicGitBranch Visit(BasicGitBranch basicBranch)
+        {
+            if(basicBranch == _branch)
+            {
+                basicBranch = basicBranch.Name == _name ? basicBranch : BasicGitBranch.Create(_name, basicBranch.Details);
+            }
+            return base.Visit(basicBranch);
         }
     }
 }
