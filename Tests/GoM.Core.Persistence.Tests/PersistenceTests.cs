@@ -123,7 +123,7 @@ namespace GoM.Core.Persistence.Tests
 
 
             XDocument doc = new XDocument();
-            doc.Add(pf.ToXML());
+            doc.Add(pf.ToXml());
 
 
             var s = doc.ToString();
@@ -198,13 +198,13 @@ namespace GoM.Core.Persistence.Tests
 
             // Packages 1, 2 et 3
             Assert.True(ctx.Feeds[0].Packages[0].Version == "1.0.0");
-            Assert.True(ctx.Feeds[0].Packages[0].Name == "bite");
+            Assert.True(ctx.Feeds[0].Packages[0].Name == "ovgr");
 
             Assert.True(ctx.Feeds[0].Packages[1].Version == "2.0.0");
-            Assert.True(ctx.Feeds[0].Packages[1].Name == "pénis");
+            Assert.True(ctx.Feeds[0].Packages[1].Name == "cravf");
 
             Assert.True(ctx.Feeds[0].Packages[2].Version == "1.5.0");
-            Assert.True(ctx.Feeds[0].Packages[2].Name == "chibre");
+            Assert.True(ctx.Feeds[0].Packages[2].Name == "puvoer");
 #endregion
 
 #region Feed 2
@@ -236,17 +236,17 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var package1 = new Mutable.PackageInstance();
             package1.Version = "1.0.0";
-            package1.Name = "bite";
+            package1.Name = "ovgr";
 
             // OK
             var package2 = new Mutable.PackageInstance();
             package2.Version = "2.0.0";
-            package2.Name = "pénis";
+            package2.Name = "cravf";
 
             // OK
             var package3 = new Mutable.PackageInstance();
             package3.Version = "1.5.0";
-            package3.Name = "chibre";
+            package3.Name = "puvoer";
 
             // OK
             var feed1 = new Mutable.PackageFeed();
@@ -347,7 +347,7 @@ namespace GoM.Core.Persistence.Tests
             // OK
             var realGitbranch = new Mutable.GitBranch();
             //realGitbranch.Details = realGitbranch;
-            realGitbranch.Name = "BiteOfTheDead";
+            realGitbranch.Name = "ovgrOfTheDead";
 
             realGitbranch.Version = branchVersion;
 

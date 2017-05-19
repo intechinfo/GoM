@@ -14,7 +14,7 @@ namespace GoM.Core.Persistence
         // XELEMENT (XNAME, OBJECT[])
 
 
-        public static XElement ToXML(this IPackageInstance _this)
+        public static XElement ToXml(this IPackageInstance _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(PackageInstance.PACKAGE_INSTANCE);
@@ -23,12 +23,12 @@ namespace GoM.Core.Persistence
             return element;
         }
 
-        public static XElement ToXML(this IPackageFeed _this)
+        public static XElement ToXml(this IPackageFeed _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(PackageFeed.PACKAGE_FEED);
             element.SetAttributeValue(PackageFeed.PACKAGE_FEED_URL, _this.Url);
-            element.Add(_this.Packages.Select(package => package.ToXML()).ToList());
+            element.Add(_this.Packages.Select(package => package.ToXml()).ToList());
             //foreach (IPackageInstance package in _this.Packages)
             //{
             //    element.Add(package.ToXML());
@@ -36,29 +36,29 @@ namespace GoM.Core.Persistence
             return element;
         }
 
-        public static XElement ToXML(this IGoMContext _this)
+        public static XElement ToXml(this IGoMContext _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(GoMContext.GOM_CONTEXT);
             element.SetAttributeValue(GoMContext.GOM_CONTEXT_ROOTPATH, _this.RootPath);
-            element.Add(_this.Repositories.Select(t => t.ToXML()).ToList());
+            element.Add(_this.Repositories.Select(t => t.ToXml()).ToList());
             //foreach (var t in _this.Repositories) element.Add(t.ToXML());
-            element.Add(_this.Feeds.Select(t => t.ToXML()).ToList()); 
+            element.Add(_this.Feeds.Select(t => t.ToXml()).ToList()); 
             //foreach (var t in _this.Feeds) element.Add(t.ToXML());
             return element;
         }
 
-        public static XElement ToXML(this IProject _this)
+        public static XElement ToXml(this IProject _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(Project.PROJECT);
             element.SetAttributeValue(Project.PROJECT_PATH, _this.Path);
-            element.Add(_this.Targets.Select(t => t.ToXML()).ToList());
+            element.Add(_this.Targets.Select(t => t.ToXml()).ToList());
             //foreach (var t in _this.Targets) element.Add(t.ToXML());
             return element;
         }
 
-        public static XElement ToXML(this ITargetDependency _this)
+        public static XElement ToXml(this ITargetDependency _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(TargetDependency.TARGET_DEPENDENCY);
@@ -67,7 +67,7 @@ namespace GoM.Core.Persistence
             return element;
         }
 
-        public static XElement ToXML(this IVersionTag _this)
+        public static XElement ToXml(this IVersionTag _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(VersionTag.VERSION_TAG);
@@ -76,70 +76,70 @@ namespace GoM.Core.Persistence
             return element;
         }
 
-        public static XElement ToXML(this ITarget _this)
+        public static XElement ToXml(this ITarget _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(Target.TARGET);
             element.SetAttributeValue(Target.TARGET_NAME, _this.Name);
-            element.Add(_this.Dependencies.Select(t=> t.ToXML()).ToList());
+            element.Add(_this.Dependencies.Select(t=> t.ToXml()).ToList());
             //foreach (var t in _this.Dependencies) element.Add(t.ToXML());
 
             return element;
         }
 
-        public static XElement ToXML(this IBasicGitBranch _this)
+        public static XElement ToXml(this IBasicGitBranch _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(BasicGitBranch.BASIC_GIT_BRANCH);
             element.SetAttributeValue(BasicGitBranch.BASIC_GIT_BRANCH_NAME, _this.Name);
-            element.Add(_this.Details.ToXML());
+            element.Add(_this.Details.ToXml());
             return element;
         }
 
-        public static XElement ToXML(this IBranchVersionInfo _this)
+        public static XElement ToXml(this IBranchVersionInfo _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(BranchVersionInfo.BRANCH_VERSION_INFO);
             element.SetAttributeValue(BranchVersionInfo.BRANCH_VERSION_INFO_LAST_TAG_DEPTH, _this.LastTagDepth);
-            element.Add(_this.LastTag.ToXML());
+            element.Add(_this.LastTag.ToXml());
             return element;
         }
 
-        public static XElement ToXML(this IBasicGitRepository _this)
+        public static XElement ToXml(this IBasicGitRepository _this)
         {
             if (_this == null) return null;
             XElement element = new XElement(BasicGitRepository.BASIC_GIT_REPOSITORY);
             element.SetAttributeValue(BasicGitRepository.BASIC_GIT_REPOSITORY_PATH, _this.Path);
 
-            element.Add(_this.Details.ToXML());
+            element.Add(_this.Details.ToXml());
             return element;
         }
 
-        public static XElement ToXML(this IBasicProject _this)
+        public static XElement ToXml(this IBasicProject _this)
         {
             if ( _this == null ) return null;
 
             XElement element = new XElement(BasicProject.BASIC_PROJECT);
             element.SetAttributeValue( BasicProject.BASIC_PROJECT_PATH, _this.Path );
 
-            element.Add( _this.Details.ToXML() );
+            element.Add( _this.Details.ToXml() );
             return element;
         }
 
-        public static XElement ToXML(this IGitBranch _this)
+        public static XElement ToXml(this IGitBranch _this)
         {
             if (_this == null) return null;
 
             XElement element = new XElement(GitBranch.GIT_BRANCH);
-            element.Add(_this.Version.ToXML());
-            element.Add(_this.Projects.Select(t => t.ToXML()).ToList());
+            element.Add(_this.Version.ToXml());
+            element.Add(_this.Projects.Select(t => t.ToXml()).ToList());
             //foreach (var t in _this.Projects) element.Add(t.ToXML());
 
             element.SetAttributeValue(GitBranch.GIT_BRANCH_NAME, _this.Name);
             return element;
         }
 
-        public static XElement ToXML(this IGitRepository _this)
+        public static XElement ToXml(this IGitRepository _this)
         {
             if (_this == null) return null;
 
@@ -147,7 +147,7 @@ namespace GoM.Core.Persistence
 
             element.SetAttributeValue(GitRepository.GIT_REPOSITORY_PATH, _this.Path);
             element.SetAttributeValue(GitRepository.GIT_REPOSITORY_URL, _this.Url);
-            element.Add(_this.Branches.Select(t => t.ToXML()).ToList());
+            element.Add(_this.Branches.Select(t => t.ToXml()).ToList());
             //foreach (var t in _this.Branches) element.Add(t.ToXML());
 
             return element;
@@ -181,7 +181,7 @@ namespace GoM.Core.Persistence
             using (var stream = File.Create(Path.Combine(context.RootPath, FolderName, FileName)))
             {
                 XDocument doc = new XDocument();
-                doc.Add(context.ToXML());
+                doc.Add(context.ToXml());
                 doc.Root.SetAttributeValue("GOM_Document_Version", "1");
                 doc.Save(stream);
             }
