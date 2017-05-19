@@ -59,8 +59,9 @@ namespace GoM.Core.Immutable.Visitors
             if(basicRepository == _target)
             {
                 string path = _path != null ? (_path != basicRepository.Path ? _path : basicRepository.Path) : basicRepository.Path;
-                Uri uri = _url != null ? (_url != basicRepository.Url ? _url : basicRepository.Url) : basicRepository.Url;
-                basicRepository = BasicGitRepository.Create(path, uri);
+                Uri url = _url != null ? (_url != basicRepository.Url ? _url : basicRepository.Url) : basicRepository.Url;
+                basicRepository = basicRepository.Details == null ? BasicGitRepository.Create(path, url)
+                    : BasicGitRepository.Create(GitRepository.Create(path, url, basicRepository.Details.Branches));
             }
             return base.Visit(basicRepository);
         }

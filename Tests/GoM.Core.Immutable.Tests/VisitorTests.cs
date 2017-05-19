@@ -71,6 +71,10 @@ namespace GoM.Core.Immutable.Tests
             var newContext = context.UpdateRepositoryFields("path", "newPath");
 
             newContext.Repositories[0].Path.Should().Be("newPath");
+            newContext.Repositories[0].Url.Should().Be(context.Repositories[0].Url);
+            newContext.Repositories[0].Details.Path.Should().Be("newPath");
+            newContext.Repositories[0].Details.Url.Should().Be(context.Repositories[0].Details.Url);
+            newContext.Repositories[0].Details.Branches.Should().BeEquivalentTo(context.Repositories[0].Details.Branches);
         }
     }
 }
