@@ -22,8 +22,8 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.FeedMatch(new Uri("https://pypi.python.org/pypi/Python/json")).Result.Should().Be(true);
-                testReader.FeedMatch(new Uri("http://google.com/")).Result.Should().Be(false);
+                testReader.FeedMatch(new Uri("https://pypi.python.org/pypi/Python/json")).Result.Result.Should().Be(true);
+                testReader.FeedMatch(new Uri("http://google.com/")).Result.Result.Should().Be(false);
             }
         }
         [Fact]
@@ -31,12 +31,12 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetNewestVersions("colorama", "0.1.5").Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("colorama", "0.3.9").Result.Should().BeNullOrEmpty();
-                Action a2 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("colorama", "blabla").Result; };
-                a2.ShouldThrow<ArgumentException>();
+                testReader.GetNewestVersions("colorama", "0.1.5").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetNewestVersions("colorama", "0.3.9").Result.Result.Should().BeNullOrEmpty();
 
-                Action a1 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("", "3.6.1").Result; };
+                testReader.GetNewestVersions("colorama", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
+
+                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
                 a1.ShouldThrow<ArgumentException>();
             }
         }
@@ -46,10 +46,10 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetAllVersions("colorama").Result.Should().NotBeNullOrEmpty();
-                testReader.GetAllVersions("PackageMustn0TExISte").Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("colorama").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
 
-                Action a2 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("").Result; };
+                Action a2 = () => {var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
             }
 

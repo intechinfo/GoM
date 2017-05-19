@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using GoM.Core;
 using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace GoM.Feeds.Tests
