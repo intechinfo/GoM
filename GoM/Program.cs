@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
+using GoM.Core.Mutable;
 using LibGit2Sharp;
 
 namespace GoM
@@ -70,7 +71,7 @@ namespace GoM
                         var nameBranch = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : null;
                         try
                         {
-                            Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                            Communicator com = new Communicator(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
                             var branches = com.getAllBranches();
                             bool isBranchExist = false;
 
@@ -85,7 +86,15 @@ namespace GoM
                             if (isBranchExist) Console.WriteLine("This branch already exist");
                             else
                             {
-                                // To be implemented
+                                GoM.Core.Mutable.GitBranch gitBranch = new Core.Mutable.GitBranch { Name = nameBranch };
+                                var allBranches = com.getAllBranches();
+
+                                foreach (var b in allBranches)
+                                {
+
+                                }
+                                Console.WriteLine("The branch " + nameBranch + " is created");
+
                             }
                         }
                         catch (Exception ex)
@@ -149,8 +158,6 @@ namespace GoM
                     if (repo > 0)
                     {
                         Communicator com = new Communicator(path);
-
-                        Console.WriteLine("Is repo : " + com.isRepository());
                         com.getBasicGitRepository().Details = null;
                         Console.WriteLine(com.getBasicGitRepository().Details == null ? "null" : " not null");
 
