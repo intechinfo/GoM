@@ -10,6 +10,8 @@ using GoM.Core.GitExplorer;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
 using LibGit2Sharp;
+using GoM.Core.FSAnalyzer;
+
 namespace GoM
 {
     class Program
@@ -90,8 +92,6 @@ namespace GoM
                                 {
                                     repo.CreateBranch(nameBranch);
                                     var allBranches = com.getAllBranches();
-                                    int count2 = allBranches.Count;
-                                    Console.WriteLine(count2);
                                     Console.WriteLine("The branch " + nameBranch + " is created");
                                 }
                             }
@@ -102,14 +102,23 @@ namespace GoM
                         }
                     }
                     // add project
-                    else if (allProj > 0)
+                    else if (proj > 0 && allProj == 0)
                     {
 
                     }
                     // add all project
-                    else
+                    else if (proj > 0 && allProj > 0)
                     {
+                        Communicator com = new Communicator(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
+                        ProjectFolderController projectFolderController = new ProjectFolderController();
 
+                        foreach (var project in projectFolderController.Analyze(com.FileProvider).ToList())
+                        {
+                            Core.Mutable.Project p = new Core.Mutable.Project(project);
+                            Core.Mutable.BasicProject basicProject = new Core.Mutable.BasicProject() { Path = project.Path, Details = p };
+                            Console.WriteLine(p.Path);
+                            Console.WriteLine("salute");
+                        }
                     }
 
                     Console.WriteLine();
