@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoM.Core.Abstractions", "GoM.Core.Abstractions\GoM.Core.Abstractions.csproj", "{115F5512-8C4D-41BA-81C7-12B2626BDE57}"
 EndProject
@@ -166,6 +166,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{80A59E82-218C-46E9-8E92-225D1725AC7B} = {6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}
+		{12ED410F-387B-4F39-A21F-A8B5564510F9} = {6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}
 		{61607694-427B-421A-B1F6-1B0A1DF98996} = {6E0FFF64-CE81-4780-AB0E-AA0CE73EF9F6}
 	EndGlobalSection
 EndGlobal
