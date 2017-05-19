@@ -7,12 +7,16 @@ namespace GoM.Feeds.Results
     public class ReadPackagesResult
     {
         public readonly IEnumerable<PackageInstanceResult> Result;
+
+        public readonly JsonResult Json;
+
         public readonly Exception Error;
         public bool Success => Result!=null;
-        public ReadPackagesResult(Exception rE, IEnumerable<PackageInstanceResult> r)
+        public ReadPackagesResult(Exception rE, IEnumerable<PackageInstanceResult> r, JsonResult j)
         {
             Result = r;
             Error = rE;
+            Json = j;
         }
     }
 }

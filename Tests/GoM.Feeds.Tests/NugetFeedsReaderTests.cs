@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using System;
+using System.Linq;
 using Xunit;
 
 
@@ -32,10 +33,16 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetNewestVersions("NUnit", "3.4.0").Result.Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("NUnit", "3.6.1").Result.Result.Should().BeNullOrEmpty();
-                testReader.GetNewestVersions("NUnit", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
-                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
+
+                testReader.GetNewestVersions("NUnit", "3.6.1").Result.Result.Where(x => x.Success).Count().Should().Be(0);
+
+                testReader.GetNewestVersions("NUnit", "4.6.1").Result.Result.Where(x => x.Success).Count().Should().Be(0);
+
+                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1").Result; };
                 a1.ShouldThrow<ArgumentException>();
+
+                Action a2 = () => { var b = testReader.GetNewestVersions("NUnit", "blabla").Result; };
+                a2.ShouldThrow<ArgumentException>();
             }
         }
 
@@ -45,11 +52,9 @@ namespace GoM.Feeds.Tests
             using (var testReader = CreateReader())
             {
                 testReader.GetAllVersions("NUnit").Result.Result.Should().NotBeNullOrEmpty();
-                testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Json.JsonException.Should().NotBeNull();
 
-                testReader.GetAllVersions("PackageMustn0TExISte").Result.Error.Should().BeOfType(typeof(ArgumentException));
-
-                Action a2 = () => { var b = testReader.GetAllVersions(""); };
+                Action a2 = () => { var b = testReader.GetAllVersions("").Result; };
                 a2.ShouldThrow<ArgumentException>();
             }
         }

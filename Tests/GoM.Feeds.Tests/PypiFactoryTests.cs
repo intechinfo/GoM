@@ -30,19 +30,19 @@ namespace GoM.Feeds.Tests
                 Uri myUri = new Uri("https://pypi.python.org/pypi/Python/json");
                 var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count().Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }
         }
 
         [Fact]
-        public void sniff_python_with_bad_single_uri_must_return_empty()
+        public void sniff_python_with_bad_single_uri_must_return_false()
         {
             using (PypiFactory fac = new PypiFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
                 var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }
         }
         [Fact]
@@ -55,13 +55,13 @@ namespace GoM.Feeds.Tests
             {
                 var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }
             
         }
 
         [Fact]
-        public void sniff_python_with_bad_list_should_return_empty()
+        public void sniff_python_with_bad_list_should_return_false()
         {
             Uri myUri = new Uri("http://linuxfr.org");
             List<Uri> myList = new List<Uri>();
@@ -70,7 +70,7 @@ namespace GoM.Feeds.Tests
             {
                 var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }
         }
 
