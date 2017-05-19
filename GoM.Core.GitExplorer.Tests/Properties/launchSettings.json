@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "GoM.Core.GitExplorer.Tests": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Adams\\Documents\\Visual Studio 2017\\Projects\\GoM\\packages\\NUnit.Runners.Net4.2.6.4\\tools\\nunit.exe",
+      "commandLineArgs": "\"bin\\Debug\\net462\\GoM.Core.GitExplorer.Tests.dll\""
+    }
+  }
+}

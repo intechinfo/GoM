@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GoM": {
+      "commandName": "Project",
+      "commandLineArgs": "add -b \"test\""
+    }
+  }
+}

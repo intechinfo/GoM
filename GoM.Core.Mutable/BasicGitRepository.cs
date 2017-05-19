@@ -15,7 +15,6 @@ namespace GoM.Core.Mutable
         public BasicGitRepository(IBasicGitRepository repo)
         {
             Path = repo.Path;
-            Url = repo.Url;
             Details = (GitRepository)repo.Details;
         }
 
