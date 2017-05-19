@@ -24,24 +24,31 @@ namespace GoM.Core.Immutable.Visitors
     public class DetailBranchVisitor : Visitor
     {
         GitBranch _detailed;
+        BasicGitRepository _repository;
 
-        public DetailBranchVisitor(GitBranch detailed)
+        public DetailBranchVisitor(BasicGitRepository repository, GitBranch detailed)
         {
             _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public override BasicGitRepository Visit(BasicGitRepository basicRepository)
+        {
+            return base.Visit(basicRepository);
         }
 
         public override BasicGitBranch Visit(BasicGitBranch basicBranch)
         {
-            basicBranch = basicBranch.Details == _detailed ? basicBranch : BasicGitBranch.Create(_detailed);
+            if(basicBranch.Name == _detailed.Name)
+            {
+                basicBranch = basicBranch.Details == _detailed ? basicBranch : BasicGitBranch.Create(_detailed);
+            }
             return base.Visit(basicBranch);
         }
     }
 
     public class UpdateRepositoryFieldsVisitor : Visitor
     {
-        // Get target unique path or reference
-        // Check if new path is not already taken
-
         readonly string _path;
         readonly Uri _url;
         readonly BasicGitRepository _target;

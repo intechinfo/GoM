@@ -65,6 +65,19 @@ namespace GoM.Core.Immutable.Tests
         }
 
         [Fact]
+        public void SetBranchDetails_method_returns_a_new_GoMContext_with_new_details()
+        {
+            var context = CreateTestGoMContext();
+            Immutable.GitBranch newGitBranch = GitBranch.Create("develop");
+            context = context.SetBranchDetails("Ma git branch", newGitBranch);
+
+            var repo = context.Repositories[0].Details.Branches.SingleOrDefault(rep => rep.Details == newGitBranch);
+            repo.Should().NotBeNull();
+
+            repo.Details.Should().Be(newGitBranch);
+        }
+
+        [Fact]
         public void UpdateRepositoryFields_method_returns_a_new_GoMContext()
         {
             var context = CreateTestGoMContext();

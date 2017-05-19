@@ -25,14 +25,14 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        public GoMContext AddOrSetGitRepositoryDetails(IGitRepository detailed)
+        public GoMContext UpdateRepositoryFields(string path, string newPath = null, Uri newUrl = null)
         {
-            if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-            var basic = Repositories.FirstOrDefault(r => r.Path == detailed.Path);
-            ImmutableList<BasicGitRepository> list = basic == null
-                    ? Repositories.Add(BasicGitRepository.Create(detailed))
-                    : Repositories.SetItem(Repositories.IndexOf(basic), BasicGitRepository.Create(detailed));
-            return Create(RootPath, list, Feeds);
+            if (path == null) throw new ArgumentNullException(nameof(path));
+            if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
+            if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
+            var repositoryToUpdate = Repositories.SingleOrDefault(rep => rep.Path == path) ?? throw new ArgumentException($"The with the path {path} repository does not exist");
+            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
+            return visitor.Visit(this);
         }
 
         public GoMContext SetRepositoryDetails(GitRepository detailed)
@@ -42,20 +42,15 @@ namespace GoM.Core.Immutable
             return visitor.Visit(this);
         }
 
-        public GoMContext SetBranchDetails(GitBranch detailed)
-        {
-            if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-            var visitor = new DetailBranchVisitor(detailed);
-            return visitor.Visit(this);
-        }
+        //public GoMContext 
 
-        public GoMContext UpdateRepositoryFields(string path, string newPath = null, Uri newUrl = null)
+        public GoMContext SetBranchDetails(string repositoryPath, GitBranch detailed)
         {
-            if(path == null) throw new ArgumentNullException(nameof(path));
-            if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
-            if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
-            var repositoryToUpdate = Repositories.SingleOrDefault(rep => rep.Path == path) ?? throw new ArgumentException("This repository does not exist");
-            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
+            if (repositoryPath == null) throw new ArgumentNullException(nameof(repositoryPath));
+            if (detailed == null) throw new ArgumentNullException(nameof(detailed));
+            var repositoryFound = Repositories.SingleOrDefault(rep => rep.Path == repositoryPath) ?? throw new ArgumentException($"The with the path {repositoryPath} repository does not exist");
+            if (repositoryFound.Details == null) throw new ArgumentException($"The repository in {repositoryPath} is not detailed, it does not have branches !");
+            var visitor = new DetailBranchVisitor(repositoryFound, detailed);
             return visitor.Visit(this);
         }
     }
