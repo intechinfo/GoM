@@ -9,7 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoM.Core.FSAnalyzer\GoM.Core.FSAnalyzer.csproj" />
     <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+    <ProjectReference Include="..\GoM.GitFileProvider\GoM.GitFileProvider.csproj" />
   </ItemGroup>
 
 </Project>

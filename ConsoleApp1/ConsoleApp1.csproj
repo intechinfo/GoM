@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoM.Core.GitExplorer\GoM.Core.GitExplorer.csproj" />
+    <ProjectReference Include="..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -103,7 +103,6 @@ namespace GoM.Core.Persistence
             if ( _this == null ) return null;
             XElement element = new XElement(typeof(IBasicGitRepository).Name);
             element.SetAttributeValue(nameof(_this.Path), _this.Path);
-            element.SetAttributeValue(nameof(_this.Url), _this.Url);
 
             element.Add( _this.Details.ToXML() );
             return element;
@@ -138,6 +137,7 @@ namespace GoM.Core.Persistence
 
             XElement element = new XElement(typeof(IGitRepository).Name);
 
+            element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             element.SetAttributeValue( nameof( _this.Path ), _this.Path );
             element.SetAttributeValue( nameof( _this.Url ), _this.Url );
             foreach (var t in _this.Branches) element.Add(t.ToXML());
