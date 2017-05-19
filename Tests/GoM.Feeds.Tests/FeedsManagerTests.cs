@@ -45,7 +45,7 @@ namespace GoM.Feeds.Tests
             {
                 var pkg = GetCrossPackage();
                 var pkgList = new List<IPackageInstance> { pkg };
-                var res = testManager.GetAllVersions(GetUriList(), pkgList);
+                var res = testManager.GetAllVersions(GetUriList(), pkgList).Result;
                 res.Keys.Count.Should().Be(1);
                 res.Keys.Single().Should().Be(pkg);
                 res[pkg].Should().NotBeNullOrEmpty();
@@ -58,7 +58,7 @@ namespace GoM.Feeds.Tests
             {
                 var pkg = GetCrossPackage();
                 var pkgList = new List<IPackageInstance> { pkg };
-                var res = testManager.GetNewestVersions(GetUriList(), pkgList);
+                var res = testManager.GetNewestVersions(GetUriList(), pkgList).Result;
                 res.Keys.Count.Should().Be(1);
                 res.Keys.Single().Should().Be(pkg);
                 res[pkg].Should().NotBeNullOrEmpty();
