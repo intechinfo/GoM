@@ -1,8 +1,5 @@
 ﻿using FluentAssertions;
-using GoM.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 
@@ -24,8 +21,8 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.FeedMatch(new Uri("http://api.nuget.org/v3/index.json")).Result.Should().Be(true);
-                testReader.FeedMatch(new Uri("http://google.com/")).Result.Should().Be(false);
+                testReader.FeedMatch(new Uri("http://api.nuget.org/v3/index.json")).Result.Result.Should().Be(true);
+                testReader.FeedMatch(new Uri("http://google.com/")).Result.Result.Should().Be(false);
             }
         }
 
@@ -34,12 +31,10 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetNewestVersions("NUnit", "3.4.0").Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("NUnit", "3.6.1").Result.Should().BeNullOrEmpty();
-                Action a2 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("NUnit", "blabla").Result; };
-                a2.ShouldThrow<ArgumentException>();
-
-                Action a1 = () => { IEnumerable<IPackageInstance> b = testReader.GetNewestVersions("", "3.6.1").Result; };
+                testReader.GetNewestVersions("NUnit", "3.4.0").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetNewestVersions("NUnit", "3.6.1").Result.Result.Should().BeNullOrEmpty();
+                testReader.GetNewestVersions("NUnit", "blabla").Result.Error.Should().BeOfType(typeof(ArgumentException));
+                Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1"); };
                 a1.ShouldThrow<ArgumentException>();
             }
         }
@@ -49,13 +44,12 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                testReader.GetAllVersions("NUnit").Result.Should().NotBeNullOrEmpty();
-            //testReader.GetAllVersions("PackageMustn0TExISte").Result.Should().BeNullOrEmpty();
+                testReader.GetAllVersions("NUnit").Result.Result.Should().NotBeNullOrEmpty();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Result.Should().BeNullOrEmpty();
 
-            Action a1 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("PackageMustn0TExISte").Result; };
-            a1.ShouldThrow<ArgumentException>();
+                testReader.GetAllVersions("PackageMustn0TExISte").Result.Error.Should().BeOfType(typeof(ArgumentException));
 
-                Action a2 = () => { IEnumerable<Core.IPackageInstance> b = testReader.GetAllVersions("").Result; };
+                Action a2 = () => { var b = testReader.GetAllVersions(""); };
                 a2.ShouldThrow<ArgumentException>();
             }
         }

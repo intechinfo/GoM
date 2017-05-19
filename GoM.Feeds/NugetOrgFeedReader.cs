@@ -28,7 +28,7 @@ namespace GoM.Feeds
             if (json.Success)
             {
                 JObject o = json.Result;
-                if (!o.HasValues) throw new InvalidOperationException("No data found from " + adress.ToString() + " .");
+                if (!o.HasValues) return new FeedMatchResult(new InvalidOperationException("No data found from " + adress.ToString() + " ."), false, json, this);
 
                 if (o.TryGetValue("version", out JToken j1) && o.TryGetValue("resources", out JToken j2) && o.TryGetValue("@context", out JToken j3))
                     return new FeedMatchResult(null, true,json,this);
