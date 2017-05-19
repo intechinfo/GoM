@@ -29,22 +29,22 @@ namespace GoM.Feeds.Tests
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://api.nuget.org/v3/index.json");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count.Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }
             
         }
 
         [Fact]
-        public void sniff_nuget_with_bad_single_uri_must_return_empty()
+        public void sniff_nuget_with_bad_single_uri_must_return_false()
         {
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }  
         }
         [Fact]
@@ -55,22 +55,22 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }   
         }
         [Fact]
-        public void sniff_nuget_with_bad_list_should_return_empty()
+        public void sniff_nuget_with_bad_list_should_return_false()
         {
             Uri myUri = new Uri("http://linuxfr.org");
             List<Uri> myList = new List<Uri>();
             myList.Add(myUri);
             using (NugetOrgFactory fac = new NugetOrgFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }
         }
     }

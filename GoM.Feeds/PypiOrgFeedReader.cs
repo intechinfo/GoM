@@ -17,7 +17,7 @@ namespace GoM.Feeds
 {
     public class PypiOrgFeedReader : FeedReaderBase
     {
-        string _baseUrl = "https://pypi.python.org/pypi/Python/json";
+        string _baseUrl = "https://pypi.python.org/pypi/";
 
         public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
@@ -35,7 +35,7 @@ namespace GoM.Feeds
                 bool isPypi = o.TryGetValue("info", out JToken value);
                 if (isPypi)
                 {
-                    return new FeedMatchResult(null,o.Property("info").Value.ToString() == "registry",result, this);
+                    return new FeedMatchResult(null, value["name"].ToString() == "Python",result, this);
                 }
                 return new FeedMatchResult(null, false,result, this);
             }
@@ -48,7 +48,7 @@ namespace GoM.Feeds
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
             name = name.ToLowerInvariant();
 
-            var result = await GetJson(new Uri( _baseUrl + name));
+            var result = await GetJson(new Uri( _baseUrl +"/"+ name+"/json"));
             if (result.Success)
             {
                 JObject o = result.Result;
@@ -57,7 +57,7 @@ namespace GoM.Feeds
                     return new ReadPackagesResult(new InvalidOperationException("No package named : " + name + " found."),null, result);
                 }
                 var list = new List<PackageInstanceResult>();
-                var versions = new JObject( new JObject(o["info"]).Property("releases"));
+                var versions = o.Value<JObject>("releases");
                 foreach (var item in versions)
                 {
 

@@ -27,21 +27,21 @@ namespace GoM.Feeds.Tests
             using (NpmJsFactory fac = new NpmJsFactory())
             {
                 Uri myUri = new Uri("http://registry.npmjs.org/");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count.Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }
         }
 
         [Fact]
-        public void sniff_js_with_bad_single_uri_must_return_empty()
+        public void sniff_js_with_bad_single_uri_must_return_false()
         {
             using (NpmJsFactory fac = new NpmJsFactory())
             {
                 Uri myUri = new Uri("http://www.google.com");
-                GetReadersResult res = fac.Snif(myUri);
+                var res = fac.Snif(myUri);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }
         }
         [Fact]
@@ -52,22 +52,22 @@ namespace GoM.Feeds.Tests
             myList.Add(myUri);
             using (NpmJsFactory fac = new NpmJsFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().BeGreaterThan(0);
+                sut[0].Result.Should().Be(true);
             }
         }
         [Fact]
-        public void sniff_js_with_bad_list_should_return_empty()
+        public void sniff_js_with_bad_list_should_return_false()
         {
             Uri myUri = new Uri("http://linuxfr.org");
             List<Uri> myList = new List<Uri>();
             myList.Add(myUri);
             using (NpmJsFactory fac = new NpmJsFactory())
             {
-                GetReadersResult res = fac.Snif(myList);
+                var res = fac.Snif(myList);
                 var sut = res.Result.ToList();
-                sut.Count().Should().Be(0);
+                sut[0].Result.Should().Be(false);
             }
         }
 

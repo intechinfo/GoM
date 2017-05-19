@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GoM.Feeds.Abstractions;
+using GoM.Feeds.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,13 +42,13 @@ namespace GoM.Feeds.Tests
         {
             using (var testFactory = GetFactory())
             {
-                IEnumerable<IFeedReader> result = testFactory.Snif(new List<Uri>());
+                IEnumerable<FeedMatchResult> result = testFactory.Snif(new List<Uri>()).Result;
                 result.Should().NotBeNull();
                 result.Count().Should().Be(0);
             }
             using (var testFactory = GetFactory())
             {
-                IEnumerable<IFeedReader> result = testFactory.Snif(GetUriList());
+                IEnumerable<FeedMatchResult> result = testFactory.Snif(GetUriList()).Result;
                 result.Should().NotBeNull();
                 result.Count().Should().NotBe(0);
             }

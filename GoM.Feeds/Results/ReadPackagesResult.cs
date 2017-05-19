@@ -11,7 +11,7 @@ namespace GoM.Feeds.Results
         public readonly JsonResult Json;
 
         public readonly Exception Error;
-        public bool Success => Error == null;
+        public bool Success => Result!=null;
         public ReadPackagesResult(Exception rE, IEnumerable<PackageInstanceResult> r, JsonResult j)
         {
             Result = r;
