@@ -10,55 +10,16 @@ namespace GoM.Core.Immutable.Tests
 {
     public class VisitorTests
     {
-        private GoMContext CreateTestGoMContext()
-        {
-            // BranchVersionInfo
-            Immutable.VersionTag newVersionTag = VersionTag.Create("Version 1.0.0");
-            Immutable.BranchVersionInfo newBranchVersionInfo = BranchVersionInfo.Create(1, newVersionTag);
-
-            // TargetDependenciy    
-            Immutable.TargetDependency newTargetDependency = TargetDependency.Create("Ma target dépendence", "1.0.0");
-            ImmutableList<TargetDependency> dependencies = ImmutableList.Create<TargetDependency>(newTargetDependency);
-
-            // Targets
-            Immutable.Target newTarget = Target.Create("Ma target", dependencies);
-            ImmutableList<Target> targets = ImmutableList.Create<Target>(newTarget);
-
-            // Projects
-            Immutable.Project newProject = Project.Create("Chemin/vers/projet", targets);
-            Immutable.BasicProject newBasicProject = BasicProject.Create(newProject);
-            ImmutableList<BasicProject> projects = ImmutableList.Create<BasicProject>(newBasicProject);
-
-            // BasicGitBranch
-            Immutable.GitBranch newGitBranch = GitBranch.Create("Ma git branch", newBranchVersionInfo, projects);
-            Immutable.BasicGitBranch newGitBasicBranch = Immutable.BasicGitBranch.Create(newGitBranch);
-            ImmutableList<BasicGitBranch> listBasicGitBranch = ImmutableList.Create<BasicGitBranch>(newGitBasicBranch);
-
-            // GitRepositories
-            Immutable.GitRepository newGitRepository = GitRepository.Create("path", new Uri("http://uri"), listBasicGitBranch);
-            Immutable.BasicGitRepository newBasicGitRepository = BasicGitRepository.Create(newGitRepository);
-            ImmutableList<BasicGitRepository> repositories = ImmutableList.Create<BasicGitRepository>(newBasicGitRepository);
-
-            // PackageInstances
-            Immutable.PackageInstance newPackageInstance = PackageInstance.Create("Mon packageInstance", "Version ");
-            ImmutableList<PackageInstance> instances = ImmutableList.Create<PackageInstance>(newPackageInstance);
-
-            // PackageFeeds
-            Immutable.PackageFeed newPackageFeed = PackageFeed.Create(new Uri("http://myPackageFeed"), instances);
-            ImmutableList<PackageFeed> feeds = ImmutableList.Create<PackageFeed>(newPackageFeed);
-
-            // Context
-            return Immutable.GoMContext.Create("myContextPath", repositories, feeds);
-        }
+        ImmutableCreationTests _tests = new ImmutableCreationTests();
 
         [Fact]
         public void SetRepositoryDetails_method_returns_a_new_GoMContext_with_new_details()
         {
-            var context = CreateTestGoMContext();
+            var context = _tests.CreateTestGoMContext();
             Immutable.GitRepository newGitRepository = GitRepository.Create("newPath", new Uri("http://newUri"));
-            context = context.SetRepositoryDetails(newGitRepository);
+            var newContext = context.AddOrSetRepositoryDetails(newGitRepository);
 
-            var repo = context.Repositories.SingleOrDefault(rep => rep.Details == newGitRepository);
+            var repo = newContext.Repositories.SingleOrDefault(rep => rep.Details == newGitRepository);
             repo.Should().NotBeNull();
 
             repo.Details.Should().Be(newGitRepository);
@@ -67,11 +28,11 @@ namespace GoM.Core.Immutable.Tests
         [Fact]
         public void SetBranchDetails_method_returns_a_new_GoMContext_with_new_details()
         {
-            var context = CreateTestGoMContext();
+            var context = _tests.CreateTestGoMContext();
             Immutable.GitBranch newGitBranch = GitBranch.Create("develop");
-            context = context.SetBranchDetails("Ma git branch", newGitBranch);
+            var newCcontext = context.AddOrSetBranchDetails(context.Repositories[0].Details.Branches[0], newGitBranch);
 
-            var repo = context.Repositories[0].Details.Branches.SingleOrDefault(rep => rep.Details == newGitBranch);
+            var repo = newCcontext.Repositories[0].Details.Branches.SingleOrDefault(rep => rep.Details == newGitBranch);
             repo.Should().NotBeNull();
 
             repo.Details.Should().Be(newGitBranch);
@@ -80,8 +41,8 @@ namespace GoM.Core.Immutable.Tests
         [Fact]
         public void UpdateRepositoryFields_method_returns_a_new_GoMContext()
         {
-            var context = CreateTestGoMContext();
-            var newContext = context.UpdateRepositoryFields("path", "newPath");
+            var context = _tests.CreateTestGoMContext();
+            var newContext = context.UpdateRepositoryFields(context.Repositories[0], "newPath");
 
             newContext.Repositories[0].Path.Should().Be("newPath");
             newContext.Repositories[0].Url.Should().Be(context.Repositories[0].Url);

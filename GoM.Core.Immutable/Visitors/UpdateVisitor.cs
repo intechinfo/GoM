@@ -16,7 +16,10 @@ namespace GoM.Core.Immutable.Visitors
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
-            basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
+            if(basicRepository.Path == _detailed.Path)
+            {
+                basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
+            }
             return base.Visit(basicRepository);
         }
     }
@@ -24,12 +27,12 @@ namespace GoM.Core.Immutable.Visitors
     public class DetailBranchVisitor : Visitor
     {
         GitBranch _detailed;
-        BasicGitRepository _repository;
+        BasicGitBranch _branchToDetail;
 
-        public DetailBranchVisitor(BasicGitRepository repository, GitBranch detailed)
+        public DetailBranchVisitor(BasicGitBranch branchToDetail, GitBranch detailed)
         {
             _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _branchToDetail = branchToDetail ?? throw new ArgumentNullException(nameof(branchToDetail));
         }
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
