@@ -25,7 +25,7 @@ To modify the branch name for example, you can not do ``` gitBranch.Name = "MyNe
 
 You need to use 
 ```
-context.UpdateBranchName(context.Repositories[0].Details, "My git branch", "MyNewName");
+GoMcontext.UpdateBranchName(GoMcontext.Repositories[0].Details, "My git branch", "MyNewName");
 ```
 
 In fact, the API will instantiate a new object with the new information. If the object contains a lot of under objects we use the Visitor Pattern.
@@ -36,7 +36,7 @@ Visitor Pattern
 TODO : Explain how it works.
 
 
-How to pass from mutable to immutable ?
+How to swith from mutable to immutable implementation ?
 ---------------
 
 You got an extension on the context. So you can use : 
