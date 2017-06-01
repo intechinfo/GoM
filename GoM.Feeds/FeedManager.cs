@@ -20,6 +20,12 @@ namespace GoM.Feeds
         {
             _factory.Dispose();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packageFeeds"></param>
+        /// <param name="packages"></param>
+        /// <returns></returns>
         public GetPackagesResult GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds).Result;
