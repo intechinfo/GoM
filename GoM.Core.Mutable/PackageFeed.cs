@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoM.Core.Mutable
 {
@@ -16,7 +17,7 @@ namespace GoM.Core.Mutable
         public PackageFeed(IPackageFeed feed)
         {
             Url = feed.Url;
-            Packages = (List<PackageInstance>)feed.Packages;
+            Packages = feed is PackageFeed ? (List<PackageInstance>)feed.Packages : new List<PackageInstance>(feed.Packages.Select(x => new PackageInstance(x)));
         }
 
         public Uri Url { get; set; }
