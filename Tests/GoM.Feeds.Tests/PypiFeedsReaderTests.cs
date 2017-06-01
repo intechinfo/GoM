@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using GoM.Feeds.Results;
 using System.Net;
+using Semver;
 
 namespace GoM.Feeds.Tests
 {
@@ -33,8 +34,17 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
+                var ReturnedPackages = testReader.GetNewestVersions("colorama", "0.0.0").Result.Result;
+
+                SemVersion latestVersion = ReturnedPackages.Where(x => x.Success == true && x.Result != null).Max(x => x.Result.Version);
+
+                var unexistingVersion = new SemVersion(latestVersion.Major + 1, latestVersion.Minor, latestVersion.Patch);
+
                 testReader.GetNewestVersions("colorama", "0.1.5").Result.Result.Should().NotBeNullOrEmpty();
-                testReader.GetNewestVersions("colorama", "0.3.9").Result.Result.Count(x=>x.Success).Should().Be(0);
+
+                testReader.GetNewestVersions("colorama", latestVersion.ToString()).Result.Result.Where(x => x.Success).Count().Should().Be(0);
+
+                testReader.GetNewestVersions("colorama", unexistingVersion.ToString()).Result.Result.Where(x => x.Success).Count().Should().Be(0);
 
                 Action a1 = () => { var b = testReader.GetNewestVersions("colorama", "blabla").Result; };
                 a1.ShouldThrow<ArgumentException>();
