@@ -1,6 +1,5 @@
 ﻿Explication de l'organisation du modèle en général
 Utilisation du modèle
-Le tout en anglais...
 
 This part contains GoM.Core.Abstractions, GoM.Core.Immutable, GoM.Core.Immutable.Tests, GoM.Core.Mutable, GoM.Core.Mutable.Tests
 
