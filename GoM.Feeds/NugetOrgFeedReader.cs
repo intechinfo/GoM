@@ -17,7 +17,11 @@ namespace GoM.Feeds
     public class NugetOrgFeedReader : FeedReaderBase
     {
         string _baseUrl = "https://api.nuget.org/v3/registration1/";
-
+        /// <summary>
+        /// NuGet implementation of FeedMatch. Returns FeedMatchResult from Uri
+        /// </summary>
+        /// <param name="adress"></param>
+        /// <returns></returns>
         public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString))
@@ -40,7 +44,11 @@ namespace GoM.Feeds
                 return new FeedMatchResult(json.NetworkException ?? json.JsonException , false, json,this);
             }
         }
-
+        /// <summary>
+        /// NuGet implementation of GetAllVersions. Given a name, gets all versions for a NPM package 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public override async Task<ReadPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -76,7 +84,12 @@ namespace GoM.Feeds
                 return new ReadPackagesResult(json.NetworkException ?? json.JsonException, null, json);
             }
         }
-
+        /// <summary>
+        /// NuGet implementation of GetDependencies. Given a package name and version, gets list of dependencies.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public override async Task<ReadDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -144,7 +157,12 @@ namespace GoM.Feeds
                 return new ReadDependenciesResult(tryFoundPackage.JsonException ?? tryFoundPackage.NetworkException, null);
             }
         }
-
+        /// <summary>
+        /// NuGet implementation of GetNewestVersions. Given a package name and a version, gets latest version.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
             if (!SemVersion.TryParse(version, out SemVersion refSemver))
