@@ -9,6 +9,8 @@ using GoM.Core.Persistence;
 using GoM.Core.GitExplorer;
 using LibGit2Sharp;
 using GoM.Core.Mutable;
+using GoM.Core.FSAnalyzer;
+using Microsoft.Extensions.FileProviders;
 namespace GoM
 {
     class Program
@@ -109,7 +111,16 @@ namespace GoM
                     // add all project
                     else
                     {
+                        Communicator com = new Communicator(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
+                        ProjectFolderController projectFolderController = new ProjectFolderController();
 
+                        foreach (var project in projectFolderController.Analyze(com.FileProvider).ToList())
+                        {
+                            Core.Mutable.Project p = new Core.Mutable.Project(project);
+                            Core.Mutable.BasicProject basicProject = new Core.Mutable.BasicProject() { Path = project.Path, Details = p };
+                            Console.WriteLine(p.Path);
+                            Console.WriteLine("salute");
+                        }
                     }
 
                     Console.WriteLine();
@@ -187,8 +198,8 @@ namespace GoM
                 {
                     Console.WriteLine("remove branch option");
 
-                    Communicator c = new Communicator("B:/alexandrebabeu sur mon Mac/Desktop/IN'TECH/C#/GoM");
-                    //Communicator c = new Communicator(Directory.GetCurrentDirectory());
+                    //Communicator c = new Communicator("B:/alexandrebabeu sur mon Mac/Desktop/IN'TECH/C#/GoM");
+                    Communicator c = new Communicator(Directory.GetCurrentDirectory());
 
                     var branches = c.getAllBranches();
                     foreach (var br in branches)
@@ -219,17 +230,44 @@ namespace GoM
                     // remove project
                     else if (project > 0)
                     {
-
+                        Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                        ProjectFolderController projectFolderController = new ProjectFolderController();
+                        var projects = projectFolderController.Analyze(com.FileProvider).ToList();
+                        foreach(var p in projects)
+                        {
+                            if (p.Path.Equals(path))
+                            {
+                                try
+                                {
+                                    projects.Remove(p);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                }
+                            }
+                        }
                     }
                     // remove all projects
                     else if (allProjects > 0)
                     {
-
+                        Communicator com = new Communicator(Directory.GetCurrentDirectory());
+                        ProjectFolderController projectFolderController = new ProjectFolderController();
+                        var projects = projectFolderController.Analyze(com.FileProvider).ToList();
+                        
+                        foreach(var p in projects)
+                        {
+                            try
+                            {
+                                projects.Remove(p);
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                            
+                        }
                     }
-
-
-
-
                     return 0;
                 });
             });
@@ -256,15 +294,34 @@ namespace GoM
             {
                 command.Description = "";
                 command.HelpOption("|-h|--help");
-
+                CommandArgument projectLocationArgument = command.Argument("[location]", "");
                 command.OnExecute(() =>
                 {
-                    Console.WriteLine("Refresh is done");
+                    var path = projectLocationArgument.Value != null && projectLocationArgument.Value != "" ? projectLocationArgument.Value : Directory.GetCurrentDirectory();
+
+                    var projects = new ProjectFolderController().Analyze(new PhysicalFileProvider(path));
+
+                    foreach (var proj in projects)
+                    {
+
+                        Console.WriteLine(proj);
+                        Console.WriteLine("-ProjectPath: " + proj.Details.Path);
+                        foreach (var tar in proj.Targets)
+                        {
+                            Console.WriteLine("--Target: " + tar.Name);
+                            foreach (var depend in tar.Dependencies)
+                            {
+                                Console.WriteLine("--------: " + depend.Name + " | " + depend.Version);
+                            }
+                        }
+                        Console.WriteLine("");
+                    }
+
                     return 0;
                 });
             });
 
-            
+
             app.Command("fetch", c =>
             {
 
