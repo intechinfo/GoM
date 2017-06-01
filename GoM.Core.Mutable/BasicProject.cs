@@ -16,7 +16,7 @@ namespace GoM.Core.Mutable
         public BasicProject(IBasicProject project)
         {
             Path = project.Path;
-            Details = (Project)project.Details;
+            Details = project is BasicProject ? (Project)project.Details : new Project(project.Details);
         }
 
         public string Path { get; set; }

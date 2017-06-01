@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoM.Core.Mutable
 {
@@ -15,7 +16,7 @@ namespace GoM.Core.Mutable
         /// <param name="repo"></param>
         public GitRepository(IGitRepository repo)
         {
-            Branches = (List<BasicGitBranch>)repo.Branches;
+            Branches = repo is GitRepository ? (List<BasicGitBranch>)repo.Branches : new List<BasicGitBranch>(repo.Branches.Select(x => new BasicGitBranch(x)));
             Path = repo.Path;
             Url = repo.Url;
         }

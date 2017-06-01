@@ -6,7 +6,7 @@ namespace GoM.Core.Mutable.Tests
 {
     public class MutableCreationTests
     {
-        private GoMContext CreateTestGoMContext()
+        public GoMContext CreateTestGoMContext()
         {
             #region context
             // GoMContext
@@ -53,10 +53,11 @@ namespace GoM.Core.Mutable.Tests
 
             // Project
             var newProject = new Project();
+            newProject.Path = "my/project/path";
 
             // BasicProject
             var newBasicProject = new BasicProject();
-            newBasicProject.Path = "my/project/path";
+            newBasicProject.Path = "my/basicProject/path";
             newBasicProject.Details = newProject;
 
             #region target
@@ -106,7 +107,7 @@ namespace GoM.Core.Mutable.Tests
 
             return newGoMContext;
         }
-
+        
         [Fact]
         public void Check_testGomContext_creation_shouldNotBeNull()
         {
