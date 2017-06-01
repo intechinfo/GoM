@@ -31,9 +31,7 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
-                //testReader.GetNewestVersions("sugar", "1.1.0").Result.Result.Should().NotBeNullOrEmpty();
-                //testReader.GetNewestVersions("sugar", "2.0.4").Result.Result.Count(x=>x.Success).Should().Be(0);
-
+              
                 var ReturnedPackages = testReader.GetNewestVersions("sugar", "0.0.0").Result.Result;
 
                 SemVersion latestVersion = ReturnedPackages.Where(x => x.Success == true && x.Result != null).Max(x => x.Result.Version);
