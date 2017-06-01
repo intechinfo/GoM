@@ -15,8 +15,8 @@ namespace GoM.Feeds
         /// <summary>
         /// NpmJS implementation of FeedMatch. Returns FeedMatchResult from Uri
         /// </summary>
-        /// <param name="adress"></param>
-        /// <returns></returns>
+        /// <param name="adress">url</param>
+        /// <returns>Task of FeedMatchResult</returns>
         public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
@@ -43,8 +43,8 @@ namespace GoM.Feeds
         /// <summary>
         /// NpmJS implementation of GetAllVersions. Given a name, gets all versions for a NPM package 
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">name of package</param>
+        /// <returns>Task of ReadPackagesResult</returns>
         public override async Task<ReadPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -85,9 +85,9 @@ namespace GoM.Feeds
         /// <summary>
         /// NpmJS implementation of GetDependencies. Given a package name and version, gets list of dependencies.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="version"></param>
-        /// <returns></returns>
+        /// <param name="name">name of package</param>
+        /// <param name="version">package version</param>
+        /// <returns>Task of ReadDependenciesResult</returns>
         public override async Task<ReadDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -124,9 +124,9 @@ namespace GoM.Feeds
         /// <summary>
         /// NpmJS implementation of GetNewestVersions. Given a package name and a version, gets latest version.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="version"></param>
-        /// <returns></returns>
+        /// <param name="name">name of package</param>
+        /// <param name="version">package version</param>
+        /// <returns>Task of ReadPackagesResult</returns>
         public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
             if (!SemVersion.TryParse(version, out SemVersion refSemver))

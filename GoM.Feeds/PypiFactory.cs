@@ -25,8 +25,8 @@ namespace GoM.Feeds
         /// <summary>
         /// Given a collection of Uri, detects which FeedReader to use 
         /// </summary>
-        /// <param name="links"></param>
-        /// <returns></returns>
+        /// <param name="links">collection of uris</param>
+        /// <returns>Task of collection of FeedMatchResult</returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(IEnumerable<Uri> links)
         {
             var t = links.Select(x => Snif(x));
@@ -36,8 +36,8 @@ namespace GoM.Feeds
         /// <summary>
         /// Given an Uri, detects which FeedReader to use 
         /// </summary>
-        /// <param name="link"></param>
-        /// <returns></returns>
+        /// <param name="link">single uri</param>
+        /// <returns>Task of collection of FeedMatchResult</returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(Uri link)
         {
             return new List<FeedMatchResult> { await  _feedReader.FeedMatch(link) };

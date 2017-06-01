@@ -59,7 +59,7 @@ namespace GoM.Feeds
         /// Gets JSON data from an Uri
         /// </summary>
         /// <param name="url"></param>
-        /// <returns></returns>
+        /// <returns> Task of JsonResult</returns>
         protected async Task<JsonResult> GetJson( Uri url )
         {
             try

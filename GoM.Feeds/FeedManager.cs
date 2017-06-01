@@ -25,7 +25,7 @@ namespace GoM.Feeds
         /// </summary>
         /// <param name="packageFeeds"></param>
         /// <param name="packages"></param>
-        /// <returns></returns>
+        /// <returns>GetPackageResult</returns>
         public GetPackagesResult GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds).Result;
@@ -45,7 +45,7 @@ namespace GoM.Feeds
         /// </summary>
         /// <param name="packageFeeds"></param>
         /// <param name="packages"></param>
-        /// <returns></returns>
+        /// <returns>GetPackagesResult</returns>
         public GetPackagesResult GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds).Result;
