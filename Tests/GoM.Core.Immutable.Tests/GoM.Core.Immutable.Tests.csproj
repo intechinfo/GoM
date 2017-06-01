@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GoM.Core.Immutable\GoM.Core.Immutable.csproj" />
+    <ProjectReference Include="..\..\GoM.Core.Mutable\GoM.Core.Mutable.csproj" />
+    <ProjectReference Include="..\GoM.Core.Mutable.Tests\GoM.Core.Mutable.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

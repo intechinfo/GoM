@@ -252,4 +252,7 @@ paket-files/
 *.sln.iml
 *.orig
 Tests/Dev/
+
 Tests/GoM.Core.Persistence.Tests/.gom
+# VSCODE
+.vscode/

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoM.Core.Mutable
 {
@@ -17,7 +18,7 @@ namespace GoM.Core.Mutable
         public Project(IProject project)
         {
             Path = project.Path;
-            Targets = (List<Target>)project.Targets;
+            Targets = project is Project ? (List<Target>)project.Targets : new List<Target>(project.Targets.Select(x => new Target(x)));
         }
 
         public string Path { get; set; }

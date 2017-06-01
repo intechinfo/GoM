@@ -14,7 +14,7 @@ namespace GoM.Core.Mutable
         /// <param name="version"></param>
         public BranchVersionInfo(IBranchVersionInfo version)
         {
-            LastTag = (VersionTag)version.LastTag;
+            LastTag = version is BranchVersionInfo ? (VersionTag)version.LastTag : new VersionTag(version.LastTag);
             LastTagDepth = version.LastTagDepth;
         }
         public VersionTag LastTag { get; set; }
