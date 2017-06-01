@@ -35,7 +35,7 @@ namespace GoM.Feeds.Tests
             {
                 testReader.GetNewestVersions("NUnit", "3.4.0").Result.Result.Should().NotBeNullOrEmpty();
 
-                testReader.GetNewestVersions("NUnit", "3.6.1").Result.Result.Where(x => x.Success).Count().Should().Be(0);
+                testReader.GetNewestVersions("NUnit", "3.7.0").Result.Result.Where(x => x.Success).Count().Should().Be(0);
 
                 testReader.GetNewestVersions("NUnit", "4.6.1").Result.Result.Where(x => x.Success).Count().Should().Be(0);
 
