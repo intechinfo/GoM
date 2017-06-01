@@ -17,6 +17,7 @@ using Octokit.Internal;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace GoM
 {
@@ -302,6 +303,24 @@ namespace GoM
                     JObject latestReleaseObject = JObject.Parse(latestReleaseJson);
                     string remoteGitTagName = (string)latestReleaseObject["tag_name"];
 
+                    bool isExistingTag = false;
+
+                    if(LibGit2Sharp.Repository.IsValid("../"))
+                    {
+                        LibGit2Sharp.Repository repo = new LibGit2Sharp.Repository("../");
+                        TagCollection tagList = repo.Tags;
+                        foreach(Tag tag in tagList)
+                        {
+                            if (tag.FriendlyName == remoteGitTagName) isExistingTag = true;
+                            break;
+                        }
+                    }
+
+                    if(!isExistingTag)
+                    {
+                        // TODO: Update GoM
+                    }
+
                     return 0;
                 });
             });
@@ -398,19 +417,6 @@ namespace GoM
                 Console.WriteLine("Exception HTTP", e);
             }
             return null;
-            //using (HttpClient client = new HttpClient())
-            //using (HttpResponseMessage response = await client.GetAsync(url))
-            //using (HttpContent content = response.Content)
-            //{
-            //    string result = await content.ReadAsStringAsync();
-            //    if (result != null && result.Length <= 80) Console.WriteLine(result);
-
-
-
-            //}
-
-
-
         }
     }
 
