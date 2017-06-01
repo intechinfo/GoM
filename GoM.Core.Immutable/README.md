@@ -13,20 +13,20 @@ How to create an object ?
 
 To instantiate an object you must use Create function. 
 For example :
-'''
+```
 Immutable.GitBranch gitBranch = Immutable.GitBranch.Create("My git branch", newBranchVersionInfo, projects);
-'''
+```
 
 The Create function will use a private constructor to instantiate a new GitBranch immutable.
 
 How to modify an object ?
 ----------
-To modify the branch name for example, you can not do ''' gitBranch.Name = "MyNewName" ''' because every properties are readonly.
+To modify the branch name for example, you can not do ``` gitBranch.Name = "MyNewName" ``` because every properties are readonly.
 
 You need to use 
-'''
+```
 context.UpdateBranchName(context.Repositories[0].Details, "My git branch", "MyNewName");
-'''
+```
 
 In fact, the API will instantiate a new object with the new information. If the object contains a lot of under objects we use the Visitor Pattern.
 
@@ -40,9 +40,9 @@ How to pass from mutable to immutable ?
 ---------------
 
 You got an extension on the context. So you can use : 
-'''ImmutableGoMContext immutableContext = MutableGoMContext.ToImmutable();'''
+```ImmutableGoMContext immutableContext = MutableGoMContext.ToImmutable();```
 And of course : 
-'''MutableGoMContext mutableContext = ImmutableGoMContext.ToMutable();'''
+```MutableGoMContext mutableContext = ImmutableGoMContext.ToMutable();```
 
 
 
