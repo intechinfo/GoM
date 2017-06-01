@@ -188,56 +188,61 @@ namespace GoM.Core.Persistence
 
         }
 
-        public bool TryInit(string currentPath, out string pathFound)
+        public InitResult Init(string currentPath)
         {
             if (currentPath == null) throw new ArgumentNullException();
             if (!Directory.Exists(currentPath)) throw new ArgumentException();
 
-            pathFound = "";
             bool result = true;
-            bool stop = false;
             DirectoryInfo di = new DirectoryInfo(currentPath);
 
-            // Search .gom folder in parents
-            do
+            Exception resultException = null;
+            List<string> ParentPaths = new List<string>();
+            List<string> ChildrenPaths = new List<string>();
+
+            try
             {
-                if (di.GetDirectories().FirstOrDefault((el) => { return el.Name == FolderName; }) != null)
+                // Search .gom folder in parents
+                do
                 {
-                    pathFound = di.FullName;
-                    stop = true;
-                    result = false;
-                }
-                if (di.Parent == null)
+                    if (di.GetDirectories().FirstOrDefault((el) => { return el.Name == FolderName; }) != null)
+                    {
+                        ParentPaths.Add( di.FullName );
+                        result = false;
+                    }
+                    di = di.Parent;
+
+                } while (di != null);
+
+                di = new DirectoryInfo( currentPath );
+                ChildrenPaths.AddRange(SearchFolderRecursive( di, ".gom" ));
+
+                // if we don't have .gom folder => create it and poplate GoMContext
+                if (result)
                 {
-                    pathFound = string.Empty;
-                    stop = true;
+                    Mutable.GoMContext ctx = new Mutable.GoMContext();
+                    ctx.RootPath = currentPath;
+
+                    DirectoryInfo dinfo = new DirectoryInfo(currentPath);
+                    var allgitrepo = SearchFolderRecursive(dinfo);
+                    foreach (var path in allgitrepo)
+                    {
+                        var repo = new Mutable.BasicGitRepository();
+                        repo.Path = path;
+                        repo.Url = null;
+                        repo.Details = null;
+                        ctx.Repositories.Add(repo);
+                    }
+
+                    Save(ctx);
                 }
-
-                di = di.Parent;
-            } while (!stop);
-
-            // if we don't have .gom folder => create it and poplate GoMContext
-            if (result)
+            }
+            catch(Exception e)
             {
-
-                Mutable.GoMContext ctx = new Mutable.GoMContext();
-                ctx.RootPath = currentPath;
-
-                DirectoryInfo dinfo = new DirectoryInfo(currentPath);
-                var allgitrepo = SearchFolderRecursive(dinfo);
-                foreach (var path in allgitrepo)
-                {
-                    var repo = new Mutable.BasicGitRepository();
-                    repo.Path = path;
-                    repo.Url = null;
-                    repo.Details = null;
-                    ctx.Repositories.Add(repo);
-                }
-
-                Save(ctx);
+                resultException = e;
             }
 
-            return result;
+            return new InitResult(resultException, ParentPaths, ChildrenPaths);
         }
 
         public List<string> SearchFolderRecursive(DirectoryInfo di, string folderName=".git")
@@ -253,7 +258,6 @@ namespace GoM.Core.Persistence
             }
             return current;
         }
-
 
     }
 }
