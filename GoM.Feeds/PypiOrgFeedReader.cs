@@ -18,7 +18,11 @@ namespace GoM.Feeds
     public class PypiOrgFeedReader : FeedReaderBase
     {
         string _baseUrl = "https://pypi.python.org/pypi/";
-
+        /// <summary>
+        /// Pypi implementation of FeedMatch. Returns FeedMatchResult from Uri
+        /// </summary>
+        /// <param name="adress"></param>
+        /// <returns></returns>
         public override async Task<FeedMatchResult> FeedMatch(Uri adress)
         {
             if (String.IsNullOrWhiteSpace(adress.OriginalString)) throw new ArgumentNullException("The Uril adress cannot be null or Empty");
@@ -42,7 +46,11 @@ namespace GoM.Feeds
             return new FeedMatchResult(result.NetworkException ?? result.JsonException, false,result, this);
         }
 
-
+        /// <summary>
+        /// Pypi implementation of GetAllVersions. Given a name, gets all versions for a NPM package 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public override async Task<ReadPackagesResult> GetAllVersions(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -76,7 +84,12 @@ namespace GoM.Feeds
                 return new ReadPackagesResult(result.NetworkException ?? result.JsonException, null, result);
             }
         }
-
+        /// <summary>
+        /// Pypi implementation of GetDependencies. Given a package name and version, gets list of dependencies.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public override async Task<ReadDependenciesResult> GetDependencies(string name, string version)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("The parameter name cannot be null or empty.");
@@ -127,7 +140,12 @@ namespace GoM.Feeds
                 return new ReadDependenciesResult(result.NetworkException ?? result.JsonException, null);
             }
         }
-
+        /// <summary>
+        /// Pypi implementation of GetNewestVersions. Given a package name and a version, gets latest version.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public override async Task<ReadPackagesResult> GetNewestVersions(string name, string version)
         {
             if (!SemVersion.TryParse(version, out SemVersion refSemver))

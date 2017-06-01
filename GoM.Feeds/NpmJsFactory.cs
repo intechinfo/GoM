@@ -18,15 +18,27 @@ namespace GoM.Feeds
         {
             _feedReader.Dispose();
         }
+        /// <summary>
+        /// member : List of FeedReaders
+        /// </summary>
         public IEnumerable<IFeedReader> FeedReaders => new List<IFeedReader> { _feedReader };
 
+        /// <summary>
+        /// Given a collection of Uri, detects which FeedReader to use 
+        /// </summary>
+        /// <param name="links"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(IEnumerable<Uri> links)
         {
             var t = links.Select(x => Snif(x));
             var ret = (await Task.WhenAll(t.Select(x=>x))).SelectMany(x => x);
             return ret;
         }
-
+        /// <summary>
+        /// Given an Uri, detects which FeedReader to use 
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(Uri link)
         {
             return new List<FeedMatchResult> { await _feedReader.FeedMatch(link) };
