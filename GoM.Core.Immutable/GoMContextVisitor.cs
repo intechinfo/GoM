@@ -25,8 +25,8 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        // TODO : AddOrUpdateRepository
-        // TODO : RemoveRepository
+        // TODO Tristan : AddOrUpdateRepository
+        // TODO Tristan : RemoveRepository
 
         public GoMContext UpdateRepositoryFields(BasicGitRepository targetRepository, string newPath = null, Uri newUrl = null)
         {
@@ -46,8 +46,8 @@ namespace GoM.Core.Immutable
             return visitor.Visit(this);
         }
 
-        // TODO : AddOrUpdateBranch
-        // TODO : RemoveBranch
+        // TODO Tristan : AddOrUpdateBranch
+        // TODO Tristan : RemoveBranch
 
         public GoMContext SetBranchDetails(BasicGitBranch branchToDetail, GitBranch detailed)
         {
@@ -69,20 +69,20 @@ namespace GoM.Core.Immutable
             return visitor.Visit(this);
         }
 
-        // TODO : AddOrUpdateProject
-        // TODO : RemoveProject
+        // TODO Morgan : AddOrUpdateProject
+        // TODO Morgan : RemoveProject
 
-        // TODO : SetProjectDetails
-        // TODO : UpdateProjectFields
+        // TODO Morgan : SetProjectDetails
+        // TODO Morgan : UpdateProjectFields
 
-        // TODO : AddOrUpdateTarget
-        // TODO : RemoveTarget
+        // TODO Morgan : AddOrUpdateTarget
+        // TODO Morgan : RemoveTarget
 
-        // TODO : UpdateTargetFields
-        // TODO : AddOrUpdateTargetDependency
-        // TODO : RemoveTargetDependency
+        // TODO Tristan : UpdateTargetFields
+        // TODO Tristan : AddOrUpdateTargetDependency
+        // TODO Tristan : RemoveTargetDependency
 
-        // TODO : UpdateTargetDependencyFields
+        // TODO Tristan : UpdateTargetDependencyFields
 
         public GoMContext AddOrUpdatePackageFeeds(PackageFeed feed)
         {
@@ -96,12 +96,12 @@ namespace GoM.Core.Immutable
             return Create(this.RootPath, this.Repositories, newFeeds);
         }
 
-        // TODO : RemovePackageFeed
+        // TODO Tristan : RemovePackageFeed
 
-        // TODO : UpdatePackageFeedFields
-        // TODO : AddOrUpdatePackageInstance
-        // TODO : RemovePackageInstance
+        // TODO Tristan : UpdatePackageFeedFields
+        // TODO Morgan : AddOrUpdatePackageInstance
+        // TODO Morgan : RemovePackageInstance
 
-        // TODO : UpdatePackageInstanceFields
+        // TODO Morgan : UpdatePackageInstanceFields
     }
 }
