@@ -15,7 +15,7 @@ namespace GoM.Core.Persistence
         /// <param name="currentPath">currentPath</param>
         /// <param name="pathFound">path of existing gom project if found</param>
         /// <returns>true if init success</returns>
-        bool TryInit ( string currentPath, out string pathFound );
+        InitResult Init ( string currentPath );
 
         /// <summary>
         /// Load from .gom folder in given path

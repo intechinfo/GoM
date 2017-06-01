@@ -34,17 +34,30 @@ namespace GoM.Core.Immutable
             return visitor.Visit(this);
         }
 
-        public GoMContext AddOrSetRepositoryDetails(GitRepository detailed)
+        public GoMContext SetRepositoryDetails(BasicGitRepository reopsitoryToDetal, GitRepository detailed)
         {
             if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-            var visitor = new DetailRepositoryVisitor(detailed);
+            var visitor = new DetailRepositoryVisitor(reopsitoryToDetal, detailed);
             return visitor.Visit(this);
         }
 
-        public GoMContext AddOrSetBranchDetails(BasicGitBranch branchToDetail, GitBranch detailed)
+        public GoMContext SetBranchDetails(BasicGitBranch branchToDetail, GitBranch detailed)
         {
             if (detailed == null) throw new ArgumentNullException(nameof(detailed));
             var visitor = new DetailBranchVisitor(branchToDetail, detailed);
+            return visitor.Visit(this);
+        }
+
+        public GoMContext UpdateBranchName(GitRepository repository, string name, string newName)
+        {
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (newName == null) throw new ArgumentNullException(nameof(newName));
+
+            var foundBranch = repository.Branches.SingleOrDefault(branch => branch.Name == name);
+            if (foundBranch == null) throw new ArgumentNullException($"The branch {name} does not exist");
+            if (repository.Branches.Any(branch => branch.Name == newName)) throw new ArgumentException($"The branch {newName} already exists");
+            var visitor = new UpdateBrancNameVisitor(foundBranch, newName);
             return visitor.Visit(this);
         }
 

@@ -97,10 +97,14 @@ namespace GoM
                 command.OnExecute(() =>
                 {
                     string pathFound;
-                    var succes =  new Persistence().TryInit(myCurrentDirectory,out pathFound);
+                    var succes =  new Persistence().Init(myCurrentDirectory);
 
-                    if (succes) Console.WriteLine("GoM repository has been correctly initialized");
-                    else Console.WriteLine("GoM repository initialisation failed. There is already a repository at {0}",pathFound);
+                    if ( succes.Success ) Console.WriteLine( "GoM repository has been correctly initialized" );
+                    else
+                    {
+                        throw new NotImplementedException("Dear CLI team, you need to manage error in InitResult class. Kisses");
+                        Console.WriteLine( "GoM repository initialisation failed. There is already a repository at {0}pathFound" );
+                    }
 
                     return 0;
                 });
