@@ -28,12 +28,38 @@ namespace GoM.Feeds
 
         protected HttpClient HttpClient => _client;
 
+        /// <summary>
+        /// Returns task of FeedMatchResult from Uri
+        /// </summary>
+        /// <param name="adress"></param>
+        /// <returns></returns>
         public abstract Task<FeedMatchResult> FeedMatch(Uri adress);
+        /// <summary>
+        /// Gets all versions from single package name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public abstract Task<ReadPackagesResult> GetAllVersions(string name);
+        /// <summary>
+        /// Gets all dependencies from a package name and its version
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public abstract Task<ReadDependenciesResult> GetDependencies(string name, string version);
+        /// <summary>
+        /// Gets latest versions of a package from its name and version
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public abstract Task<ReadPackagesResult> GetNewestVersions(string name, string version);
 
-
+        /// <summary>
+        /// Gets JSON data from an Uri
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         protected async Task<JsonResult> GetJson( Uri url )
         {
             try

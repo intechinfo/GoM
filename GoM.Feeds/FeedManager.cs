@@ -20,6 +20,12 @@ namespace GoM.Feeds
         {
             _factory.Dispose();
         }
+        /// <summary>
+        /// Gets all versions of a collection of packages
+        /// </summary>
+        /// <param name="packageFeeds"></param>
+        /// <param name="packages"></param>
+        /// <returns></returns>
         public GetPackagesResult GetAllVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds).Result;
@@ -34,6 +40,12 @@ namespace GoM.Feeds
             
             return new GetPackagesResult(null, toDicData.ToDictionary(x => x.Key, x => x.SelectMany(z=>z.T.Result.Result)), invalidFeeds);
         }
+        /// <summary>
+        /// Gets latest versions for given packages
+        /// </summary>
+        /// <param name="packageFeeds"></param>
+        /// <param name="packages"></param>
+        /// <returns></returns>
         public GetPackagesResult GetNewestVersions(IEnumerable<Uri> packageFeeds, IEnumerable<IPackageInstance> packages)
         {
             var feedsResults = _factory.Snif(packageFeeds).Result;
