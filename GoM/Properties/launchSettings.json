@@ -2,7 +2,7 @@
   "profiles": {
     "GoM": {
       "commandName": "Project",
-      "commandLineArgs": "add -b \"test\""
+      "commandLineArgs": "get-new-version"
     }
   }
 }

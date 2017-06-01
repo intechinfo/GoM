@@ -11,6 +11,13 @@ using LibGit2Sharp;
 using GoM.Core.Mutable;
 using GoM.Core.FSAnalyzer;
 using Microsoft.Extensions.FileProviders;
+using Octokit;
+using System.Net;
+using Octokit.Internal;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+
 namespace GoM
 {
     class Program
@@ -262,7 +269,7 @@ namespace GoM
                     {
                         ProcessFile(projectPath, fileList);
                     }
-                    else if (Directory.Exists(projectPath) && Repository.IsValid(projectPath))
+                    else if (Directory.Exists(projectPath) && LibGit2Sharp.Repository.IsValid(projectPath))
                     {
                         
                             FileTree ft = new FileTree();
@@ -281,6 +288,24 @@ namespace GoM
                     return 0;
                 });
             });
+            app.Command("get-new-version", command =>
+            {
+                command.Description = "";
+                command.HelpOption("|-h|--help");
+                CommandArgument projectLocationArgument = command.Argument("[location]", "");
+                command.OnExecute(() =>
+                {
+
+                    string url = "https://api.github.com/repos/intechinfo/GoM/releases/latest";
+
+                    string latestReleaseJson = getLastestRelease(url).Result;
+                    JObject latestReleaseObject = JObject.Parse(latestReleaseJson);
+                    string remoteGitTagName = (string)latestReleaseObject["tag_name"];
+
+                    return 0;
+                });
+            });
+            
             try
             {
                 app.Execute(args);
@@ -355,6 +380,37 @@ namespace GoM
             Console.WriteLine(Path.GetFileName(path));
             fileList.Add(Path.GetFileName(path));
             return fileList;
+        }
+
+        public static async Task<string> getLastestRelease(string url)
+        {
+            var test = new HttpRequestMessage();
+            var version = test.Version;
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(url);
+            client.DefaultRequestHeaders.Add("User-Agent", "Anything");
+            try
+            {
+                return await client.GetStringAsync(url);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception HTTP", e);
+            }
+            return null;
+            //using (HttpClient client = new HttpClient())
+            //using (HttpResponseMessage response = await client.GetAsync(url))
+            //using (HttpContent content = response.Content)
+            //{
+            //    string result = await content.ReadAsStringAsync();
+            //    if (result != null && result.Length <= 80) Console.WriteLine(result);
+
+
+
+            //}
+
+
+
         }
     }
 
