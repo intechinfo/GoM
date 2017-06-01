@@ -12,7 +12,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class PythonProjectHandler : BaseProjectFolderHandler
     {
-        public PythonProjectHandler(IFileProvider provider) : base(provider)
+        public PythonProjectHandler(IFileProvider provider, string currentPathFolder) : base(provider, currentPathFolder)
         {
         }
 

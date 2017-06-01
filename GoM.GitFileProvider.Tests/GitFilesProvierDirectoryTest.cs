@@ -19,7 +19,20 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
+                item.PhysicalPath.Should().Be(item.Name);
+            }
+        }
+        [Test]
+        public void Get_directory_with_no_parameters_and_path()
+        {
+            GitFileProvider git = new GitFileProvider(ProjectRootPath);
+            var rootDir = git.GetDirectoryContents("GoM.Core.Abstractions");
+
+            rootDir.Exists.Should().BeTrue();
+            foreach (var item in rootDir)
+            {
+                item.Exists.Should().BeTrue();
+                item.PhysicalPath.Should().Be(@"GoM.Core.Abstractions\" + item.Name);
             }
         }
         [Test]
@@ -32,7 +45,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.Core.Abstractions\" + item.Name);
+                item.PhysicalPath.Should().Be(@"GoM.Core.Abstractions\" + item.Name);
             }
         }
         [Test]
@@ -44,16 +57,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in headDir)
             {
                 item.Exists.Should().BeTrue();
-                if (item.IsDirectory)
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + item.Name);
-
-                }
-                else
-                {
-                    item.PhysicalPath.Should().Be(ProjectRootPath + Path.DirectorySeparatorChar + "GoM.GitFileProvider" + Path.DirectorySeparatorChar +item.Name);
-                    item.Length.Should().BeGreaterThan(0);
-                }
+                item.PhysicalPath.Should().Be(@"GoM.GitFileProvider"+ Path.DirectorySeparatorChar + item.Name);
             }
         }
         [Test]
@@ -65,7 +69,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\" + item.Name);
+                item.PhysicalPath.Should().Be(@"GoM.GitFileProvider\" + item.Name);
 
             }
         }
@@ -78,7 +82,7 @@ namespace GoM.GitFileProvider.Tests
             foreach (var item in rootDir)
             {
                 item.Exists.Should().BeTrue();
-                item.PhysicalPath.Should().Be(ProjectRootPath + @"\GoM.GitFileProvider\" + item.Name);
+                item.PhysicalPath.Should().Be( @"GoM.GitFileProvider\" + item.Name);
 
             }
         }

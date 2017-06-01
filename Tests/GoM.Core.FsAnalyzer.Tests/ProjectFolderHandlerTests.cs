@@ -15,7 +15,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_handler_return_csproj_handler_on_csproj_project()
         {
             var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Csharp/Csproj/"));
-            var handler = new ProjectFolderHandler(provider);
+            var handler = new ProjectFolderHandler(provider, "");
             var result = handler.Sniff();
 
             result.Should().BeOfType(typeof(CsProjHandler));
@@ -25,7 +25,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_handler_return_packagesconfig_handler_on_packagesconfig_project()
         {
             var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Csharp/PackagesConfig/"));
-            var handler = new ProjectFolderHandler(provider);
+            var handler = new ProjectFolderHandler(provider, "");
             var result = handler.Sniff();
 
             result.Should().BeOfType(typeof(PackagesConfigHandler));
@@ -35,7 +35,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_handler_return_python_handler_on_python_project()
         {
             var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Python/"));
-            var handler = new ProjectFolderHandler(provider);
+            var handler = new ProjectFolderHandler(provider, "");
             var result = handler.Sniff();
 
             result.Should().BeOfType(typeof(PythonProjectHandler));
@@ -45,7 +45,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_handler_return_php_handler_on_php_project()
         {
             var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Php/"));
-            var handler = new ProjectFolderHandler(provider);
+            var handler = new ProjectFolderHandler(provider, "");
             var result = handler.Sniff();
 
             result.Should().BeOfType(typeof(PhpProjectHandler));
@@ -55,7 +55,7 @@ namespace GoM.Core.FsAnalyzer.Tests
         public void Test_project_handler_return_javascript_handler_on_javascript_project()
         {
             var provider = new PhysicalFileProvider(Path.Combine(SampleDirectory, "Javascript/good_package"));
-            var handler = new ProjectFolderHandler(provider);
+            var handler = new ProjectFolderHandler(provider, "");
             var result = handler.Sniff();
 
             result.Should().BeOfType(typeof(JsProjectHandler));

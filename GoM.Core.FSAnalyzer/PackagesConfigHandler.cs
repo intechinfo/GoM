@@ -12,7 +12,7 @@ namespace GoM.Core.FSAnalyzer
 {
     public class PackagesConfigHandler : BaseProjectFolderHandler
     {
-        public PackagesConfigHandler(IFileProvider provider) : base(provider)
+        public PackagesConfigHandler(IFileProvider provider, string currentPathFolder) : base(provider, currentPathFolder)
         {
         }
 
