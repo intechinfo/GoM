@@ -52,7 +52,7 @@ namespace GoM.Feeds
                 }
 
                 var list = new List<PackageInstanceResult>();
-                JObject versions = new JObject(result.Result.Property("versions"));
+                var versions = result.Result.Value<JObject>("versions");
                 //iterate on eah version of the json
                 foreach (var item in versions)
                 {
@@ -64,7 +64,7 @@ namespace GoM.Feeds
                     }
                     else
                     {
-                        list.Add(new PackageInstanceResult(new ArgumentException("the version : "+item.Key+"is not Server Compliant"), null));
+                        list.Add(new PackageInstanceResult(new ArgumentException("the version : " + item.Key + "is not Server Compliant"), null));
                     }
                 }
                 return new ReadPackagesResult(null,list, result);
