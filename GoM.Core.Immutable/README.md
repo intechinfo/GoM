@@ -36,7 +36,7 @@ Visitor Pattern
 TODO : Explain how it works.
 
 
-How to swith from mutable to immutable implementation ?
+How to switch from mutable to immutable implementation ?
 ---------------
 
 You got an extension on the context. So you can use : 
