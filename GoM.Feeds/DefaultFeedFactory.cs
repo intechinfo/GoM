@@ -33,8 +33,8 @@ namespace GoM.Feeds
         /// <summary>
         /// Detects which feed to use depending on the collection of links you input
         /// </summary>
-        /// <param name="links"></param>
-        /// <returns></returns>
+        /// <param name="links"> collection of links</param>
+        /// <returns>list of tasks</returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(IEnumerable<Uri> links)
         {
             var t = links.Select(x => Snif(x));
@@ -45,7 +45,7 @@ namespace GoM.Feeds
         /// Detects which feed to use depending on the SINGLE link you input
         /// </summary>
         /// <param name="link"></param>
-        /// <returns></returns>
+        /// <returns>task</returns>
         public async Task<IEnumerable<FeedMatchResult>> Snif(Uri link)
         {
             var ret = await Task.WhenAll(_factories.Select(fr => fr.Snif(link)));
