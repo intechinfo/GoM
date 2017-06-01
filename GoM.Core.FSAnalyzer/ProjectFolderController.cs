@@ -4,6 +4,8 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GoM.Core.FSAnalyzer
@@ -12,28 +14,34 @@ namespace GoM.Core.FSAnalyzer
     {
         public IReadOnlyCollection<IProject> Analyze(IFileProvider gitFileProvider)
         {
-            List<IProject> projects = new List<IProject>();
+            return DoAnalyze(gitFileProvider, "");
+        }
 
-            IDirectoryContents directories = gitFileProvider.GetDirectoryContents("");
+        private IReadOnlyCollection<IProject> DoAnalyze(IFileProvider provider, string path)
+        {
+            List<IProject> projects = new List<IProject>();
+            var directories = provider.GetDirectoryContents(path).Where(x => x.Name != ".git" && x.IsDirectory);
+
             foreach (IFileInfo fileInfo in directories)
             {
-                if (fileInfo.IsDirectory)
+                var relativePath = Path.Combine(path, fileInfo.Name);
+
+                // On each project call specialize handler with PhysicalFileProvider
+                ProjectFolderHandler projectHandler = new ProjectFolderHandler(provider, relativePath);
+                IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
+
+                if (specializedProjectHandler != null)
                 {
-                    // On each project call specialize handler with PhysicalFileProvider
-                    ProjectFolderHandler projectHandler = new ProjectFolderHandler(gitFileProvider, fileInfo.PhysicalPath);
-                    IProjectFolderHandler specializedProjectHandler = projectHandler.Sniff();
-                    if (specializedProjectHandler != null)
-                    {
-                        // If true, add in collection
-                        // Return IProject collection
-                        IProject project = specializedProjectHandler.Read();
-                        projects.Add(project);
-                    }
+                    // If true, add in collection
+                    // Return IProject collection
+                    projects.Add(specializedProjectHandler.Read());
+                }
+                else
+                {
+                    projects.AddRange(DoAnalyze(provider, relativePath));
                 }
             }
-
-            IReadOnlyCollection<IProject> readOnlyProjects = new ReadOnlyCollection<IProject>(projects);
-            return readOnlyProjects;
-          }
+            return projects;
+        }
     }
 }
