@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Semver;
 using System;
 using System.Linq;
 using System.Net;
@@ -33,11 +34,17 @@ namespace GoM.Feeds.Tests
         {
             using (var testReader = CreateReader())
             {
+                var ReturnedPackages = testReader.GetNewestVersions("NUnit", "0.0.0").Result.Result;
+
+                SemVersion latestVersion = ReturnedPackages.Where(x => x.Success == true && x.Result != null).Max(x => x.Result.Version);
+
+                var unexistingVersion = new SemVersion(latestVersion.Major + 1, latestVersion.Minor, latestVersion.Patch);
+
                 testReader.GetNewestVersions("NUnit", "3.4.0").Result.Result.Should().NotBeNullOrEmpty();
 
-                testReader.GetNewestVersions("NUnit", "3.7.0").Result.Result.Where(x => x.Success).Count().Should().Be(0);
+                testReader.GetNewestVersions("NUnit", latestVersion.ToString()).Result.Result.Where(x => x.Success).Count().Should().Be(0);
 
-                testReader.GetNewestVersions("NUnit", "4.6.1").Result.Result.Where(x => x.Success).Count().Should().Be(0);
+                testReader.GetNewestVersions("NUnit", unexistingVersion.ToString()).Result.Result.Where(x => x.Success).Count().Should().Be(0);
 
                 Action a1 = () => { var b = testReader.GetNewestVersions("", "3.6.1").Result; };
                 a1.ShouldThrow<ArgumentException>();
