@@ -25,21 +25,29 @@ namespace GoM.Core.Immutable
             return new GoMContext(path, repositories, feeds);
         }
 
-        public GoMContext UpdateRepositoryFields(BasicGitRepository repositoryToUpdate, string newPath = null, Uri newUrl = null)
+        // TODO : AddOrUpdateRepository
+        // TODO : RemoveRepository
+
+        public GoMContext UpdateRepositoryFields(BasicGitRepository targetRepository, string newPath = null, Uri newUrl = null)
         {
-            if (repositoryToUpdate == null) throw new ArgumentNullException(nameof(repositoryToUpdate));
+            if (targetRepository == null) throw new ArgumentNullException(nameof(targetRepository));
             if (newPath == null && newUrl == null) throw new ArgumentNullException("At least one value must be not null");
+
+            if (!Repositories.Any(rep => rep == targetRepository)) throw new ArgumentException($"{nameof(targetRepository)} does not exist!");
             if (Repositories.Any(rep => rep.Path == newPath)) throw new ArgumentException("This path already exist");
-            var visitor = new UpdateRepositoryFieldsVisitor(repositoryToUpdate, newPath, newUrl);
+
+            var visitor = new UpdateRepositoryFieldsVisitor(targetRepository, newPath, newUrl);
             return visitor.Visit(this);
         }
 
-        public GoMContext SetRepositoryDetails(BasicGitRepository reopsitoryToDetal, GitRepository detailed)
+        public GoMContext SetRepositoryDetails(BasicGitRepository targetRepository, GitRepository detailed)
         {
-            if (detailed == null) throw new ArgumentNullException(nameof(detailed));
-            var visitor = new DetailRepositoryVisitor(reopsitoryToDetal, detailed);
+            var visitor = new DetailRepositoryVisitor(targetRepository, detailed);
             return visitor.Visit(this);
         }
+
+        // TODO : AddOrUpdateBranch
+        // TODO : RemoveBranch
 
         public GoMContext SetBranchDetails(BasicGitBranch branchToDetail, GitBranch detailed)
         {
@@ -61,21 +69,39 @@ namespace GoM.Core.Immutable
             return visitor.Visit(this);
         }
 
+        // TODO : AddOrUpdateProject
+        // TODO : RemoveProject
+
+        // TODO : SetProjectDetails
+        // TODO : UpdateProjectFields
+
+        // TODO : AddOrUpdateTarget
+        // TODO : RemoveTarget
+
+        // TODO : UpdateTargetFields
+        // TODO : AddOrUpdateTargetDependency
+        // TODO : RemoveTargetDependency
+
+        // TODO : UpdateTargetDependencyFields
+
         public GoMContext AddOrUpdatePackageFeeds(PackageFeed feed)
         {
             var feedFound = Feeds.SingleOrDefault(f => f.Url == feed.Url);
             ImmutableList<PackageFeed> newFeeds;
             if (feedFound == null)
-            {
-                //Add 
                 newFeeds = Feeds.Add(feed);
-            }
             else
-            {
-                // update 
                 newFeeds = Feeds.SetItem(Feeds.IndexOf(feedFound), feed);
-            }
-            return GoMContext.Create(this.RootPath, this.Repositories, newFeeds);
+
+            return Create(this.RootPath, this.Repositories, newFeeds);
         }
+
+        // TODO : RemovePackageFeed
+
+        // TODO : UpdatePackageFeedFields
+        // TODO : AddOrUpdatePackageInstance
+        // TODO : RemovePackageInstance
+
+        // TODO : UpdatePackageInstanceFields
     }
 }

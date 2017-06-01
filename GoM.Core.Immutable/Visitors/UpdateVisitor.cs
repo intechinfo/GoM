@@ -14,15 +14,21 @@ namespace GoM.Core.Immutable.Visitors
         public DetailRepositoryVisitor(BasicGitRepository repositoryToDetail, GitRepository detailed)
         {
             _repositoryToDetail = repositoryToDetail ?? throw new ArgumentNullException(nameof(repositoryToDetail));
-            _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
+            _detailed = detailed;
         }
 
         public override BasicGitRepository Visit(BasicGitRepository basicRepository)
         {
+            //if (basicRepository == _repositoryToDetail)
+            //{
+            //    if (basicRepository.Details != _detailed)
+            //        return BasicGitRepository.Create(_detailed);
+            //}
+            //return basicRepository;
+
             if (basicRepository == _repositoryToDetail)
-            {
                 basicRepository = basicRepository.Details == _detailed ? basicRepository : BasicGitRepository.Create(_detailed);
-            }
+
             return base.Visit(basicRepository);
         }
     }
@@ -35,11 +41,6 @@ namespace GoM.Core.Immutable.Visitors
         {
             _detailed = detailed ?? throw new ArgumentNullException(nameof(detailed));
             _branchToDetail = branchToDetail ?? throw new ArgumentNullException(nameof(branchToDetail));
-        }
-
-        public override BasicGitRepository Visit(BasicGitRepository basicRepository)
-        {
-            return base.Visit(basicRepository);
         }
 
         public override BasicGitBranch Visit(BasicGitBranch basicBranch)
@@ -60,7 +61,7 @@ namespace GoM.Core.Immutable.Visitors
         public UpdateRepositoryFieldsVisitor(BasicGitRepository target, string path = null, Uri url = null)
         {
             _target = target ?? throw new ArgumentNullException(nameof(target));
-            if (target != null && path == null) throw new ArgumentNullException($"{nameof(path)} and {nameof(url)} cannot both be null");
+            if (url == null && path == null) throw new ArgumentNullException($"{nameof(path)} and {nameof(url)} cannot both be null");
             _path = path;
             _url = url;
         }
